@@ -1,12 +1,4 @@
 Name: Jacob Wiggins
 StarID: rs6787ys
-Have an Fish
- ____________________________
-/                            \   ____
-|    O                         \/    \
-\                                     \
-  \       ____                        /
-  /            \                      \
-/         ____ /                      /
-|                                 ___/
-\ _____________________________ /
+
+version 1.1: removed fish. Curse you github.
