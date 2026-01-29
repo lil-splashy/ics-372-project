@@ -20,8 +20,9 @@ public interface parserInterface
   /**
    * exportJSON file
    * 
-   * @param argument for export directory. current directory is default.
+   * @param orderList
+   * @param exportDir - hardcoded to export to exports folder.
    */
-  public <T> exportJSON(T exportDir);
+  public void exportJSON(T orderList,String exportDir);
 
 }
