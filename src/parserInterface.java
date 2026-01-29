@@ -8,20 +8,20 @@ import java.util.*;
  * 
  */
 
-public interface json_parser_interface
+public interface parserInterface
 {
 
   /**
    * @param JSON Filename
    * @return General items
    */
-  public T parseFile(T fileName);
+  public <T> parseFile(String filePath);
 
   /**
    * exportJSON file
    * 
    * @param argument for export directory. current directory is default.
    */
-  public void exportJSON(T exportDir);
+  public <T> exportJSON(T exportDir);
 
 }
