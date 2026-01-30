@@ -2,16 +2,18 @@ public class Item {
 
     private String itemID;
     private String itemName;
-    private String itemPrice;
+    private double itemPrice;
     private int itemQuantity;
 
-    public Item(String itemID, String itemName, String itemPrice, int itemQuantity) {
+    public Item() {
+    }
+
+    public Item(String itemID, String itemName, double itemPrice, int itemQuantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.itemQuantity = itemQuantity;
     }
-
 
     public String getItemID() {
         return itemID;
@@ -20,7 +22,6 @@ public class Item {
         this.itemID = itemID;
     }
 
-
     public String getItemName() {
         return itemName;
     }
@@ -28,14 +29,12 @@ public class Item {
         this.itemName = itemName;
     }
 
-
-    public String getItemPrice() {
+    public double getItemPrice() {
         return itemPrice;
     }
-    public void setItemPrice(String itemPrice) {
+    public void setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
     }
-
 
     public int getItemQuantity() {
         return itemQuantity;
@@ -44,9 +43,13 @@ public class Item {
         this.itemQuantity = itemQuantity;
     }
 
-
     @Override
     public String toString() {
-
+        return "Item{" +
+                "itemID='" + itemID + '\'' +
+                ", itemName='" + itemName + '\'' +
+                ", itemPrice=" + itemPrice +
+                ", itemQuantity=" + itemQuantity +
+                '}';
     }
 }
