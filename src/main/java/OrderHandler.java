@@ -1,4 +1,4 @@
-
+package java;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -13,6 +13,7 @@ public class OrderHandler<E> {
     //Using map to associate orders with an id per instruction 3
     private Map<String,E> ordersById;
 
+    
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.incomingOrders = new LinkedList<>();
