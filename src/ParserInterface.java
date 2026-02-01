@@ -38,6 +38,6 @@ public interface ParserInterface {
    * @param orderList
    * @param exportDir - hardcoded to export to exports folder.
    */
-  String exportJSON( orderList,String exportDir);
+//  String exportJSON(Order orderList,String exportDir);
 
 }
