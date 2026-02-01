@@ -17,29 +17,35 @@ public class JsonParser<T> implements parserInterface<T> {
      */
     public T parseFile(String filePath) {
 
+        println("Grabbing: " + filePath + ".....");
         try {
+
             // Read file and create object
             String content = new String(Files.readAllBytes(Paths.get(orderPath)));
             JSONObject jsonObject = new JSONObject(content);
 
-            for (int i = 0; i < order.length(); i++) {
+//            Loop for parsing multiple orders
+//            for (int i = 0; i < order.length(); i++) {
                 JSONObject order = jsonObject.getJSONObject("order");
                 private String orderType = order.getString("type");
                 private date orderDate = order.getLong("order_date");
-                // Add create new order
-                Order newOrder = Order("O" + i, orderDate, "NEW", orderType, );
 
 
                 JSONArray items = order.getJSONArray("items");
-                for (int i = 0; i < items.length(); i++) {
+
+                // Add create new order
+                Order newOrder = Order("O" + i, orderDate, "NEW", orderType, items.length());
+
+                for (int j = 0; j < items.length(); j++) {
                     JSONObject item = items.getJSONObject(i);
                     String name = item.getString("name");
                     int quantity = item.getInt("quantity");
                     double price = item.getDouble("price");
                     Item newItem = Item("I" + 1, item.name, item.quantity, item.price);
+                    newOrder.additem(newItem);
                 }
-
-            }
+            return newOrder;
+//            }
         }
         catch (Exception e) {
             e.printStackTrace();
