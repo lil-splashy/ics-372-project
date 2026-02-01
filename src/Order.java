@@ -1,6 +1,6 @@
 public class Order {
 
-    // attributes of an order
+
     private String orderID;
     private long orderDate;
     private String orderStatus;
@@ -9,6 +9,7 @@ public class Order {
     // the item array of items for the unique order
     private Item[] items;
     private int itemCount;
+
     // the order constructor
     public Order(String orderID, long orderDate,
                  String orderStatus, String orderType, int maxItems) {
@@ -42,6 +43,7 @@ public class Order {
     public Item[] getItems() {
         return items;
     }
+
     // getters and setters
     public String getOrderID() {
         return orderID;
