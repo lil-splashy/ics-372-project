@@ -8,8 +8,7 @@ import java.util.*;
  * 
  */
 
-public interface parserInterface
-{
+public interface parserInterface<T> {
 
   /**
    * @param JSON Filename
