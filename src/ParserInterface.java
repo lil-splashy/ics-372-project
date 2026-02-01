@@ -8,13 +8,29 @@ import java.util.*;
  * 
  */
 
-public interface parserInterface<T> {
+public interface ParserInterface {
+
+
+  /**
+   *
+   * @return current json filepath
+   */
+  String getFilePath();
+
+
+  /**
+   *
+   * @param newPath - new directory path to set to
+   */
+  void setNewPath(String newPath);
+
+
 
   /**
    * @param JSON Filename
    * @return New Order
    */
-  public <T> parseFile(String filePath);
+  Order parseFile(String filePath);
 
   /**
    * exportJSON file
@@ -22,6 +38,6 @@ public interface parserInterface<T> {
    * @param orderList
    * @param exportDir - hardcoded to export to exports folder.
    */
-  public void exportJSON(T orderList,String exportDir);
+  String exportJSON( orderList,String exportDir);
 
 }

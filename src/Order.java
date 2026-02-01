@@ -1,7 +1,7 @@
 public class Order {
 
 
-    private int orderID;
+    private String orderID;
     private long orderDate;
     private String orderStatus;
     private String orderType;
@@ -10,7 +10,7 @@ public class Order {
     private Item[] items;
     private int itemCount;
 
-    public Order(int orderID, long orderDate,
+    public Order(String orderID, long orderDate,
                  String orderStatus, String orderType, int maxItems) {
         this.orderID = orderID;
         this.orderDate = orderDate;
@@ -38,7 +38,7 @@ public class Order {
         return items;
     }
 
-    public int getOrderID() {
+    public String getOrderID() {
         return orderID;
     }
     public void setOrderID(int orderID) {
