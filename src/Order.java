@@ -1,27 +1,43 @@
-import java.util.Date;
-
-
 public class Order {
 
+
     private int orderID;
-    private Date orderDate;
+    private long orderDate;
     private String orderStatus;
     private String orderType;
     private double orderPrice;
 
-    public Order() {
-    }
+    private Item[] items;
+    private int itemCount;
 
-    public Order(int orderID, Date orderDate,
-                 String orderStatus, String orderType, double orderPrice) {
+    public Order(int orderID, long orderDate,
+                 String orderStatus, String orderType, int maxItems) {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
-        this.orderPrice = orderPrice;
+        this.items = new Item[maxItems];
+        this.itemCount = 0;
     }
 
+    public void addItem(Item item){
+        if (itemCount < items.length){
+            items[itemCount] = item;
+            itemCount++;
+            orderPrice += item.getItemPrice();
+        } else {
+            System.out.println("Order is full");
+        }
+    }
+
+
     // getters and setters
+
+
+    public Item[] getItems() {
+        return items;
+    }
+
     public int getOrderID() {
         return orderID;
     }
@@ -29,10 +45,10 @@ public class Order {
         this.orderID = orderID;
     }
 
-    public Date getOrderDate() {
+    public long getOrderDate() {
         return orderDate;
     }
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(long orderDate) {
         this.orderDate = orderDate;
     }
 

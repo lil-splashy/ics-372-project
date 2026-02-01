@@ -5,9 +5,6 @@ public class Item {
     private double itemPrice;
     private int itemQuantity;
 
-    public Item() {
-    }
-
     public Item(String itemID, String itemName, double itemPrice, int itemQuantity) {
         this.itemID = itemID;
         this.itemName = itemName;
