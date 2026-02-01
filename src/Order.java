@@ -1,11 +1,10 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
+
 
 public class Order {
 
     private int orderID;
-    private LocalDate orderDate;
-    private LocalTime orderTime;
+    private Date orderDate;
     private String orderStatus;
     private String orderType;
     private double orderPrice;
@@ -13,11 +12,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(int orderID, LocalDate orderDate, LocalTime orderTime,
+    public Order(int orderID, Date orderDate,
                  String orderStatus, String orderType, double orderPrice) {
         this.orderID = orderID;
         this.orderDate = orderDate;
-        this.orderTime = orderTime;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
         this.orderPrice = orderPrice;
@@ -31,19 +29,13 @@ public class Order {
         this.orderID = orderID;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
-    public LocalTime getOrderTime() {
-        return orderTime;
-    }
-    public void setOrderTime(LocalTime orderTime) {
-        this.orderTime = orderTime;
-    }
 
     public String getOrderStatus() {
         return orderStatus;
@@ -72,7 +64,6 @@ public class Order {
         return "Order{" +
                 "orderID=" + orderID +
                 ", orderDate=" + orderDate +
-                ", orderTime=" + orderTime +
                 ", orderStatus='" + orderStatus + '\'' +
                 ", orderType='" + orderType + '\'' +
                 ", orderPrice=" + orderPrice +
