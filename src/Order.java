@@ -10,7 +10,7 @@ public class Order {
     private Item[] items;
     private int itemCount;
     // the order constructor
-    public Order(int orderID, long orderDate,
+    public Order(String orderID, long orderDate,
                  String orderStatus, String orderType, int maxItems) {
         this.orderID = orderID;
         this.orderDate = orderDate;
@@ -43,10 +43,10 @@ public class Order {
         return items;
     }
     // getters and setters
-    public int getOrderID() {
+    public String getOrderID() {
         return orderID;
     }
-    public void setOrderID(int orderID) {
+    public void setOrderID(String orderID) {
         this.orderID = orderID;
     }
 
