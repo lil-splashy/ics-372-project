@@ -105,12 +105,12 @@ public class OrderHandler<E> {
         plz don't get angry Joey }: I'm trying my best
 
      */
-    public E changeStatus(T order) {
-
-    }
-
-    public E displayOrder(T order) {
-
+//    public E changeStatus(T order) {
+//
+//    }
+//
+    public void displayOrder(T order) {
+        System.out.println(order);
     }
 
     public void displayUncompletedOrders() {
@@ -120,23 +120,25 @@ public class OrderHandler<E> {
         // price total
         double totalPriceUncompletedOrders = 0;
         System.out.println("Incoming Orders: ");
-        for(E Order : incomingOrders){
-            System.out.println(Order);
-            totalPriceUncompletedOrders += Order.getOrderPrice();
+        for(E order : incomingOrders){
+            System.out.println(order);
+            totalPriceUncompletedOrders += order.getOrderPrice();
         }
 
         System.out.println("Started Orders: ");
-        for(E Order : startedOrders){
-            System.out.println(Order);
-            totalPriceUncompletedOrders += Order.getOrderPrice();
+        for(E order : startedOrders){
+            System.out.println(order);
+            totalPriceUncompletedOrders += order.getOrderPrice();
         }
+
+        System.out.println("Total price: " + totalPriceUncompletedOrders);
     }
 
-    public E displayCompletedOrders() {
+    public void displayCompletedOrders() {
         //display completedOrders linkedlist
         System.out.println("Completed Orders: ");
-        for (E Order : completedOrders) {
-            System.out.println(Order);
+        for (E order : completedOrders) {
+            System.out.println(order);
         }
 
 //        public E modifyOrder (T order){
