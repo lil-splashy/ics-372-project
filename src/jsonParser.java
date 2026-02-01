@@ -15,6 +15,20 @@ public class JsonParser<T> implements parserInterface<T> {
      * @param filePath - Path to order.json
      * @return
      */
+
+    public String getFilePath(){
+        return filePath;
+    }
+
+    //
+    public void setNewPath(String newPath){
+        this.filepath = newPath;
+    }
+
+
+
+
+
     public T parseFile(String filePath) {
 
         println("Grabbing: " + filePath + ".....");
@@ -66,6 +80,13 @@ public class JsonParser<T> implements parserInterface<T> {
 
     public static void main(String[] args) {
 
+
+        Order gang = parseFile();
+
+        println("NEEEEWWWW ORRRRDDDERRRRRR!!!!!");
+        println(gang.getOrderID());
+        println(gang.getOrderDate());
+        println(gang.getOrderStatus())
 
     }
 }

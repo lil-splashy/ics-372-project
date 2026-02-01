@@ -12,7 +12,7 @@ public interface parserInterface<T> {
 
   /**
    * @param JSON Filename
-   * @return Array of Orders
+   * @return New Order
    */
   public <T> parseFile(String filePath);
 
