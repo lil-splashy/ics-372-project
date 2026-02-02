@@ -6,10 +6,11 @@ public class Order {
     private String orderStatus;
     private String orderType;
     private double orderPrice;
-
+    // the item array of items for the unique order
     private Item[] items;
     private int itemCount;
 
+    // the order constructor
     public Order(String orderID, long orderDate,
                  String orderStatus, String orderType, int maxItems) {
         this.orderID = orderID;
@@ -20,6 +21,11 @@ public class Order {
         this.itemCount = 0;
     }
 
+    /**
+     * adds an Item Object to a item array
+     *
+     * @param item takes Item Object
+     */
     public void addItem(Item item){
         if (itemCount < items.length){
             items[itemCount] = item;
@@ -31,13 +37,14 @@ public class Order {
     }
 
 
-    // getters and setters
 
 
+    // returns items
     public Item[] getItems() {
         return items;
     }
 
+    // getters and setters
     public String getOrderID() {
         return orderID;
     }
@@ -74,7 +81,7 @@ public class Order {
         this.orderPrice = orderPrice;
     }
 
-
+    // simply returns a readable order
     @Override
     public String toString() {
         return "Order{" +

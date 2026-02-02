@@ -1,17 +1,17 @@
 public class Item {
-
+    // attributes of the item
     private String itemID;
     private String itemName;
     private double itemPrice;
     private int itemQuantity;
-
+    // the item object contructor
     public Item(String itemID, String itemName, double itemPrice, int itemQuantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.itemQuantity = itemQuantity;
     }
-
+    //getters and setters
     public String getItemID() {
         return itemID;
     }
@@ -40,6 +40,7 @@ public class Item {
         this.itemQuantity = itemQuantity;
     }
 
+    // simply returns a item and its attributes
     @Override
     public String toString() {
         return "Item{" +
