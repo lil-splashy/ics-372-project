@@ -46,7 +46,7 @@ public class OrderHandler<Order> {
             String id = order.getOrderId();
             incomingOrders.add(order);
             ordersById.put(id, order);
-            order.getOrderStatus("incoming");
+            order.setOrderStatus("incoming");
         }
     }
 
@@ -94,7 +94,7 @@ public class OrderHandler<Order> {
     }
 
     //getting the total price of all orders that arent complete yet
-    public double totalPrice(HashMap<String, E> orders) {
+    public double totalPrice(HashMap<String, Order> orders) {
         //loop through hashmap
         // add total price from inside orders if status != complete
         //return price
@@ -140,6 +140,8 @@ public class OrderHandler<Order> {
         for (Order order : completedOrders) {
             System.out.println(order);
         }
+
+
 
 //        public E modifyOrder (Order order){
 //
