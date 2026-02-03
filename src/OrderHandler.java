@@ -3,14 +3,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
 // "E" should be Orders when created
-public class OrderHandler<E> {
+public class OrderHandler<Order> {
     //Instance variables to keep orders based on status
-    private LinkedList<E> incomingOrders;
-    private LinkedList<E> startedOrders;
-    private LinkedList<E> completedOrders;
+    private LinkedList<Order> incomingOrders;
+    private LinkedList<Order> startedOrders;
+    private LinkedList<Order completedOrders;
 
     //Using map to associate orders with an id per instruction 3
-    private Map<String, E> ordersById;
+    private Map<String, Order> ordersById;
 
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
@@ -23,15 +23,15 @@ public class OrderHandler<E> {
     }
 
     //getters for the linked lists
-    public LinkedList<E> getIncomingOrders() {
+    public LinkedList<Order> getIncomingOrders() {
         return incomingOrders;
     }
 
-    public LinkedList<E> getStartedOrders() {
+    public LinkedList<Order> getStartedOrders() {
         return startedOrders;
     }
 
-    public LinkedList<E> getCompletedOrders() {
+    public LinkedList<Order> getCompletedOrders() {
         return completedOrders;
     }
 
@@ -41,8 +41,8 @@ public class OrderHandler<E> {
      */
     //loads all orders from parser into an incoming orders linkedList
     // need to figure out how to check for nulls and skip incase there is a gap in list.
-    public void loadOrders(List<E> parsedOrders) {
-        for (E order : parsedOrders) {
+    public void loadOrders(List<Order> parsedOrders) {
+        for (Order order : parsedOrders) {
             String id = order.getOrderId();
             incomingOrders.add(order);
             ordersById.put(id, order);
@@ -57,7 +57,7 @@ public class OrderHandler<E> {
             return;
         }
         if (ordersById.get(id).getOrderStatus().equals("incoming")) {
-            E order = ordersById.get(id);
+            Order order = ordersById.get(id);
             order.setOrderStatus("started");
             startedOrders.add(order);
             incomingOrders.remove(order);
@@ -74,7 +74,7 @@ public class OrderHandler<E> {
             return;
         }
         if (ordersById.get(id).getOrderStatus().equals("started")) {
-            E order = ordersById.get(id);
+            Order order = ordersById.get(id);
             order.getOrderStatus("completed");
             completedOrders.add(order);
             startedOrders.remove(order);
@@ -85,7 +85,7 @@ public class OrderHandler<E> {
 
 
     //going to be used to grab an order by its order id using hashmap;
-    public E getOrder(String id) {
+    public Order getOrder(String id) {
         if (ordersById.get(id) == null) {
             System.out.println("No order associated with this id");
             return null;
@@ -109,7 +109,7 @@ public class OrderHandler<E> {
 //
 //    }
 //
-    public void displayOrder(T order) {
+    public void displayOrder(Order order) {
         System.out.println(order);
     }
 
@@ -120,13 +120,13 @@ public class OrderHandler<E> {
         // price total
         double totalPriceUncompletedOrders = 0;
         System.out.println("Incoming Orders: ");
-        for(E order : incomingOrders){
+        for(Order order : incomingOrders){
             System.out.println(order);
             totalPriceUncompletedOrders += order.getOrderPrice();
         }
 
         System.out.println("Started Orders: ");
-        for(E order : startedOrders){
+        for(Order order : startedOrders){
             System.out.println(order);
             totalPriceUncompletedOrders += order.getOrderPrice();
         }
@@ -137,7 +137,7 @@ public class OrderHandler<E> {
     public void displayCompletedOrders() {
         //display completedOrders linkedlist
         System.out.println("Completed Orders: ");
-        for (E order : completedOrders) {
+        for (Order order : completedOrders) {
             System.out.println(order);
         }
 
