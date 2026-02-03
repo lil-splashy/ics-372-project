@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
 // "E" should be Orders when created
-public class OrderHandler<Order> {
+public class OrderHandler {
     //Instance variables to keep orders based on status
     private LinkedList<Order> incomingOrders;
     private LinkedList<Order> startedOrders;
@@ -42,7 +42,13 @@ public class OrderHandler<Order> {
     //loads all orders from parser into an incoming orders linkedList
     // need to figure out how to check for nulls and skip incase there is a gap in list.
     public void loadOrders(List<Order> parsedOrders) {
+        if (parsedOrders == null) {
+            return;
+        }
         for (Order order : parsedOrders) {
+            if(order == null){
+                continue;
+            }
             String id = order.getOrderId();
             incomingOrders.add(order);
             ordersById.put(id, order);
@@ -75,7 +81,7 @@ public class OrderHandler<Order> {
         }
         if (ordersById.get(id).getOrderStatus().equals("started")) {
             Order order = ordersById.get(id);
-            order.getOrderStatus("completed");
+            order.setOrderStatus("completed");
             completedOrders.add(order);
             startedOrders.remove(order);
         } else {
@@ -94,11 +100,11 @@ public class OrderHandler<Order> {
     }
 
     //getting the total price of all orders that arent complete yet
-    public double totalPrice(HashMap<String, Order> orders) {
-        //loop through hashmap
-        // add total price from inside orders if status != complete
-        //return price
-    }
+//    public double totalPrice(HashMap<String, Order> orders) {
+//        //loop through hashmap
+//        // add total price from inside orders if status != complete
+//        //return price
+//    }
 
     /*
         Start of Chris edits oman
@@ -113,6 +119,7 @@ public class OrderHandler<Order> {
         System.out.println(order);
     }
 
+    // Display uncompleted orders
     public void displayUncompletedOrders() {
         // display incoming and started orders linkedlist
         // Call order method for price
@@ -134,13 +141,29 @@ public class OrderHandler<Order> {
         System.out.println("Total price: " + totalPriceUncompletedOrders);
     }
 
+    // Displays completed orders
     public void displayCompletedOrders() {
         //display completedOrders linkedlist
         System.out.println("Completed Orders: ");
         for (Order order : completedOrders) {
             System.out.println(order);
         }
+    }
 
+    // Calculates total price of uncompleted orders
+    public double totalPriceUncompletedOrders(){
+        double totalPrice = 0;
+
+        for(Order order : incomingOrders){
+            totalPrice += order.getOrderPrice();
+        }
+
+        for(Order order : startedOrders){
+            totalPrice += order.getOrderPrice();
+        }
+
+        return totalPrice;
+    }
 
 
 //        public E modifyOrder (Order order){
@@ -151,6 +174,6 @@ public class OrderHandler<Order> {
 //
 //    }
 
-    }
+
 
 }
