@@ -7,7 +7,7 @@ public class OrderHandler<Order> {
     //Instance variables to keep orders based on status
     private LinkedList<Order> incomingOrders;
     private LinkedList<Order> startedOrders;
-    private LinkedList<Order completedOrders;
+    private LinkedList<Order> completedOrders;
 
     //Using map to associate orders with an id per instruction 3
     private Map<String, Order> ordersById;
