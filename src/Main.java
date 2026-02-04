@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args){
@@ -14,9 +15,12 @@ public class Main {
         String filePath = scan.nextLine();
         System.out.println("okok your file path is: " + filePath);
 
+        scan.close();
+
         // new json object = filename
 
         //proxy method calls
+
 
         // Create User_Interface Object and call menuChoice() and pass in fileName
         UserInterface userInterface = new UserInterface();
@@ -41,6 +45,22 @@ public class Main {
 
  //       JsonParser parser = new JsonParser();
 //        OrderHandler handler = new OrderHandler();
+
+        //Order order = parser.parseFile(filePath);
+        //
+//        if (order != null) {
+//            List<Order> orders = new ArrayList<>();
+//            orders.add(order);
+//            handler.loadOrders(orders);
+//
+//            handler.displayUncompletedOrders();
+//
+//            handler.startOrder(order.getOrderID());
+//            handler.displayUncompletedOrders();
+//
+//            handler.completeOrder(order.getOrderID());
+//            handler.displayCompletedOrders();
+        //}
 //
 //        handler.doesOrderThings(parser.madeOrder());
 
