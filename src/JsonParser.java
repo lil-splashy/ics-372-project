@@ -64,20 +64,74 @@ public class JsonParser implements ParserInterface {
         }
     }
 
-    // export JSON list
-//    public String exportJSON(E orderList, String filePath) {
-//            while (orderList.order.next != null) {
-//
-//            }
-//        }
-//
-//        }
-//
-//
-//
-     public static void main (String[] args) {
-            System.out.print("New ORDER");
+    /**
+     *
+     * @param order - Order to be exported
+     * @param filePath - Desired filepath for export
+     * @return if 1 - Successfull, 0 - failed
+     */
+    public void exportJSON(Order order, String filePath) {
+
+        try {
+            JSONObject rootObject = new JSONObject();
+
+            // If it's a single order
+            if (order.next == null) {
+                JSONObject orderJson = orderToJson(order);
+                rootObject.put("order", orderJson);
+            }
+
+            // Write to file with pretty printing
+            String jsonString = rootObject.toString(4); // 4 spaces indentation
+            Files.write(Paths.get(filePath), jsonString.getBytes(StandardCharsets.UTF_8));
+            system.out.println("Exported JSON to:" + filePath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
+    /**
+     *
+     * @param Order to convert
+     * @return Json object to be exported
+     */
+    private JSONObject orderToJson(Order order) {
+        JSONObject orderJson = new JSONObject();
+
+            // Add order properties (adjust field names based on your Order class)
+            orderJson.put("orderID", order.getOrderId());
+            orderJson.put("orderDate", order.getOrderDate());
+            orderJson.put("status", order.getStatus());
+            orderJson.put("type", order.getType());
+
+            // Convert items to JSON array
+            JSONArray itemsArray = new JSONArray();
+            List<Item> items = order.getItems(); // Assuming you have a getItems() method
+
+            if (items != null) {
+                for (Item item : items) {
+                    JSONObject itemJson = new JSONObject();
+                    itemJson.put("itemID", item.getItemId());
+                    itemJson.put("name", item.getName());
+                    itemJson.put("price", item.getPrice());
+                    itemJson.put("quantity", item.getQuantity());
+                    itemsArray.put(itemJson);
+                }
+            }
+
+            orderJson.put("items", itemsArray);
+            orderJson.put("item_count", itemsArray.length());
+
+            return orderJson;
+        }
+
+
+
+     public static void main (String[] args) {
+            System.out.print("New order created!");
+        }
+
 
 
 }
