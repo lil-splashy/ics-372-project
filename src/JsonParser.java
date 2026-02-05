@@ -1,5 +1,7 @@
 import org.json.JSONObject;
 import org.json.JSONArray;
+
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -96,7 +98,6 @@ public class JsonParser implements ParserInterface {
             JSONObject orderJson = orderToJson(order);
             rootObject.put("order", orderJson);
 
-            // Write to file with pretty printing
             String jsonString = rootObject.toString(4); // 4 spaces indentation
             Files.write(Paths.get(filePath), jsonString.getBytes(StandardCharsets.UTF_8));
             System.out.println("Exported JSON to:" + filePath);
