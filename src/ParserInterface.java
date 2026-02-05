@@ -32,12 +32,10 @@ public interface ParserInterface {
    */
   Order parseFile(String filePath);
 
-  /**
-   * exportJSON file
-   * 
-   * @param orderList
-   * @param exportDir - hardcoded to export to exports folder.
-   */
-  String exportJSON( orderList,String exportDir);
+     /**
+     * @param order - Order to be exported
+     * @param filePath - Desired filepath for export
+     */
+  void exportJSON(Order orderList,String exportDir);
 
 }
