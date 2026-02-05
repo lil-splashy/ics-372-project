@@ -43,11 +43,11 @@ public class Item {
     // simply returns a item and its attributes
     @Override
     public String toString() {
-        return "Item{" +
-                "itemID='" + itemID + '\'' +
-                ", itemName='" + itemName + '\'' +
-                ", itemPrice=" + itemPrice +
-                ", itemQuantity=" + itemQuantity +
-                '}';
+        return "\n\n\t Item{ " +
+                "\n\t\titemID = " + itemID +
+                "\n\t\titemName = " + itemName +
+                "\n\t\titemQuantity = " + itemQuantity +
+                "\n\t\titemPrice = " + itemPrice +
+                "\n\t}\n";
     }
 }
