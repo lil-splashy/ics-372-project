@@ -6,15 +6,12 @@ import java.util.*;
 
 public class JsonParser implements ParserInterface {
 
+    public JsonParser() {
 
+    }
     // Hardcoded file path. Will replace later with user input.
     private String filePath = "../order.json";
 
-    /**
-     *
-     * @param filePath - Path to order.json
-     * @return
-     */
 
     public String getFilePath(){
         return filePath;
@@ -26,9 +23,11 @@ public class JsonParser implements ParserInterface {
     }
 
 
-
-
-
+    /**
+     *
+     * @param filePath - Path to order.json
+     * @return
+     */
     public Order parseFile(String filePath) {
         try {
 
@@ -64,31 +63,6 @@ public class JsonParser implements ParserInterface {
         }
     }
 
-    /**
-     *
-     * @param order - Order to be exported
-     * @param filePath - Desired filepath for export
-     * @return if 1 - Successfull, 0 - failed
-     */
-    public void exportJSON(Order order, String filePath) {
-
-        try {
-            JSONObject rootObject = new JSONObject();
-
-            // If it's a single order
-            if (order.next == null) {
-                JSONObject orderJson = orderToJson(order);
-                rootObject.put("order", orderJson);
-            }
-
-            // Write to file with pretty printing
-            String jsonString = rootObject.toString(4); // 4 spaces indentation
-            Files.write(Paths.get(filePath), jsonString.getBytes(StandardCharsets.UTF_8));
-            system.out.println("Exported JSON to:" + filePath);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
     /**
@@ -96,7 +70,7 @@ public class JsonParser implements ParserInterface {
      * @param Order to convert
      * @return Json object to be exported
      */
-    private JSONObject orderToJson(Order order) {
+    private static JSONObject orderToJson(Order order) {
         JSONObject orderJson = new JSONObject();
 
             // Add order properties (adjust field names based on your Order class)
@@ -126,6 +100,31 @@ public class JsonParser implements ParserInterface {
             return orderJson;
         }
 
+    /**
+     *
+     * @param order - Order to be exported
+     * @param filePath - Desired filepath for export
+     * @return if 1 - Successfull, 0 - failed
+     */
+    public void exportJSON(Order order, String filePath) {
+
+        try {
+            JSONObject rootObject = new JSONObject();
+
+            // If it's a single order
+            if (order.next == null) {
+                JSONObject orderJson = orderToJson(order);
+                rootObject.put("order", orderJson);
+            }
+
+            // Write to file with pretty printing
+            String jsonString = rootObject.toString(4); // 4 spaces indentation
+            Files.write(Paths.get(filePath), jsonString.getBytes(StandardCharsets.UTF_8));
+            system.out.println("Exported JSON to:" + filePath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
      public static void main (String[] args) {
