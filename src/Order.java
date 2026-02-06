@@ -84,13 +84,20 @@ public class Order {
     // simply returns a readable order
     @Override
     public String toString() {
-        return "Order{" +
-                "orderID=" + orderID +
-                ", orderDate=" + orderDate +
-                ", orderStatus='" + orderStatus + '\'' +
-                ", orderType='" + orderType + '\'' +
-                ", orderPrice=" + orderPrice +
-                '}';
+        StringBuilder exitLook = new StringBuilder(
+                "\nOrder { " +
+                        "\n\torderID = " + orderID +
+                        "\n\torderStatus = " + orderStatus +
+                        "\n\torderType = " + orderType +
+                        "\n\torderDate = " + orderDate);
+        for (int i = 0; i < items.length; i++){
+            if (items[i] != null) {
+                exitLook.append(items[i].toString());
+            }
+        }
+        exitLook.append("\n\tTotal Order Price = " + orderPrice +
+                "\n}");
+        return exitLook.toString();
     }
 
 }
