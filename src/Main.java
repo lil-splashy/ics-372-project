@@ -15,7 +15,7 @@ public class Main {
         String filePath = scan.nextLine();
         System.out.println("okok your file path is: " + filePath);
 
-        scan.close();
+
 
         // new json object = filename
 
@@ -24,24 +24,55 @@ public class Main {
 
         // Create User_Interface Object and call menuChoice() and pass in fileName
         UserInterface userInterface = new UserInterface();
+        String choice;
+        // create switch statement
+        do {
+            System.out.println("\nMenu:");
+            System.out.println("1. Load Orders");
+            System.out.println("2. Display Orders");
+            System.out.println("3. Start Order");
+            System.out.println("4. Complete Order");
+            System.out.println("5. Display Uncompleted Orders");
+            System.out.println("6. Display Completed Orders");
+            System.out.println("7. Export JSON");
+            System.out.println("0. Exit");
 
-        // have parameters as strings so far,
-        // but if Jacob wants switch statements then maybe 1...n integers instead.
-        userInterface.menuChoice("loadFilePath", filePath); // Give user interface file path
+            System.out.print("Choose an option of what you would like me to do :D ");
+            choice = scan.nextLine();
 
-        userInterface.menuChoice("loadOrder"); // Load order
+            switch (choice) {
+                case "1":
+                    userInterface.menuChoice("1");
+                    break;
+                case "2":
+                    userInterface.menuChoice("2");
+                    break;
+                case "3":
+                    userInterface.menuChoice("3");
+                    break;
+                case "4":
+                    userInterface.menuChoice("4");
+                    break;
+                case "5":
+                    userInterface.menuChoice("5");
+                    break;
+                case "6":
+                    userInterface.menuChoice("6");
+                    break;
+                case "7":
+                    userInterface.menuChoice("7");
+                    break;
+                case "0":
+                    System.out.println("Okok see you later :D");
+                    break;
+                default:
+                    System.out.println("Oman Invalid choice D:");
+            }
 
-        userInterface.menuChoice("displayOrder"); // Display Order
 
-        userInterface.menuChoice("startOrder"); // Start Order
+        } while (!choice.equals("0"));
 
-        userInterface.menuChoice("CompleteOrder"); // Complete Order
-
-        userInterface.menuChoice("displayUncomplete"); // Display Uncompleted Orders
-
-        userInterface.menuChoice("displayComplete"); //Display Completed Orders
-
-        userInterface.menuChoice("exportJSON"); // Export Json
+        scan.close();
 
  //       JsonParser parser = new JsonParser();
 //        OrderHandler handler = new OrderHandler();
