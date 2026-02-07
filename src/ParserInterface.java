@@ -33,7 +33,7 @@ public interface ParserInterface {
   Order parseFile(String filePath);
 
      /**
-     * @param order - Order to be exported
+     * @param Order - Order to be exported
      * @param filePath - Desired filepath for export
      */
   void exportJSON(Order orderList,String exportDir);

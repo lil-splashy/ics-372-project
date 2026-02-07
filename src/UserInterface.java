@@ -10,7 +10,7 @@ public class UserInterface
 {
     public UserInterface()
     {
-        OrderHandler<Order> orderHandler = new OrderHandler<Order>();
+        OrderHandler orderHandler = new OrderHandler();
         Scanner keybored = new Scanner(System.in);
         String menuState = "main"; //Tells us what menu to display, May get turned into an instance var in the future
         String menuOption = "";  //this will hold the choice that the user makes
