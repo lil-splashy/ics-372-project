@@ -11,6 +11,7 @@ public class Order {
     // the item array of items for the unique order
     private Item[] items;
     private int itemCount;
+
     // the order constructor
     public Order(long orderDate, String orderStatus, String orderType, int maxItems) {
         this.orderID = generateOrderID(); //creates a unique random id to track
@@ -55,6 +56,7 @@ public class Order {
     public Item[] getItems() {
         return items;
     }
+
     // getters and setters
     public String getOrderID() {
         return orderID;
