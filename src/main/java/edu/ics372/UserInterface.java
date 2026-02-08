@@ -1,3 +1,4 @@
+package edu.ics372;
 import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Scanner;

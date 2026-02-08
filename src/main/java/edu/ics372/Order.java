@@ -1,7 +1,9 @@
+package edu.ics372;
+import java.util.concurrent.ThreadLocalRandom;
 public class Order {
 
-
-    private String orderID;
+    // attributes of an order
+    private final String orderID;
     private long orderDate;
     private String orderStatus;
     private String orderType;
@@ -11,9 +13,8 @@ public class Order {
     private int itemCount;
 
     // the order constructor
-    public Order(String orderID, long orderDate,
-                 String orderStatus, String orderType, int maxItems) {
-        this.orderID = orderID;
+    public Order(long orderDate, String orderStatus, String orderType, int maxItems) {
+        this.orderID = generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
@@ -36,7 +37,19 @@ public class Order {
         }
     }
 
+    /**
+     * generates a unique order ID with a random letter and 12 digit number
+     *
+     * @return a string of both randletter and 12integers
+     */
+    private static String generateOrderID() {
+        ThreadLocalRandom rnd = ThreadLocalRandom.current();
 
+        char letter = (char) ('A' + rnd.nextInt(26));
+        long number = rnd.nextLong(100_000_000_000L, 1_000_000_000_000L);
+
+        return letter + Long.toString(number);
+    }
 
 
     // returns items
@@ -48,9 +61,9 @@ public class Order {
     public String getOrderID() {
         return orderID;
     }
-    public void setOrderID(String orderID) {
-        this.orderID = orderID;
-    }
+//    public void setOrderID(String orderID {
+//        this.orderID = orderID;
+//    } FOR FUTURE BUILD
 
     public long getOrderDate() {
         return orderDate;

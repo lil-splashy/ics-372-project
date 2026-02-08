@@ -1,10 +1,11 @@
+package edu.ics372;
 public class Item {
     // attributes of the item
     private String itemID;
     private String itemName;
     private double itemPrice;
     private int itemQuantity;
-    // the item object contructor
+    // the item object constructor
     public Item(String itemID, String itemName, double itemPrice, int itemQuantity) {
         this.itemID = itemID;
         this.itemName = itemName;
@@ -40,7 +41,7 @@ public class Item {
         this.itemQuantity = itemQuantity;
     }
 
-    // simply returns a item and its attributes
+    // simply returns an item and its attributes
     @Override
     public String toString() {
         return "\n\n\t Item{ " +

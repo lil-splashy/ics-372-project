@@ -1,6 +1,6 @@
+package edu.ics372;
 import org.json.JSONObject;
 import org.json.JSONArray;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,7 +40,7 @@ public class JsonParser implements ParserInterface {
 
 
             // Add create new order
-            Order newOrder = new Order("O0", orderDate, "NEW", orderType, items.length());
+            Order newOrder = new Order(orderDate, "NEW", orderType, items.length());
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
@@ -107,13 +107,10 @@ public class JsonParser implements ParserInterface {
         }
 
     }
-    public static void main (String[]args) {
+    public static void main (String[] args) {
         System.out.print("New order created!");
     }
 
-    public JsonParser() {
-        parseFile(filePath);
-    }
 
 
 }
