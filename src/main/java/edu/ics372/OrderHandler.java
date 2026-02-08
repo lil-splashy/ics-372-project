@@ -1,3 +1,4 @@
+package edu.ics372;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -38,13 +39,19 @@ public class OrderHandler {
      */
     //loads all orders from parser into an incoming orders linkedList
     // need to figure out how to check for nulls and skip incase there is a gap in list.
-    public void loadOrders(List<Order> parsedOrders){
-        for (Order order : parsedOrders){
-            String id = order.getOrderID();
-            incomingOrders.add(order);
-            ordersById.put(id,order);
-            order.setOrderStatus("incoming");
-        }
+    public Order loadOrders(){
+            JsonParser parser = new JsonParser();
+            return parser.parseFile(parser.getFilePath());
+
+
+            // Commenting this out for now since we're only working with one order - Ben
+
+//        for (Order order : parsedOrders){
+//            String id = order.getOrderID();
+//            incomingOrders.add(order);
+//            ordersById.put(id,order);
+//            order.setOrderStatus("incoming");
+//        }
     }
 
     // when prompted by user interface move specific incoming orders to started orders.
@@ -143,4 +150,8 @@ public class OrderHandler {
         return totalPrice;
     }
 
+
+    static void main (String [] args) {
+
+    }
 }
