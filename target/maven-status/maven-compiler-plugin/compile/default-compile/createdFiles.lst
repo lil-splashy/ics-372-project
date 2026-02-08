@@ -1,0 +1,8 @@
+edu/ics372/Main.class
+edu/ics372/Order.class
+edu/ics372/UserInterface.class
+edu/ics372/Item.class
+edu/ics372/Debug.class
+edu/ics372/OrderHandler.class
+edu/ics372/JsonParser.class
+edu/ics372/ParserInterface.class
