@@ -1,3 +1,6 @@
+/*
+Main class 
+ */
 import java.util.Collections;
 import java.util.Scanner;
 public class Main {
