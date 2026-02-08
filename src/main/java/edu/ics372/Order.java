@@ -1,6 +1,5 @@
-import java.util.concurrent.ThreadLocalRandom;
-
 package edu.ics372;
+import java.util.concurrent.ThreadLocalRandom;
 public class Order {
 
     // attributes of an order
