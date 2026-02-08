@@ -12,7 +12,6 @@ public class OrderHandler {
     //Using map to associate orders with an id per instruction 3
     private Map<String,Order> ordersById;
 
-    
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.incomingOrders = new LinkedList<>();
@@ -21,6 +20,7 @@ public class OrderHandler {
         //used for look up.
         this.ordersById = new HashMap<>();
     }
+
     //getters for the linked lists
     public LinkedList<Order> getIncomingOrders(){
         return incomingOrders;
@@ -48,8 +48,8 @@ public class OrderHandler {
     }
 
     // when prompted by user interface move specific incoming orders to started orders.
-    public void startOrder(String id){
-        if(ordersById.get(id) == null){
+    public void startOrder(String id) {
+        if (ordersById.get(id) == null) {
             System.out.println("No order associated with this id");
             return;
         }
@@ -58,16 +58,15 @@ public class OrderHandler {
             order.setOrderStatus("started");
             startedOrders.add(order);
             incomingOrders.remove(order);
-        }
-        else{
+        } else {
             System.out.println("Can't start an order that has already been started or completed");
         }
 
     }
 
     // When prompted by user interface move started order to completed linkedlist
-    public void completeOrder(String id){
-        if(ordersById.get(id) == null){
+    public void completeOrder(String id) {
+        if (ordersById.get(id) == null) {
             System.out.println("No order associated with this id");
             return;
         }
@@ -76,8 +75,7 @@ public class OrderHandler {
             order.setOrderStatus("completed");
             completedOrders.add(order);
             startedOrders.remove(order);
-        }
-        else{
+        } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
     }
@@ -99,5 +97,50 @@ public class OrderHandler {
         //return price
     }*/
 
+    // Display uncompleted orders
+    public void displayUncompletedOrders() {
+        // display incoming and started orders linkedlist
+        // Call order method for price
+        // getOrderPrice()
+        // price total
+        double totalPriceUncompletedOrders = 0;
+        System.out.println("Incoming Orders: ");
+        for(Order order : incomingOrders){
+            System.out.println(order);
+            totalPriceUncompletedOrders += order.getOrderPrice();
+        }
+
+        System.out.println("Started Orders: ");
+        for(Order order : startedOrders){
+            System.out.println(order);
+            totalPriceUncompletedOrders += order.getOrderPrice();
+        }
+
+        System.out.println("Total price: " + totalPriceUncompletedOrders);
+    }
+
+    // Displays completed orders
+    public void displayCompletedOrders() {
+        //display completedOrders linkedlist
+        System.out.println("Completed Orders: ");
+        for (Order order : completedOrders) {
+            System.out.println(order);
+        }
+    }
+
+    // Calculates total price of uncompleted orders
+    public double totalPriceUncompletedOrders(){
+        double totalPrice = 0;
+
+        for(Order order : incomingOrders){
+            totalPrice += order.getOrderPrice();
+        }
+
+        for(Order order : startedOrders){
+            totalPrice += order.getOrderPrice();
+        }
+
+        return totalPrice;
+    }
 
 }
