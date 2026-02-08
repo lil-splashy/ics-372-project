@@ -11,7 +11,7 @@ public class JsonParser implements ParserInterface {
 
 
     // Hardcoded file path. Will replace later with user input.
-    private static String filePath = "../order.json";
+    private  String filePath = "order.json";
 
 
     public String getFilePath() {
@@ -24,6 +24,7 @@ public class JsonParser implements ParserInterface {
 
 
     public Order parseFile(String filePath) {
+
         try {
 
             // Read file and create object
@@ -64,7 +65,7 @@ public class JsonParser implements ParserInterface {
 
         // Add order properties (adjust field names based on your Order class)
         orderJson.put("orderID", order.getOrderID());
-        orderJson.put("orderDate", order.getOrderDate());
+        orderJson.put("order_date", order.getOrderDate());
         orderJson.put("status", order.getOrderStatus());
         orderJson.put("type", order.getOrderType());
 
