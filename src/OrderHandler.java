@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
 // "E" should be Orders when created
-public class OrderHandler<Order> {
+public class OrderHandler {
     //Instance variables to keep orders based on status
     private LinkedList<Order> incomingOrders;
     private LinkedList<Order> startedOrders;
