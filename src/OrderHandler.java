@@ -42,11 +42,13 @@ public class OrderHandler {
     //loads all orders from parser into an incoming orders linkedList
     // need to figure out how to check for nulls and skip incase there is a gap in list.
     public void loadOrders(List<Order> parsedOrders) {
-//        JsonParser parser = new JsonParser();
-//        parser.
+        JsonParser parser = new JsonParser();
+        parser.parseFile(parser.getFilePath());
+
         if (parsedOrders == null) {
             return;
         }
+
         for (Order order : parsedOrders) {
             if(order == null){
                 continue;
