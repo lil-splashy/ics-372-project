@@ -11,7 +11,7 @@ public class JsonParser implements ParserInterface {
 
 
     // Hardcoded file path. Will replace later with user input.
-    private String filePath = "../order.json";
+    private static String filePath = "../order.json";
 
 
     public String getFilePath() {
@@ -53,7 +53,7 @@ public class JsonParser implements ParserInterface {
             }
             return newOrder;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
             return null;
         }
     }
