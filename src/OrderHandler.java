@@ -111,10 +111,7 @@ public class OrderHandler {
         plz don't get angry Joey }: I'm trying my best
 
      */
-//    public E changeStatus(T order) {
-//
-//    }
-//
+
     public void displayOrder(Order order) {
         System.out.println(order);
     }
@@ -164,18 +161,5 @@ public class OrderHandler {
 
         return totalPrice;
     }
-
-
-//        public E modifyOrder (Order order){
-//
-//        }
-
-//    public E exportOrder(Order order) {
-//
-//    }
-
-    // call JSONParser somewhere
-
-
 
 }
