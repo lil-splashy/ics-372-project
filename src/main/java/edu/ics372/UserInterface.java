@@ -23,14 +23,15 @@ public class UserInterface
             {
                 case "main": //This will display the main menu
                     System.out.println("Main menu, type the number that corresponds to an option or type quit to exit");
-                    System.out.println("1: Load orders from a .JSON file\n2: Print a list of orders by status\n3: Start order");
+                    System.out.println("1: Load/Save orders from/to a .JSON file\n2: Print a list of orders by status\n3: Display order" +
+                            "\n4: Start order\n5: Complete order\nquit: Exit program");
                     menuOption = keybored.nextLine();
 
                     switch(menuOption)
                     {
                         case "1":
-                            System.out.println("Load orders from a .JSON file");
-                            menuState = "orderIN";
+                            System.out.println("Load/Save orders from/to a JSON file");
+                            menuState = "orderMenu";
                             break;
 
                         case "2":
@@ -52,6 +53,10 @@ public class UserInterface
                             System.out.println("Which order will be completed?\n" + printOrderIDS(orderHandler.getStartedOrders()));
                             break;
 
+                        case "6":
+                            System.out.println("Display uncompleted orders");
+                            break;
+
                         case "quit","Quit":
                             System.out.println("Quitting program.");
                             menuState = "quit";
@@ -63,9 +68,25 @@ public class UserInterface
                     }
                     break;
 
-                case "orderIN":
-                    System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
-                    menuState = "main";
+                case "orderMenu": //Submenu for importing and exporting Orders from JSON files
+                    System.out.println("Do you want to load orders from a JSON file or save files to a File");
+                    menuOption = keybored.nextLine();
+                    switch(menuOption)
+                    {
+                        case "1":
+                            System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
+                            orderHandler.loadOrders();
+                            menuState = "main";
+                            break;
+
+                        case "2":
+                            System.out.println("Name the file you want to save the orders to, don't forget to include .JSON");
+                            break;
+
+                        case "back":
+                            menuState = "main";
+                            break;
+                    }
                     break;
 
                 case "printList": //Submenu for selecting a list to print
@@ -131,7 +152,6 @@ public class UserInterface
 
     public static void main(String[] args)
     {
-        System.out.println("this is a placeholder aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         UserInterface ui = new UserInterface();
     }
 }
