@@ -1,4 +1,4 @@
-
+import java.util.*;
 
 /**
  * 
@@ -9,6 +9,8 @@
  */
 
 public interface ParserInterface {
+
+
   /**
    *
    * @return current json filepath
@@ -24,14 +26,16 @@ public interface ParserInterface {
 
 
 
-  /// @param filePath -
-  /// @return New Order
+  /**
+   * @param JSON Filename
+   * @return New Order
+   */
   Order parseFile(String filePath);
 
-  /**
-   * @param order - Order to be exported
-   * @param exportDir - Desired filepath for export
-   */
-  void exportJSON(Order order,String exportDir);
+     /**
+     * @param Order - Order to be exported
+     * @param filePath - Desired filepath for export
+     */
+  void exportJSON(Order orderList,String exportDir);
 
 }
