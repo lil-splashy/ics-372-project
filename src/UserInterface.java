@@ -62,6 +62,11 @@ public class UserInterface
                     }
                     break;
 
+                case "orderIN":
+                    System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
+                    menuState = "main";
+                    break;
+
                 case "printList": //Submenu for selecting a list to print
                     System.out.println("Type the number of the list would you like to print, or type 'back' to return to the main menu");
                     System.out.println("1: Started orders\n2: In-progress orders\n3: Completed orders\nback: Return to the main menu");
@@ -96,7 +101,7 @@ public class UserInterface
                     break;
             }
 
-            System.out.println("------------------------------------------------------------"); //This should space things out a bit
+            System.out.println("------------------------------------------------------------------------"); //This should space things out a bit
         }
 
         keybored.close();
