@@ -16,6 +16,7 @@ public class UserInterface
         OrderHandler orderHandler = new OrderHandler();
         Scanner keybored = new Scanner(System.in);
         String menuState = "main"; //Tells us what menu to display, May get turned into an instance var in the future
+        Order orderFocus = null;  //This will hold a reference to an order, usually for display purposes
         String menuOption = "";  //this will hold the choice that the user makes
         System.out.println("Welcome!");
 
@@ -44,7 +45,11 @@ public class UserInterface
                         case "3":
                             System.out.println("Display an order");
                             System.out.println("Please enter the ID of the order you wish to view:");
-                            orderHandler.getOrder(keybored.nextLine());
+                            orderFocus = orderHandler.getOrder(keybored.nextLine());
+
+                            if(orderFocus != null) //I figure it makes no sense to have it print null if an invalid ID is entered
+                            { System.out.println(orderFocus); }
+
                             break;
 
                         case "4":
