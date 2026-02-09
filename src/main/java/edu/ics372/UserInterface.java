@@ -14,6 +14,7 @@ public class UserInterface
     public UserInterface()
     {
         OrderHandler orderHandler = new OrderHandler();
+        JsonParser parser = new JsonParser();
         Scanner keybored = new Scanner(System.in);
         String menuState = "main"; //Tells us what menu to display, May get turned into an instance var in the future
         Order orderFocus = null;  //This will hold a reference to an order, usually for display purposes
@@ -93,8 +94,20 @@ public class UserInterface
                             break;
 
                         case "2":
-                            System.out.println("Name the file you want to save the orders to, don't forget to include .JSON at the end");
-                            menuState = "main";
+                            System.out.println("Enter the ID of the order you want to export; the available orders are:" +
+                                    "\nUnstarted: " + printOrderIDS(orderHandler.getIncomingOrders()) +
+                                    "\nStarted: " + printOrderIDS(orderHandler.getStartedOrders()) +
+                                    "\nCompleted: " + printOrderIDS(orderHandler.getCompletedOrders()));
+
+                            orderFocus = orderHandler.getOrder(keybored.nextLine());
+
+                            if(orderFocus != null) //To avoid trying to export a non-existent order
+                            {
+                                System.out.println("Name the file you want to save the orders to, don't forget to include .JSON at the end");
+                                parser.exportJSON(orderFocus, keybored.nextLine());
+                                menuState = "main";
+                            }
+
                             break;
 
                         case "back":
@@ -115,14 +128,20 @@ public class UserInterface
                     {
                         case "1":
                             System.out.println("Incoming orders:");
+                            for(Order ord:orderHandler.getIncomingOrders())
+                            { System.out.println(ord); }
                             break;
 
                         case "2":
                             System.out.println("Orders that are in progress:");
+                            for(Order ord:orderHandler.getStartedOrders())
+                            { System.out.println(ord); }
                             break;
 
                         case "3":
                             System.out.println("Completed orders:");
+                            for(Order ord:orderHandler.getCompletedOrders())
+                            { System.out.println(ord); }
                             break;
 
                         case "back","'back'": //This will return the user to the main menu
