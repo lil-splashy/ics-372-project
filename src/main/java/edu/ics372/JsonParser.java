@@ -63,7 +63,7 @@ public class JsonParser implements ParserInterface {
     private JSONObject orderToJson(Order order) {
         JSONObject orderJson = new JSONObject();
 
-        // Add order properties (adjust field names based on your Order class)
+
         orderJson.put("orderID", order.getOrderID());
         orderJson.put("order_date", order.getOrderDate());
         orderJson.put("status", order.getOrderStatus());
@@ -71,7 +71,7 @@ public class JsonParser implements ParserInterface {
 
         // Convert items to JSON array
         JSONArray itemsArray = new JSONArray();
-        Item[] items = order.getItems(); // Assuming you have a getItems() method
+        Item[] items = order.getItems();
 
         if (items != null) {
             for (Item item : items) {
@@ -111,7 +111,5 @@ public class JsonParser implements ParserInterface {
     public static void main (String[] args) {
         System.out.print("New order created!");
     }
-
-
 
 }
