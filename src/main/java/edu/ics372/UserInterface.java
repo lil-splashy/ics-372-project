@@ -89,6 +89,7 @@ public class UserInterface
                     {
                         case "1":
                             System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
+                            parser.setNewPath(keybored.nextLine());
                             orderHandler.loadOrders();
                             menuState = "main";
                             break;
@@ -103,7 +104,7 @@ public class UserInterface
 
                             if(orderFocus != null) //To avoid trying to export a non-existent order
                             {
-                                System.out.println("Name the file you want to save the orders to, don't forget to include .JSON at the end");
+                                System.out.println("Name the file you want to save the orders to, don't forget to include .json at the end");
                                 parser.exportJSON(orderFocus, keybored.nextLine());
                                 menuState = "main";
                             }
