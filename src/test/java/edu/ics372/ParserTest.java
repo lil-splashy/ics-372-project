@@ -9,7 +9,7 @@ import java.io.File;
 
 public class ParserTest {
 
-    private static final String TEST_JSON_PATH = "test_order.json";
+    private static final String TEST_JSON_PATH = "order.json";
     private static final String EXPORT_JSON_PATH = "test_order.json";
 
     public static void main(String[] args) {
