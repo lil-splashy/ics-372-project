@@ -64,6 +64,8 @@ public class OrderHandler {
             return;
         }
 
+        System.out.print("Order succussfully loaded :D \n");
+
         order.setOrderStatus("incoming");
         incomingOrders.add(order);
         ordersById.put(order.getOrderID(), order);
