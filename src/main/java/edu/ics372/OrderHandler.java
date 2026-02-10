@@ -164,6 +164,17 @@ public class OrderHandler {
         return totalPrice;
     }
 
+    public void displayIncomingOrders(){
+        for(Order order : incomingOrders) {
+            System.out.println(order);
+        }
+    }
+
+    public void displayStartedOrders(){
+        for(Order order : startedOrders) {
+            System.out.println(order);
+        }
+    }
 
 
 }
