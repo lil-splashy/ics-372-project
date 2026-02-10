@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="edu.ics372.OrderHandlerTest" time="0.014" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="edu.ics372.OrderHandlerTest" time="0.016" tests="5" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Users\Takac\.jdks\openjdk-25.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\Takac\AppData\Local\Temp\surefire8838444568221284904\surefirebooter-20260208212354736_3.jar C:\Users\Takac\AppData\Local\Temp\surefire8838444568221284904 2026-02-08T21-23-54_678-jvmRun1 surefire-20260208212354736_1tmp surefire_0-20260208212354736_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Takac\AppData\Local\Temp\surefire1312994636350863977\surefirebooter-20260210145050166_3.jar C:\Users\Takac\AppData\Local\Temp\surefire1312994636350863977 2026-02-10T14-50-50_049-jvmRun1 surefire-20260210145050166_1tmp surefire_0-20260210145050166_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Takac\IdeaProjects\ics-372-project\target\test-classes;C:\Users\Takac\IdeaProjects\ics-372-project\target\classes;C:\Users\Takac\.m2\repository\org\json\json\20231013\json-20231013.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Takac\AppData\Local\Temp\surefire8838444568221284904\surefirebooter-20260208212354736_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Takac\AppData\Local\Temp\surefire1312994636350863977\surefirebooter-20260210145050166_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.2+10-69"/>
@@ -64,13 +64,7 @@
     <property name="maven.repo.local" value="C:\Users\Takac\.m2\repository"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="edu.ics372.OrderHandlerTest.testAddOrders()" classname="edu.ics372.OrderHandlerTest" time="0.004">
-    <system-out><![CDATA[Test 1: Adding orders to OrderHandler
-  ✓ Orders added successfully
-
-]]></system-out>
-  </testcase>
-  <testcase name="edu.ics372.OrderHandlerTest.testCompleteOrder()" classname="edu.ics372.OrderHandlerTest" time="0.001">
+  <testcase name="edu.ics372.OrderHandlerTest.testCompleteOrder()" classname="edu.ics372.OrderHandlerTest" time="0.005">
     <system-out><![CDATA[Test 3: Completing an order
 No order associated with this id
   ✗ Order 1 should be completed - Expected: completed, Got: incoming
@@ -79,18 +73,15 @@ No order associated with this id
 
 ]]></system-out>
   </testcase>
-  <testcase name="edu.ics372.OrderHandlerTest.testTotalPrice()" classname="edu.ics372.OrderHandlerTest" time="0.001">
-    <system-out><![CDATA[Test 5: Calculating total price of uncompleted orders
-  ✗ Total price incorrect. Expected 22, Got: 0.0
+  <testcase name="edu.ics372.OrderHandlerTest.testAddOrders()" classname="edu.ics372.OrderHandlerTest" time="0.0">
+    <system-out><![CDATA[Test 1: Adding orders to OrderHandler
+  ✓ Orders added successfully
 
 ]]></system-out>
   </testcase>
-  <testcase name="edu.ics372.OrderHandlerTest.testStartOrder()" classname="edu.ics372.OrderHandlerTest" time="0.0">
-    <system-out><![CDATA[Test 2: Starting an order
-No order associated with this id
-  ✗ Order 1 should be started - Expected: started, Got: incoming
-  ✗ Started orders should contain Order 1
-  ✓ Starting order works
+  <testcase name="edu.ics372.OrderHandlerTest.testTotalPrice()" classname="edu.ics372.OrderHandlerTest" time="0.001">
+    <system-out><![CDATA[Test 5: Calculating total price of uncompleted orders
+  ✗ Total price incorrect. Expected 22, Got: 0.0
 
 ]]></system-out>
   </testcase>
@@ -105,6 +96,15 @@ Total price: 0.0
 --- Completed Orders ---
 Completed Orders: 
   ✓ Display methods executed
+
+]]></system-out>
+  </testcase>
+  <testcase name="edu.ics372.OrderHandlerTest.testStartOrder()" classname="edu.ics372.OrderHandlerTest" time="0.001">
+    <system-out><![CDATA[Test 2: Starting an order
+No order associated with this id
+  ✗ Order 1 should be started - Expected: started, Got: incoming
+  ✗ Started orders should contain Order 1
+  ✓ Starting order works
 
 ]]></system-out>
   </testcase>
