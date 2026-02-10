@@ -54,8 +54,9 @@ public class OrderHandler {
 //        }
 //    }
 
-    public void loadOrders() {
-        JsonParser parser = new JsonParser();
+    // Takes the JsonParser object created in UserInterface with the file path
+    public void loadOrders(JsonParser parser) {
+
         Order order = parser.parseFile(parser.getFilePath());
 
         if (order == null) {
@@ -111,13 +112,6 @@ public class OrderHandler {
         return ordersById.get(id);
     }
 
-    /*getting the total price of all orders that arent complete yet
-    public double totalPrice(HashMap<String,Order> orders){
-        //loop through hashmap
-        // add total price from inside orders if status != complete
-        //return price
-    }*/
-
     // Display uncompleted orders
     public void displayUncompletedOrders() {
         // display incoming and started orders linkedlist
@@ -164,12 +158,14 @@ public class OrderHandler {
         return totalPrice;
     }
 
+    // Displays incoming orders
     public void displayIncomingOrders(){
         for(Order order : incomingOrders) {
             System.out.println(order);
         }
     }
 
+    // Displays started orders
     public void displayStartedOrders(){
         for(Order order : startedOrders) {
             System.out.println(order);

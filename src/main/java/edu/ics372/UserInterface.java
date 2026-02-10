@@ -90,8 +90,7 @@ public class UserInterface
                         case "1":
                             System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
                             parser.setNewPath(keybored.nextLine());
-                            System.out.println("DEBUG path: " + parser.getFilePath());
-                            orderHandler.loadOrders();
+                            orderHandler.loadOrders(parser);
                             menuState = "main";
                             break;
 
