@@ -90,7 +90,7 @@ public class UserInterface
                         case "1":
                             System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
                             parser.setNewPath(keybored.nextLine());
-                            orderHandler.loadOrders();
+                            orderHandler.loadOrders(parser);
                             menuState = "main";
                             break;
 
@@ -129,20 +129,17 @@ public class UserInterface
                     {
                         case "1":
                             System.out.println("Incoming orders:");
-                            for(Order ord:orderHandler.getIncomingOrders())
-                            { System.out.println(ord); }
+                            orderHandler.displayIncomingOrders();
                             break;
 
                         case "2":
                             System.out.println("Orders that are in progress:");
-                            for(Order ord:orderHandler.getStartedOrders())
-                            { System.out.println(ord); }
+                            orderHandler.displayStartedOrders();
                             break;
 
                         case "3":
                             System.out.println("Completed orders:");
-                            for(Order ord:orderHandler.getCompletedOrders())
-                            { System.out.println(ord); }
+                            orderHandler.displayCompletedOrders();
                             break;
 
                         case "back","'back'": //This will return the user to the main menu

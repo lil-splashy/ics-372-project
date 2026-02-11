@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="edu.ics372.ParserTest" time="0.002" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="edu.ics372.OrderHandlerTest" time="0.016" tests="5" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -64,22 +64,47 @@
     <property name="maven.repo.local" value="C:\Users\Takac\.m2\repository"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="edu.ics372.ParserTest.testParseFile()" classname="edu.ics372.ParserTest" time="0.001">
-    <system-out><![CDATA[Test 3: parseFile()
-  ✗ Test file doesn't exist: C:\Users\Takac\IdeaProjects\ics-372-project\order.json
+  <testcase name="edu.ics372.OrderHandlerTest.testCompleteOrder()" classname="edu.ics372.OrderHandlerTest" time="0.005">
+    <system-out><![CDATA[Test 3: Completing an order
+No order associated with this id
+  ✗ Order 1 should be completed - Expected: completed, Got: incoming
+  ✗ Completed orders should contain Order 1
+  ✓ Completing order works
 
 ]]></system-out>
   </testcase>
-  <testcase name="edu.ics372.ParserTest.testExportJSON()" classname="edu.ics372.ParserTest" time="0.0">
-    <system-out><![CDATA[Test 4: exportJSON()
-java.nio.file.NoSuchFileException: order.json
-  ✗ Cannot test export - no order to export
+  <testcase name="edu.ics372.OrderHandlerTest.testAddOrders()" classname="edu.ics372.OrderHandlerTest" time="0.0">
+    <system-out><![CDATA[Test 1: Adding orders to OrderHandler
+  ✓ Orders added successfully
 
 ]]></system-out>
   </testcase>
-  <testcase name="edu.ics372.ParserTest.testConstructor()" classname="edu.ics372.ParserTest" time="0.001">
-    <system-out><![CDATA[Test 1: Constructor
-  ✓ JsonParser created successfully
+  <testcase name="edu.ics372.OrderHandlerTest.testTotalPrice()" classname="edu.ics372.OrderHandlerTest" time="0.001">
+    <system-out><![CDATA[Test 5: Calculating total price of uncompleted orders
+  ✗ Total price incorrect. Expected 22, Got: 0.0
+
+]]></system-out>
+  </testcase>
+  <testcase name="edu.ics372.OrderHandlerTest.testDisplayOrders()" classname="edu.ics372.OrderHandlerTest" time="0.0">
+    <system-out><![CDATA[Test 4: Displaying orders
+
+--- Uncompleted Orders ---
+Incoming Orders: 
+Started Orders: 
+Total price: 0.0
+
+--- Completed Orders ---
+Completed Orders: 
+  ✓ Display methods executed
+
+]]></system-out>
+  </testcase>
+  <testcase name="edu.ics372.OrderHandlerTest.testStartOrder()" classname="edu.ics372.OrderHandlerTest" time="0.001">
+    <system-out><![CDATA[Test 2: Starting an order
+No order associated with this id
+  ✗ Order 1 should be started - Expected: started, Got: incoming
+  ✗ Started orders should contain Order 1
+  ✓ Starting order works
 
 ]]></system-out>
   </testcase>

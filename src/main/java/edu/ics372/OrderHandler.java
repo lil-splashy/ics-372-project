@@ -11,7 +11,7 @@ public class OrderHandler {
     private LinkedList<Order> completedOrders;
 
     //Using map to associate orders with an id per instruction 3
-    private Map<String,Order> ordersById;
+    protected Map<String,Order> ordersById;
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -39,19 +39,36 @@ public class OrderHandler {
      */
     //loads all orders from parser into an incoming orders linkedList
     // need to figure out how to check for nulls and skip incase there is a gap in list.
-    public Order loadOrders(){
-            JsonParser parser = new JsonParser();
-            return parser.parseFile(parser.getFilePath());
-
-
-            // Commenting this out for now since we're only working with one order - Ben
-
+//    public void loadOrders(){
+//            JsonParser parser = new JsonParser();
+//            //return parser.parseFile(parser.getFilePath());
+//
+//
+//            // Commenting this out for now since we're only working with one order - Ben
+//
 //        for (Order order : parsedOrders){
 //            String id = order.getOrderID();
 //            incomingOrders.add(order);
 //            ordersById.put(id,order);
 //            order.setOrderStatus("incoming");
 //        }
+//    }
+
+    // Takes the JsonParser object created in UserInterface with the file path
+    public void loadOrders(JsonParser parser) {
+
+        Order order = parser.parseFile(parser.getFilePath());
+
+        if (order == null) {
+            System.out.println("No order loaded from file");
+            return;
+        }
+
+        System.out.print("Order succussfully loaded :D \n");
+
+        order.setOrderStatus("incoming");
+        incomingOrders.add(order);
+        ordersById.put(order.getOrderID(), order);
     }
 
     // when prompted by user interface move specific incoming orders to started orders.
@@ -96,13 +113,6 @@ public class OrderHandler {
         }
         return ordersById.get(id);
     }
-
-    /*getting the total price of all orders that arent complete yet
-    public double totalPrice(HashMap<String,Order> orders){
-        //loop through hashmap
-        // add total price from inside orders if status != complete
-        //return price
-    }*/
 
     // Display uncompleted orders
     public void displayUncompletedOrders() {
@@ -150,8 +160,19 @@ public class OrderHandler {
         return totalPrice;
     }
 
-
-    static void main (String [] args) {
-
+    // Displays incoming orders
+    public void displayIncomingOrders(){
+        for(Order order : incomingOrders) {
+            System.out.println(order);
+        }
     }
+
+    // Displays started orders
+    public void displayStartedOrders(){
+        for(Order order : startedOrders) {
+            System.out.println(order);
+        }
+    }
+
+
 }
