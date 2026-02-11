@@ -18,12 +18,12 @@ public class UserInterface
         Scanner keybored = new Scanner(System.in);
         String menuState = "main"; //Tells us what menu to display, May get turned into an instance var in the future
         Order orderFocus = null;  //This will hold a reference to an order, usually for display purposes
-        String menuOption = "";  //this will hold the choice that the user makes
+        String menuOption = "";  //This will hold the choice that the user makes
         System.out.println("Welcome!");
 
         while(!menuState.equals("quit")) //This will run as long as the state is not quit
         {
-            switch(menuState)
+            switch(menuState)  //This determines which menu is shown
             {
                 case "main": //This will display the main menu
                     System.out.println("Main menu, type the number that corresponds to an option or type quit to exit");
@@ -45,7 +45,11 @@ public class UserInterface
 
                         case "3":
                             System.out.println("Display an order");
-                            System.out.println("Please enter the ID of the order you wish to view:");
+                            System.out.println("Please enter the ID of the order you wish to view; the available orders are:" +
+                                    "\nUnstarted: " + printOrderIDS(orderHandler.getIncomingOrders()) +
+                                    "\nStarted: " + printOrderIDS(orderHandler.getStartedOrders()) +
+                                    "\nCompleted: " + printOrderIDS(orderHandler.getCompletedOrders())); //Allows the user to see which IDs are available
+
                             orderFocus = orderHandler.getOrder(keybored.nextLine());
 
                             if(orderFocus != null) //I figure it makes no sense to have it print null if an invalid ID is entered
@@ -147,12 +151,12 @@ public class UserInterface
                             break;
 
                         default:
-                            System.out.println("Please choose a number that corresponds to the list");
+                            System.out.println("Please choose a number that corresponds an option on the list");
                             break;
                     }
                     break;
 
-                default: //This should never happen normally, but exists as a failsafe
+                default: //This should never happen normally, but exists as a failsafe.
                     System.out.println("If you are seeing this message, please notify Jacob Wiggins");
                     menuState = "main";  //Changes the state from its unexpected value back to main
                     break;
@@ -185,8 +189,11 @@ public class UserInterface
         }
     }
 
+
+    //This is here for testing purposes.
     public static void main(String[] args)
     {
         UserInterface ui = new UserInterface();
     }
+
 }
