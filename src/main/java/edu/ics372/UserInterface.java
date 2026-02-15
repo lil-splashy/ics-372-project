@@ -1,6 +1,7 @@
 package edu.ics372;
 import java.util.LinkedList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -109,7 +110,7 @@ public class UserInterface
                             if(orderFocus != null) //To avoid trying to export a non-existent order
                             {
                                 System.out.println("Name the file you want to save the orders to, don't forget to include .json at the end");
-                                parser.exportJSON(orderFocus, keybored.nextLine());
+                                parser.exportJSON(Collections.singletonList(orderFocus), keybored.nextLine());
                                 menuState = "main";
                             }
 
