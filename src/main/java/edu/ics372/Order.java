@@ -1,5 +1,6 @@
 package edu.ics372;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
 public class Order {
 
     // attributes of an order
@@ -11,6 +12,7 @@ public class Order {
     // the item array of items for the unique order
     private Item[] items;
     private int itemCount;
+    private static final ArrayList<String> orderIDs = new ArrayList<>();
 
     // the order constructor
     public Order(long orderDate, String orderStatus, String orderType, int maxItems) {
@@ -39,18 +41,50 @@ public class Order {
 
     /**
      * generates a unique order ID with a random letter and 12 digit number
+     * checks current order ids and if exists
+     *  then method will generate another until
+     *  an id can be generated
      *
-     * @return a string of both randletter and 12integers
+     * @return String id: a string of both randletter and 12integers
      */
     private static String generateOrderID() {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        String id;
+        boolean exists;
 
-        char letter = (char) ('A' + rnd.nextInt(26));
-        long number = rnd.nextLong(100_000_000_000L, 1_000_000_000_000L);
+        do {
+            char letter = (char) ('A' + rnd.nextInt(26));
+            long number = rnd.nextLong(100_000_000_000L, 1_000_000_000_000L);
 
-        return letter + Long.toString(number);
+            id = letter + Long.toString(number);
+            exists = false;
+
+            for (String currentIDs : orderIDs) {
+                if (currentIDs.equals(id)) {
+                    exists = true;
+                    break; // simply leave the for-loop here if id exists
+                }
+            }
+        } while (exists);
+        orderIDs.add(id);
+        return id;
     }
 
+    /**
+     * Feature 2
+     * Loading previous orders
+     * add their IDs into this list when the program starts
+     * */
+    public static  void registerExistingOrder(String orderID){
+        orderIDs.add(orderID);
+    }
+
+    /**
+     * remove ID when order is finished or cancelled
+     */
+    public static void removeOrderID(String orderID) {
+        orderIDs.remove(orderID);
+    }
 
     // returns items
     public Item[] getItems() {
