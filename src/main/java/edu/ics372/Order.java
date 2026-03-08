@@ -14,14 +14,19 @@ public class Order {
     private int itemCount;
     private static final ArrayList<String> orderIDs = new ArrayList<>();
 
+    private final Customer customer;
+    private Warehouse warehouse;
+
     // the order constructor
-    public Order(long orderDate, String orderStatus, String orderType, int maxItems) {
+    public Order(long orderDate, String orderStatus, String orderType, int maxItems,Customer customer, Warehouse warehouse) {
         this.orderID = generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
         this.items = new Item[maxItems];
         this.itemCount = 0;
+        this.customer = customer;
+        this.warehouse = warehouse;
     }
 
     /**
@@ -128,6 +133,18 @@ public class Order {
         this.orderPrice = orderPrice;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
 
 
     // simply returns a readable order
@@ -138,7 +155,9 @@ public class Order {
                         "\n\torderID = " + orderID +
                         "\n\torderStatus = " + orderStatus +
                         "\n\torderType = " + orderType +
-                        "\n\torderDate = " + orderDate);
+                        "\n\torderDate = " + orderDate +
+                        "\n\tcustomer = " + customer.getName() +
+                        "\n\twarehouse = " + warehouse.getWarehouseName());
         for (int i = 0; i < items.length; i++){
             if (items[i] != null) {
                 exitLook.append(items[i].toString());
