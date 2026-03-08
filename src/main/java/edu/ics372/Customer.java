@@ -1,3 +1,4 @@
+package edu.ics372;
 public class Customer {
     private String name;
     private String email;

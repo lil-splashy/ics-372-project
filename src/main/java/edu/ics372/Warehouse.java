@@ -1,4 +1,4 @@
-
+package edu.ics372;
 public class Warehouse {
 
     private String warehouseID;
