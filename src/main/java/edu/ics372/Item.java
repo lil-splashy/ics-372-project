@@ -5,12 +5,16 @@ public class Item {
     private String itemName;
     private double itemPrice;
     private int itemQuantity;
+
+    private String warehouseLocation;
+
     // the item object constructor
-    public Item(String itemID, String itemName, double itemPrice, int itemQuantity) {
+    public Item(String itemID, String itemName, double itemPrice, int itemQuantity, String warehouseLocation) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.itemQuantity = itemQuantity;
+        this.warehouseLocation = warehouseLocation;
     }
     //getters and setters
     public String getItemID() {
@@ -41,6 +45,9 @@ public class Item {
         this.itemQuantity = itemQuantity;
     }
 
+    public String getWarehouseLocation() {return warehouseLocation;}
+    public void setWarehouseLocation(String warehouseLocation) {this.warehouseLocation = warehouseLocation;}
+
     // simply returns an item and its attributes
     @Override
     public String toString() {
@@ -49,6 +56,7 @@ public class Item {
                 "\n\t\titemName = " + itemName +
                 "\n\t\titemQuantity = " + itemQuantity +
                 "\n\t\titemPrice = " + itemPrice +
+                "\n\t\titemWarehouseLocation = " + warehouseLocation +
                 "\n\t}\n";
     }
 }
