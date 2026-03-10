@@ -133,20 +133,6 @@ public class Order {
         this.orderPrice = orderPrice;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-    }
-
-
-
     // simply returns a readable order
     @Override
     public String toString() {

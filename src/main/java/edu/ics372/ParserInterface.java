@@ -1,4 +1,5 @@
 package edu.ics372;
+
 import java.util.*;
 
 /**
@@ -34,9 +35,9 @@ public interface ParserInterface {
   Order parseFile(String filePath);
 
      /**
-     * @param Order - Order to be exported
+     * @param orders - List of Orders to be exported
      * @param filePath - Desired filepath for export
      */
-  void exportJSON(Order orderList,String exportDir);
+  void exportJSON(List<Order> orders, String exportDir);
 
 }

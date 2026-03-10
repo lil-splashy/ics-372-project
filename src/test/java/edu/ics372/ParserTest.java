@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
+import java.util.Collections;
 
 public class ParserTest {
 
@@ -164,7 +165,7 @@ public class ParserTest {
             Order order = parser.parseFile(TEST_JSON_PATH);
 
             if (order != null) {
-                parser.exportJSON(order, EXPORT_JSON_PATH);
+                parser.exportJSON(Collections.singletonList(order), EXPORT_JSON_PATH);
 
                 File exportedFile = new File(EXPORT_JSON_PATH);
                 if (exportedFile.exists()) {

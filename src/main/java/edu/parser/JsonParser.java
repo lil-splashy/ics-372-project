@@ -1,4 +1,5 @@
 package edu.ics372;
+
 import org.json.JSONObject;
 import org.json.JSONArray;
 import java.nio.charset.StandardCharsets;
@@ -9,9 +10,6 @@ import java.util.*;
 public class JsonParser implements ParserInterface {
 
 
-
-    // Hardcoded file path. Will replace later with user input.
-    //private  String filePath = "C:\\Users\\Takac\\Downloads\\order.json";
     private  String filePath = "order.json";
 
 
@@ -40,7 +38,6 @@ public class JsonParser implements ParserInterface {
 
             JSONArray items = order.getJSONArray("items");
 
-
             // Add create new order
             Order newOrder = new Order(orderDate, "NEW", orderType, items.length());
 
@@ -60,10 +57,8 @@ public class JsonParser implements ParserInterface {
         }
     }
 
-
     private JSONObject orderToJson(Order order) {
         JSONObject orderJson = new JSONObject();
-
 
         orderJson.put("orderID", order.getOrderID());
         orderJson.put("order_date", order.getOrderDate());
@@ -92,15 +87,18 @@ public class JsonParser implements ParserInterface {
     }
 
 
-    public void exportJSON(Order order, String filePath) {
+    public void exportJSON(List<Order> orders, String filePath) {
 
         try {
             JSONObject rootObject = new JSONObject();
 
-            JSONObject orderJson = orderToJson(order);
-            rootObject.put("order", orderJson);
+            JSONArray ordersArray = new JSONArray();
+            for (Order order : orders) {
+                ordersArray.put(orderToJson(order));
+            }
+            rootObject.put("orders", ordersArray);
 
-            String jsonString = rootObject.toString(4); // 4 spaces indentation
+            String jsonString = rootObject.toString(4);
             Files.write(Paths.get(filePath), jsonString.getBytes(StandardCharsets.UTF_8));
             System.out.println("Exported JSON to:" + filePath);
 

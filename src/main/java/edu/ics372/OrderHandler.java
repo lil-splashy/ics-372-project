@@ -1,4 +1,5 @@
 package edu.ics372;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class OrderHandler {
     private LinkedList<Order> completedOrders;
 
     //Using map to associate orders with an id per instruction 3
-    protected Map<String,Order> ordersById;
+    private Map<String,Order> ordersById;
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -114,6 +115,13 @@ public class OrderHandler {
         return ordersById.get(id);
     }
 
+    /*getting the total price of all orders that arent complete yet
+    public double totalPrice(HashMap<String,Order> orders){
+        //loop through hashmap
+        // add total price from inside orders if status != complete
+        //return price
+    }*/
+
     // Display uncompleted orders
     public void displayUncompletedOrders() {
         // display incoming and started orders linkedlist
@@ -160,19 +168,8 @@ public class OrderHandler {
         return totalPrice;
     }
 
-    // Displays incoming orders
-    public void displayIncomingOrders(){
-        for(Order order : incomingOrders) {
-            System.out.println(order);
-        }
+
+    static void main (String [] args) {
+
     }
-
-    // Displays started orders
-    public void displayStartedOrders(){
-        for(Order order : startedOrders) {
-            System.out.println(order);
-        }
-    }
-
-
 }

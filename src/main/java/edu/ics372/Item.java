@@ -1,4 +1,5 @@
 package edu.ics372;
+
 public class Item {
     // attributes of the item
     private String itemID;
