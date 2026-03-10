@@ -1,4 +1,5 @@
 package edu.ics372;
+package edu.data;
 import java.util.concurrent.ThreadLocalRandom;
 public class Order {
 
@@ -93,8 +94,6 @@ public class Order {
     public void setOrderPrice(double orderPrice) {
         this.orderPrice = orderPrice;
     }
-
-
 
     // simply returns a readable order
     @Override

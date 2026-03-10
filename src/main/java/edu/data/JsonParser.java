@@ -8,8 +8,7 @@ import java.util.*;
 
 public class JsonParser implements ParserInterface {
 
-    // Hardcoded file path. Will replace later with user input.
-    //private  String filePath = "C:\\Users\\Takac\\Downloads\\order.json";
+
     private  String filePath = "order.json";
 
 
@@ -38,7 +37,6 @@ public class JsonParser implements ParserInterface {
 
             JSONArray items = order.getJSONArray("items");
 
-
             // Add create new order
             Order newOrder = new Order(orderDate, "NEW", orderType, items.length());
 
@@ -57,7 +55,6 @@ public class JsonParser implements ParserInterface {
             return null;
         }
     }
-
 
     private JSONObject orderToJson(Order order) {
         JSONObject orderJson = new JSONObject();
