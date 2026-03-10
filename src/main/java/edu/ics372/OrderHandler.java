@@ -1,5 +1,5 @@
 package edu.ics372;
-package edu.data;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;

@@ -1,5 +1,4 @@
 package edu.ics372;
-package edu.data;
 import java.util.concurrent.ThreadLocalRandom;
 public class Order {
 

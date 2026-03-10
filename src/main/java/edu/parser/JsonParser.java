@@ -1,4 +1,5 @@
 package edu.ics372;
+package edu.parser;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import java.nio.charset.StandardCharsets;
