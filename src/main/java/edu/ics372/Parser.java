@@ -1,12 +1,6 @@
 package edu.ics372;
-package edu.parser;
-
 import java.util.List;
 
-/**
- * Dispatcher that selects the correct parser (JSON or XML) based on file extension.
- * Implements ParserInterface so callers can use it transparently.
- */
 public class Parser implements ParserInterface {
 
     private String filePath = "";
