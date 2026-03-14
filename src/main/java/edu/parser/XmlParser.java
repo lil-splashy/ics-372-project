@@ -45,7 +45,7 @@ public class XmlParser implements ParserInterface {
             long orderDate = Long.parseLong(orderEl.getElementsByTagName("order_date").item(0).getTextContent());
 
             NodeList itemNodes = orderEl.getElementsByTagName("item");
-            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength());
+            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength(), null, null);
 
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemEl = (Element) itemNodes.item(i);
