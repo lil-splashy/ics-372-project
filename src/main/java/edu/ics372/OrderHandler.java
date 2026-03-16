@@ -14,6 +14,9 @@ public class OrderHandler {
     //Using map to associate orders with an id per instruction 3
     private Map<String,Order> ordersById;
 
+    //Using map to store canceled orders
+    private Map<String, Order> canceledOrders;
+
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.incomingOrders = new LinkedList<>();
@@ -21,6 +24,8 @@ public class OrderHandler {
         this.completedOrders = new LinkedList<>();
         //used for look up.
         this.ordersById = new HashMap<>();
+        //used to record canceled orders
+        this.canceledOrders = new HashMap<>();
     }
 
     //getters for the linked lists
@@ -34,12 +39,13 @@ public class OrderHandler {
         return completedOrders;
     }
 
+
     /**
      * Methods used to categorize orders by their status type
      * Also a method that categorizes all orders by their ID (hashmap)
      */
     //loads all orders from parser into an incoming orders linkedList
-    // need to figure out how to check for nulls and skip incase there is a gap in list.
+    // need to figure out how to check for nulls and skip in case there is a gap in list.
 //    public void loadOrders(){
 //            JsonParser parser = new JsonParser();
 //            //return parser.parseFile(parser.getFilePath());
@@ -65,7 +71,7 @@ public class OrderHandler {
             return;
         }
 
-        System.out.print("Order succussfully loaded :D \n");
+        System.out.print("Order successfully loaded :D \n");
 
         order.setOrderStatus("incoming");
         incomingOrders.add(order);
@@ -89,7 +95,49 @@ public class OrderHandler {
 
     }
 
-    // When prompted by user interface move started order to completed linkedlist
+    //method used to cancel an order and store in hashmap of canceled orders
+    //do we want to be able to cancel any orders? even if completed but not shipped?
+    public void cancelOrder(String id) {
+        if(ordersById.get(id) == null){
+            System.out.println("No order associated with the provided id");
+            return;
+        }
+        Order canceledOrder = ordersById.get(id);
+        String orderStatus = canceledOrder.getOrderStatus();
+        if (orderStatus == null){
+            System.out.println("Order status is missing.");
+            return;
+        }
+
+        switch(orderStatus){
+            case "incoming":
+                canceledOrders.put(id,canceledOrder);
+                incomingOrders.remove(canceledOrder);
+                canceledOrder.setOrderStatus("canceled");
+                System.out.println("Order has been removed from incoming orders and added to canceled orders.");
+                break;
+            case "started":
+                canceledOrders.put(id,canceledOrder);
+                startedOrders.remove(canceledOrder);
+                canceledOrder.setOrderStatus("canceled");
+                System.out.println("Order has been removed from started orders and added to canceled orders.");
+                break;
+            case "completed":
+                canceledOrders.put(id,canceledOrder);
+                completedOrders.remove(canceledOrder);
+                canceledOrder.setOrderStatus("canceled");
+                System.out.println("Order has been removed from completed orders and added to canceled orders.");
+                break;
+            case "canceled":
+                System.out.println("Order has already been canceled");
+                break;
+            default:
+                System.out.println("order has not been fully processed or loaded.");
+        }
+
+    }
+
+    // When prompted by user interface move started order to completed linked list
     public void completeOrder(String id) {
         if (ordersById.get(id) == null) {
             System.out.println("No order associated with this id");
@@ -115,7 +163,7 @@ public class OrderHandler {
         return ordersById.get(id);
     }
 
-    /*getting the total price of all orders that arent complete yet
+    /*getting the total price of all orders that are not complete yet
     public double totalPrice(HashMap<String,Order> orders){
         //loop through hashmap
         // add total price from inside orders if status != complete
@@ -124,7 +172,7 @@ public class OrderHandler {
 
     // Display uncompleted orders
     public void displayUncompletedOrders() {
-        // display incoming and started orders linkedlist
+        // display incoming and started orders linked list
         // Call order method for price
         // getOrderPrice()
         // price total
@@ -146,9 +194,16 @@ public class OrderHandler {
 
     // Displays completed orders
     public void displayCompletedOrders() {
-        //display completedOrders linkedlist
+        //display completedOrders linked list
         System.out.println("Completed Orders: ");
         for (Order order : completedOrders) {
+            System.out.println(order);
+        }
+    }
+
+    public void displayCanceledOrders(){
+        System.out.println("Canceled Orders: ");
+        for (Order order: canceledOrders.values()){
             System.out.println(order);
         }
     }
@@ -167,6 +222,8 @@ public class OrderHandler {
 
         return totalPrice;
     }
+
+    // get orders from a specific customer
 
 
     static void main (String [] args) {
