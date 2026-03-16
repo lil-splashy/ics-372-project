@@ -3,6 +3,7 @@ package edu.ics372;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.List;
 // "E" should be Orders when created
 public class OrderHandler {
@@ -16,6 +17,9 @@ public class OrderHandler {
 
     //Using map to store canceled orders
     private Map<String, Order> canceledOrders;
+
+    //Calling parserInterface to have methods that can load and save data using the parser class
+    private ParserInterface parser = new Parser();
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -141,7 +145,7 @@ public class OrderHandler {
         }
         return ordersById.get(id);
     }
-    
+
 
     // Display uncompleted orders
     public void displayUncompletedOrders() {
@@ -196,7 +200,10 @@ public class OrderHandler {
         return totalPrice;
     }
 
-    // get orders from a specific customer
+    public void saveData(String filePath){
+        List<Order> allOrders = new ArrayList<>(ordersById.values());
+        parser.exportJSON(allOrders,filePath);
+    }
 
 
     static void main (String [] args) {
