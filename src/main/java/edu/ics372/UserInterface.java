@@ -15,7 +15,7 @@ public class UserInterface
     public UserInterface()
     {
         OrderHandler orderHandler = new OrderHandler();
-        JsonParser parser = new JsonParser();
+        //JsonParser parser = new JsonParser();
         Scanner keybored = new Scanner(System.in);
         String menuState = "main"; //Tells us what menu to display, May get turned into an instance var in the future
         Order orderFocus = null;  //This will hold a reference to an order, usually for display purposes
@@ -94,8 +94,8 @@ public class UserInterface
                     {
                         case "1":
                             System.out.println("Please input a JSON file that you want to load from, don't forget to include the file extension!");
-                            parser.setNewPath(keybored.nextLine());
-                            orderHandler.loadOrders(parser);
+                            //parser.setNewPath(keybored.nextLine());
+                            //orderHandler.loadOrders(parser);
                             menuState = "main";
                             break;
 
@@ -110,7 +110,7 @@ public class UserInterface
                             if(orderFocus != null) //To avoid trying to export a non-existent order
                             {
                                 System.out.println("Name the file you want to save the orders to, don't forget to include .json at the end");
-                                parser.exportJSON(Collections.singletonList(orderFocus), keybored.nextLine());
+                                //parser.exportJSON(Collections.singletonList(orderFocus), keybored.nextLine());
                                 menuState = "main";
                             }
 
@@ -134,12 +134,12 @@ public class UserInterface
                     {
                         case "1":
                             System.out.println("Incoming orders:");
-                            orderHandler.displayIncomingOrders();
+                            //orderHandler.displayIncomingOrders();
                             break;
 
                         case "2":
                             System.out.println("Orders that are in progress:");
-                            orderHandler.displayStartedOrders();
+                            //orderHandler.displayStartedOrders();
                             break;
 
                         case "3":

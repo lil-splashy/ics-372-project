@@ -32,6 +32,11 @@ public class OrderHandler {
         this.canceledOrders = new HashMap<>();
     }
 
+    public void addOrder(Order order) {
+        incomingOrders.add(order);
+        ordersById.put(order.getOrderID(), order);
+    }
+
     //getters for the linked lists
     public LinkedList<Order> getIncomingOrders(){
         return incomingOrders;
@@ -167,6 +172,22 @@ public class OrderHandler {
         }
 
         System.out.println("Total price: " + totalPriceUncompletedOrders);
+    }
+
+    // Displays incoming orders
+    public void displayIncomingOrders() {
+        System.out.println("Incoming Orders: ");
+        for (Order order : incomingOrders) {
+            System.out.println(order);
+        }
+    }
+
+    // Displays started orders
+    public void displayStartedOrders() {
+        System.out.println("Started Orders: ");
+        for (Order order : startedOrders) {
+            System.out.println(order);
+        }
     }
 
     // Displays completed orders
