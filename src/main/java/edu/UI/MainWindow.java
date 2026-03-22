@@ -6,6 +6,7 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import javafx.scene.paint.*;
 
 public class MainWindow extends Application {
 
@@ -39,10 +40,20 @@ public class MainWindow extends Application {
         statusBar.setStyle("-fx-padding: 4px 8px;");
         root.setBottom(statusBar);
 
+
+
+        // Window actual
         Scene scene = new Scene(root, 400, 380);
+        // Making the Background Transparent
+        scene.setFill(Color.TRANSPARENT);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+
         primaryStage.setTitle("Warehouse Order Manager");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+        root.setStyle("-fx-background-color: rgba(0,0,0,0.7);"); // 70% opaque black
     }
 
     public static void main(String[] args) {

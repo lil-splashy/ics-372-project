@@ -39,7 +39,7 @@ public class JsonParser implements ParserInterface {
             JSONArray items = order.getJSONArray("items");
 
             // Add create new order
-            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null, null);
+            Order newOrder = new Order(orderDate, "NEW", orderType, items.length());
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
