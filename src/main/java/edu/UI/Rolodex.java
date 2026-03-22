@@ -1,11 +1,13 @@
+package edu.UI;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -14,7 +16,6 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.IntegerProperty;
@@ -34,8 +35,7 @@ public class Rolodex extends Application {
     private List<OrderListItem> listItems;
     private ScrollPane scrollPane;
 
-    @Override
-    public void start(Stage primaryStage) {
+    public StackPane getView() {
         // Main container
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: #1a1a1a;");
@@ -58,9 +58,7 @@ public class Rolodex extends Application {
         StackPane.setMargin(scrollPane, new Insets(100, 0, 0, 15));
 
         // Add scroll listener
-        scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
-            handleScroll();
-        });
+        scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> handleScroll());
 
         // Create custom scrollbar indicator
         Pane scrollbarIndicator = createScrollbarIndicator();
@@ -69,13 +67,23 @@ public class Rolodex extends Application {
 
         root.getChildren().addAll(scrollPane, header, scrollbarIndicator);
 
+        // Initialize styles once added to a scene
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(this::updateItemStyles);
+            }
+        });
+
+        return root;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        StackPane root = getView();
         Scene scene = new Scene(root, 700, 850);
         primaryStage.setTitle("Rolodex List");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Initialize scroll position
-        updateItemStyles();
     }
 
     private Pane createHeader() {
@@ -169,8 +177,6 @@ public class Rolodex extends Application {
     private void scrollToItem(int index) {
         double targetScroll = (index * ITEM_HEIGHT) /
                 (scrollPane.getContent().getBoundsInLocal().getHeight() - scrollPane.getViewportBounds().getHeight());
-
-        TranslateTransition transition = new TranslateTransition(Duration.millis(300));
 
         // Animate scroll
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(

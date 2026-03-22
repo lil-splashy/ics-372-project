@@ -34,9 +34,9 @@ public class OrderHandlerTest {
         handler = new OrderHandler();
 
         // Create sample orders
-        order1 = new Order(1L, "Alice", "Pizza", 15); // id, customerName, itemName, price
-        order2 = new Order(2L, "Bob", "Burger", 10);
-        order3 = new Order(3L, "Charlie", "Salad", 12);
+        order1 = new Order(1L, "Alice", "Pizza", 15, null, null); // id, customerName, itemName, price
+        order2 = new Order(2L, "Bob", "Burger", 10, null, null);
+        order3 = new Order(3L, "Charlie", "Salad", 12, null, null);
 
         // Initially set status to "incoming"
         order1.setOrderStatus("incoming");
@@ -56,8 +56,7 @@ public class OrderHandlerTest {
     }
 
     private void addOrderToHandler(Order order) {
-        handler.getIncomingOrders().add(order);
-        handler.ordersById.put(order.getOrderID(), order);
+        handler.addOrder(order);
     }
 
     public void testStartOrder() {

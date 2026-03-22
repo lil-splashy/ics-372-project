@@ -28,6 +28,11 @@ public class OrderHandler {
         this.canceledOrders = new HashMap<>();
     }
 
+    public void addOrder(Order order) {
+        incomingOrders.add(order);
+        ordersById.put(order.getOrderID(), order);
+    }
+
     //getters for the linked lists
     public LinkedList<Order> getIncomingOrders(){
         return incomingOrders;
