@@ -1,9 +1,10 @@
 package edu.ics372;
+import edu.UI.MainWindow;
 /*
 Main class
  */
 
-import edu.UI.MainWindow;
+
 
 public class Main {
     public static void main(String[] args){

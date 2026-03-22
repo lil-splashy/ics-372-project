@@ -1,4 +1,5 @@
-Rolodex$OrderListItem.class
 edu/ics372/Customer.class
 edu/UI/MainWindow.class
-Rolodex.class
+edu/UI/Rolodex.class
+edu/UI/Rolodex$OrderListItem.class
+edu/ics372/Warehouse.class

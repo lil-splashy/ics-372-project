@@ -28,10 +28,8 @@ public class MainWindow extends Application {
 
 
         // Left-Pane List
-        VBox uiList = new VBox();
-        uiList.setPadding ( new Insets(10));
-
-
+        Rolodex rolodex = new Rolodex();
+        root.setLeft(rolodex.getView());
 
         root.setCenter(menu);
 
@@ -43,7 +41,7 @@ public class MainWindow extends Application {
 
 
         // Window actual
-        Scene scene = new Scene(root, 400, 380);
+        Scene scene = new Scene(root, 1100, 850);
         // Making the Background Transparent
         scene.setFill(Color.TRANSPARENT);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
