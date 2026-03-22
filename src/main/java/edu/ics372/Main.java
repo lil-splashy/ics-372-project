@@ -1,6 +1,6 @@
 package edu.ics372;
 /*
-Main class 
+Main class
  */
 
 import edu.UI.MainWindow;

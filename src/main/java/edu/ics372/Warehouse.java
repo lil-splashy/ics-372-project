@@ -7,7 +7,7 @@ public class Warehouse {
     public Warehouse(String warehouseID, String warehouseName) {
         this.warehouseID = warehouseID;
         this.warehouseName = warehouseName;
-        
+
     }
 
     public String getWarehouseID() {
