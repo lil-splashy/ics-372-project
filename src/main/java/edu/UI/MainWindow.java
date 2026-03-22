@@ -26,6 +26,12 @@ public class MainWindow extends Application {
         menu.setPadding(new Insets(20));
 
 
+        // Left-Pane List
+        VBox uiList = new VBox();
+        uiList.setPadding ( new Insets(10));
+
+
+
         root.setCenter(menu);
 
         // Status bar

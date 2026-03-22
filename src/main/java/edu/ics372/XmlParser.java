@@ -14,7 +14,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Random;
 
 public class XmlParser implements ParserInterface {
 
@@ -39,13 +38,12 @@ public class XmlParser implements ParserInterface {
             doc.getDocumentElement().normalize();
 
             Element orderEl = doc.getDocumentElement();
-            Random shelf = new Random(); //This is temporary, until we have a more satisfying way to organize item locations - JW
 
             String orderType = orderEl.getElementsByTagName("type").item(0).getTextContent();
             long orderDate = Long.parseLong(orderEl.getElementsByTagName("order_date").item(0).getTextContent());
 
             NodeList itemNodes = orderEl.getElementsByTagName("item");
-            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength(), null, null);
+            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength());
 
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemEl = (Element) itemNodes.item(i);
@@ -53,7 +51,7 @@ public class XmlParser implements ParserInterface {
                 double price = Double.parseDouble(itemEl.getElementsByTagName("price").item(0).getTextContent());
                 int quantity = Integer.parseInt(itemEl.getElementsByTagName("quantity").item(0).getTextContent());
 
-                newOrder.addItem(new Item("I" + i, name, price, quantity, "A" + shelf.nextInt(15)));
+                newOrder.addItem(new Item("I" + i, name, price, quantity));
             }
 
             return newOrder;
