@@ -24,6 +24,14 @@ public class Parser implements ParserInterface {
 
 
     @Override
+    public List<Order> importProgramOrders(String filePath){
+        ParserInterface parser = resolveParser(filePath);
+        if(parser == null) return null;
+        return parser.importProgramOrders(filePath);
+    }
+
+
+    @Override
     public void exportJSON(List<Order> orders, String filePath) {
         ParserInterface parser = resolveParser(filePath);
         if (parser == null) return;

@@ -107,6 +107,66 @@ public class JsonParser implements ParserInterface {
         }
 
     }
+
+    /**
+     * Loads previously saved program orders from a JSON file.
+     * This is different from parsing a brand-new incoming order file because
+     * these orders already contain program state such as their saved order ID
+     * and current status.
+     *
+     * @param filePath path to the JSON file containing saved program orders
+     * @return a list of Order objects rebuilt from the save file
+     */
+    @Override
+    public List<Order> importProgramOrders(String filePath){
+        //stores a list of orders that were imported from JSON file
+        List<Order> importedOrders = new ArrayList<>();
+
+        try{
+            // read the entire JSON file to a string, then convert it into a root JSON object.
+            String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
+            JSONObject rootObject = new JSONObject(content);
+            //Get the array of saved orders from the root object
+            JSONArray ordersArray = rootObject.getJSONArray("orders");
+
+            //loop through each saved order in the JSON file
+            for (int i = 0; i < ordersArray.length(); i++){
+                JSONObject orderJson = ordersArray.getJSONObject(i);
+
+                //read the saved order fields needed to rebuild the order object
+                String orderID = orderJson.getString("orderID");
+                long orderDate = orderJson.getLong("order_date");
+                String status = orderJson.getString("status");
+                String type = orderJson.getString("type");
+                JSONArray itemsArray = orderJson.getJSONArray("items");
+
+                //rebuilds the saved order using the import constructor so the original order ID is kept.
+                //might need to assign warehouses somewhere and add here when orders are assigned to them.
+                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null, null);
+
+                //loop through each saved item and rebuild it before adding it back to the order
+                for (int j = 0; j < itemsArray.length(); j++){
+                    JSONObject itemJson = itemsArray.getJSONObject(j);
+
+                    String itemID = itemJson.getString("itemID");
+                    String name = itemJson.getString("name");
+                    double price = itemJson.getDouble("price");
+                    int quantity = itemJson.getInt("quantity");
+
+                    //same warehouse situation here for the item
+                    Item importedItem = new Item(itemID, name, price, quantity, null);
+                    importedOrder.addItem(importedItem);
+                }
+
+                //adds the completed order to the list of imported orders
+                importedOrders.add(importedOrder);
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        //returns all orders loaded from the program save file
+        return importedOrders;
+    }
     public static void main (String[] args) {
         System.out.print("New order created!");
     }

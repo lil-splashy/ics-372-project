@@ -226,6 +226,68 @@ public class OrderHandler {
         parser.exportJSON(allOrders,filePath);
     }
 
+    /**
+     * Restores previously saved program orders from a file and rebuilds
+     * the in-memory tracking structures used by OrderHandler.
+     *
+     * @param filePath path to the saved program-orders file
+     */
+    public void importProgramOrders(String filePath){
+        //ask the parser to rebuild order objects from the save file
+        List<Order> importedOrders = parser.importProgramOrders(filePath);
+
+        //stop if nothing was loaded from the file
+        if(importedOrders == null || importedOrders.isEmpty()){
+            System.out.println("No program orders were imported.");
+            return;
+        }
+
+        //add each imported order back into the ordersbyidlist
+        // also add them to the correct list based on their status
+        for(Order order: importedOrders){
+            ordersById.put(order.getOrderID(), order);
+            addOrderToCorrectList(order);
+        }
+
+        //confirm the amount of saved orders that were restored
+        System.out.println(importedOrders.size() + " program orders imported successfully.");
+    }
+
+
+    /**
+     * Places an imported order into the correct tracking structure
+     * based on its saved status.
+     *
+     * @param order imported order to be restored into the proper list/map
+     */
+    private void addOrderToCorrectList(Order order){
+        //read the saved status of order so it can be put in the correct list
+        String status = order.getOrderStatus();
+
+        // making sure there is a status for the imported order
+        if (status == null){
+            System.out.println("Imported order is missing a status.");
+            return;
+        }
+
+        //restore the order to the matchig status list
+        switch(status){
+            case "incoming":
+                incomingOrders.add(order);
+                break;
+            case "started":
+                startedOrders.add(order);
+                break;
+            case "completed":
+                completedOrders.add(order);
+                break;
+            case "canceled":
+                canceledOrders.put(order.getOrderID(), order);
+                break;
+            default:
+                System.out.println("Unknown order status: " + status);
+        }
+    }
 
     static void main (String [] args) {
 

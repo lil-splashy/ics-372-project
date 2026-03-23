@@ -40,4 +40,7 @@ public interface ParserInterface {
      */
   void exportJSON(List<Order> orders, String exportDir);
 
+  List<Order> importProgramOrders(String filePath);
+
 }
+

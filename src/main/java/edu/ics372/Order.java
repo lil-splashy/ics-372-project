@@ -29,6 +29,21 @@ public class Order {
         this.warehouse = warehouse;
     }
 
+    //constructor for creating orders that already have an order id
+    // the order constructor
+    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+        this.orderID = orderID;
+        this.orderDate = orderDate;
+        this.orderStatus = orderStatus;
+        this.orderType = orderType;
+        this.items = new Item[maxItems];
+        this.itemCount = 0;
+        this.customer = customer;
+        this.warehouse = warehouse;
+        registerExistingOrder(orderID);
+    }
+
+
     /**
      * adds an Item Object to a item array
      *
