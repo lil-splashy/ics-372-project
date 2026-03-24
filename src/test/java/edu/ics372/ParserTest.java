@@ -165,7 +165,7 @@ public class ParserTest {
             Order order = parser.parseFile(TEST_JSON_PATH);
 
             if (order != null) {
-                parser.exportJSON(Collections.singletonList(order), EXPORT_JSON_PATH);
+                parser.exportOrders(Collections.singletonList(order), EXPORT_JSON_PATH);
 
                 File exportedFile = new File(EXPORT_JSON_PATH);
                 if (exportedFile.exists()) {
