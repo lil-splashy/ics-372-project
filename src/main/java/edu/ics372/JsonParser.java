@@ -22,7 +22,6 @@ public class JsonParser implements ParserInterface {
 
 
     public Order parseFile(String filePath) {
-
         try {
 
             // Read file and create object
