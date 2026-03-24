@@ -143,6 +143,27 @@ public class OrderHandler {
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
+
+    }
+
+    public void exportCompletedOrders(String extension){
+        if(completedOrders == null || completedOrders.isEmpty()){
+            System.out.println("No completed orders to export.");
+            return;
+        }
+        if(!extension.equals(".json") || !extension.equals(".xml")){
+            System.out.print("Use .json or .xml as the entension.");
+        }
+
+        String timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+
+        String filePath = "exports/completed_orders_" + timeStamp + extension;
+
+        parser.exportOrders(completedOrders, filePath);
+
+        System.out.println("Completed orders ecported to: " + filePath);
+
+        completedOrders.clear();
     }
 
 
@@ -226,8 +247,8 @@ public class OrderHandler {
     }
 
     public void saveData(){
-        List<Order> allOrders = new ArrayList<>(ordersById.values());
-        jParser.exportJSON(allOrders, SAVE_FILE);
+        List<Order> allOrders = new ArrayList<>();
+        jParser.exportOrders(allOrders, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
     }
 
@@ -240,7 +261,6 @@ public class OrderHandler {
     public void importProgramOrders(){
         //ask the parser to rebuild order objects from the save file
         List<Order> importedOrders = jParser.importProgramOrders(SAVE_FILE);
-
         //stop if nothing was loaded from the file
         if(importedOrders == null || importedOrders.isEmpty()){
             System.out.println("No program orders were imported.");

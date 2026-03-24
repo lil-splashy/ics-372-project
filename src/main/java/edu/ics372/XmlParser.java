@@ -43,7 +43,7 @@ public class XmlParser implements ParserInterface {
 
             // gets the first <Order> element found insdie the root <Orders> element
             Element orderEl = (Element) root.getElementsByTagName("Order").item(0);
-            
+
             // reads the order id attribute from <Order id="485">
             String orderID = orderEl.getAttribute("id");
 
@@ -60,7 +60,7 @@ public class XmlParser implements ParserInterface {
 
             // Loop through each <Item> element inside the order
             for (int i = 0; i < itemNodes.getLength(); i++) {
-                
+
                 //gets the current <Item> element from the nodeList
                 Element itemEl = (Element) itemNodes.item(i);
 
@@ -83,13 +83,7 @@ public class XmlParser implements ParserInterface {
         }
     }
 
-    @Override
-    public List<Order> importProgramOrders(String filePath) {
-        return new java.util.ArrayList<>();
-    }
-
-    @Override
-    public void exportJSON(List<Order> orders, String filePath) {
+    public void exportOrders(List<Order> orders, String filePath) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

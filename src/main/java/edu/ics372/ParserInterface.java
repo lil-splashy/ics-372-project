@@ -38,7 +38,7 @@ public interface ParserInterface {
      * @param orders - List of Orders to be exported
      * @param filePath - Desired filepath for export
      */
-  void exportJSON(List<Order> orders, String exportDir);
+  void exportOrders(List<Order> orders, String exportDir);
 
 
 }

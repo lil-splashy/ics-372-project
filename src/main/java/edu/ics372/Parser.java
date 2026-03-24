@@ -25,10 +25,10 @@ public class Parser implements ParserInterface {
 
 
     @Override
-    public void exportJSON(List<Order> orders, String filePath) {
+    public void exportOrders(List<Order> orders, String filePath) {
         ParserInterface parser = resolveParser(filePath);
         if (parser == null) return;
-        parser.exportJSON(orders, filePath);
+        parser.exportOrders(orders, filePath);
     }
 
     private ParserInterface resolveParser(String filePath) {

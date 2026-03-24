@@ -95,7 +95,7 @@ public class JsonParser implements ParserInterface {
     }
 
 
-    public void exportJSON(List<Order> orders, String filePath) {
+    public void exportOrders(List<Order> orders, String filePath) {
 
         try {
             JSONObject rootObject = new JSONObject();
