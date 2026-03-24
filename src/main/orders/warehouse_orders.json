@@ -1,7 +1,8 @@
-{"order": {
+{"orders": [{
     "item_count": 5,
     "order_date": 1707427200000,
-    "orderID": "V676823662135",
+    "orderID": "M516375634847",
+    "warehouseID": "W001",
     "type": "ONLINE",
     "items": [
         {
@@ -35,5 +36,6 @@
             "name": "USB-C Hub 7-in-1"
         }
     ],
-    "status": "NEW"
-}}
+    "warehouseName": "Main Warehouse",
+    "status": "canceled"
+}]}

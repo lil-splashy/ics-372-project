@@ -4,12 +4,10 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -25,12 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class homepage extends Application {
+public class Homepage extends Application {
 
     static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
-
-    private static double dragOffsetX, dragOffsetY;
-
     @Override
     public void start(Stage stage) {
         stage.initStyle(StageStyle.UNIFIED);
@@ -45,20 +40,28 @@ public class homepage extends Application {
 
     public static void show(Stage stage, OrderHandler handler) {
         BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #1a1a1a;");
+        root.setStyle("-fx-background-color: rgba(26,26,26,0.72);"
+                + "-fx-border-color: rgba(255,255,255,0.18);"
+                + "-fx-border-width: 1;");
 
-        // ─── Title bar ───
-        HBox titleBar = new HBox();
-        titleBar.setPrefHeight(30);
-        titleBar.setStyle("-fx-background-color: linear-gradient(to bottom, #3a3a3a, #2a2a2a); -fx-padding: 0 10;");
-        titleBar.setAlignment(Pos.CENTER_LEFT);
+        // ─── Content header ───
+        Label title = new Label("Warehouse Order Manager");
+        title.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
+        Label subtitle = new Label("Select a Warehouse");
+        subtitle.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; -fx-text-fill: rgba(255,255,255,0.55);");
+        VBox titleBox = new VBox(8, title, subtitle);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setPadding(new Insets(30, 0, 20, 0));
+        titleBox.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
+                + "-fx-border-color: rgba(255,255,255,0.1);"
+                + "-fx-border-width: 0 0 1 0;");
 
-        Label appTitle = new Label("Warehouse Order Manager");
-        appTitle.setStyle("-fx-font-family: 'IBM Plex Mono'; -fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.6);");
+        // Allow dragging the window by the title bar
+        final double[] dragDelta = new double[2];
+        titleBox.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
+        titleBox.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
-        titleBar.getChildren().add(appTitle);
-        titleBar.setOnMousePressed(e -> { dragOffsetX = e.getSceneX(); dragOffsetY = e.getSceneY(); });
-        titleBar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() - dragOffsetX); stage.setY(e.getScreenY() - dragOffsetY); });
+        root.setTop(titleBox);
 
         // Warehouse cards
         FlowPane cardGrid = new FlowPane();
@@ -121,10 +124,17 @@ public class homepage extends Application {
         HBox bottomBar = new HBox(importBtn);
         bottomBar.setAlignment(Pos.CENTER);
         bottomBar.setPadding(new Insets(24));
+        bottomBar.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
+                + "-fx-border-color: rgba(255,255,255,0.1);"
+                + "-fx-border-width: 1 0 0 0;");
         root.setBottom(bottomBar);
 
         Scene scene = new Scene(root, 1100, 850);
         scene.setFill(Color.TRANSPARENT);
+
+        scene.getStylesheets().add(
+                Homepage.class.getResource("resources/styles/orders.css").toExternalForm());
+
         stage.setTitle("Warehouse Order Manager");
         stage.setScene(scene);
     }
@@ -133,7 +143,7 @@ public class homepage extends Application {
                                                   Stage stage, OrderHandler handler) {
         StackPane card = new StackPane();
         card.setPrefSize(200, 140);
-        card.setStyle("-fx-background-color: #2a2a2a; -fx-border-color: white; " +
+        card.setStyle("-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
                 "-fx-border-width: 2; -fx-cursor: hand;");
 
         Label nameLabel = new Label(warehouse.getWarehouseName());
@@ -154,10 +164,10 @@ public class homepage extends Application {
         card.getChildren().add(content);
 
         card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: #3a3a3a; -fx-border-color: #47CEFF; " +
+                "-fx-background-color: rgba(58,58,58,0.75); -fx-border-color: #47CEFF; " +
                 "-fx-border-width: 2; -fx-cursor: hand;"));
         card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: #2a2a2a; -fx-border-color: white; " +
+                "-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
                 "-fx-border-width: 2; -fx-cursor: hand;"));
         card.setOnMouseClicked(e ->
                 MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));

@@ -11,7 +11,7 @@ public class OrderManagementApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.initStyle(StageStyle.UNDECORATED);
-        homepage.main(new String[]{});
+        Homepage.main(new String[]{});
     }
 
     public static void main(String[] args) {
