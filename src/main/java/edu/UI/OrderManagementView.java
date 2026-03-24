@@ -23,9 +23,13 @@ import java.util.List;
 
 public class OrderManagementView {
 
+    private static final String GLASS_BG   = "-fx-background-color: rgba(34,33,33,0.72);";
+    private static final String PANEL_BG   = "-fx-background-color: rgba(34,33,33,0.55);"
+                                           + "-fx-border-color: rgba(255,255,255,0.2);"
+                                           + "-fx-border-width: 1;";
+
     private final StackPane root;
     private final HBox titleBar;
-    private double dragOffsetX, dragOffsetY;
 
     private final OrderHandler handler;
     private final String warehouseId;
@@ -34,69 +38,42 @@ public class OrderManagementView {
 
     private final ObservableList<Order> orders;
     private final IntegerProperty selectedOrderIndex = new SimpleIntegerProperty(0);
-    private final IntegerProperty selectedItemIndex = new SimpleIntegerProperty(0);
+    private final IntegerProperty selectedItemIndex  = new SimpleIntegerProperty(0);
 
-    private final Label currentItemIdLabel = new Label();
-    private final Label currentItemNameLabel = new Label();
+    private final Label currentItemIdLabel       = new Label();
+    private final Label currentItemNameLabel     = new Label();
     private final Label currentItemLocationLabel = new Label();
-    private final Label currentItemQtyLabel = new Label();
+    private final Label currentItemQtyLabel      = new Label();
 
     private final ListView<Order> orderListView;
 
-    public OrderManagementView(OrderHandler handler, String warehouseId, String warehouseName, Stage stage) {
-        this.handler = handler;
-        this.warehouseId = warehouseId;
+    public OrderManagementView(OrderHandler handler, String warehouseId,
+                               String warehouseName, Stage stage) {
+        this.handler       = handler;
+        this.warehouseId   = warehouseId;
         this.warehouseName = warehouseName;
-        this.stage = stage;
-        this.orders = loadWarehouseOrders();
+        this.stage         = stage;
+        this.orders        = loadWarehouseOrders();
         this.orderListView = new ListView<>(orders);
 
         root = new StackPane();
-        root.setStyle("-fx-background-color: #1a0a22;");
-        root.setPrefSize(1380, 880);
+        root.setStyle("-fx-background-color: transparent;");
 
-        Pane windowPane = new Pane();
-        windowPane.setPrefSize(1380, 880);
+        BorderPane layout = new BorderPane();
+        layout.setStyle(GLASS_BG
+                + "-fx-border-color: rgba(255,255,255,0.22);"
+                + "-fx-border-width: 1;"
+                + "-fx-background-radius: 12;"
+                + "-fx-border-radius: 12;");
+        layout.setEffect(new DropShadow(24, Color.BLACK));
 
-        Rectangle windowBg = new Rectangle(1380, 880);
-        windowBg.setFill(Color.web("#222121", 0.85));
-        windowBg.setStroke(Color.WHITE);
-        windowBg.setStrokeWidth(2);
-        windowBg.setArcWidth(12);
-        windowBg.setArcHeight(12);
-        windowBg.setEffect(new DropShadow(20, Color.BLACK));
-        windowPane.getChildren().add(windowBg);
+        titleBar = null;
+        layout.setTop(buildHeaderBar());
+        layout.setCenter(buildCenter());
 
-        titleBar = buildTitleBar();
-        windowPane.getChildren().add(titleBar);
-
-        HBox companyBar = buildCompanyBar();
-        companyBar.setLayoutX(15);
-        companyBar.setLayoutY(35);
-        windowPane.getChildren().add(companyBar);
-
-        Button homeBtn = buildHomeButton();
-        homeBtn.setLayoutX(1295);
-        homeBtn.setLayoutY(38);
-        windowPane.getChildren().add(homeBtn);
-
-        VBox leftPanel = buildOrderListPanel();
-        leftPanel.setLayoutX(15);
-        leftPanel.setLayoutY(115);
-        leftPanel.setPrefSize(680, 750);
-        windowPane.getChildren().add(leftPanel);
-
-        Pane currentItemPane = buildCurrentItemPane();
-        currentItemPane.setLayoutX(710);
-        currentItemPane.setLayoutY(115);
-        windowPane.getChildren().add(currentItemPane);
-
-        Pane buttonBox = buildButtonBox();
-        buttonBox.setLayoutX(710);
-        buttonBox.setLayoutY(555);
-        windowPane.getChildren().add(buttonBox);
-
-        root.getChildren().add(windowPane);
+        layout.prefWidthProperty().bind(root.widthProperty());
+        layout.prefHeightProperty().bind(root.heightProperty());
+        root.getChildren().add(layout);
 
         setupListeners();
         updateCurrentItemDisplay();
@@ -105,14 +82,15 @@ public class OrderManagementView {
     // ─── Data ───────────────────────────────────
     private ObservableList<Order> loadWarehouseOrders() {
         ObservableList<Order> list = FXCollections.observableArrayList();
-        for (Order o : handler.getIncomingOrders()) addIfWarehouse(o, list);
-        for (Order o : handler.getStartedOrders())  addIfWarehouse(o, list);
+        for (Order o : handler.getIncomingOrders())  addIfWarehouse(o, list);
+        for (Order o : handler.getStartedOrders())   addIfWarehouse(o, list);
         for (Order o : handler.getCompletedOrders()) addIfWarehouse(o, list);
         return list;
     }
 
     private void addIfWarehouse(Order o, ObservableList<Order> list) {
-        if (o.getWarehouse() != null && o.getWarehouse().getWarehouseID().equals(warehouseId)) {
+        if (o.getWarehouse() != null
+                && o.getWarehouse().getWarehouseID().equals(warehouseId)) {
             list.add(o);
         }
     }
@@ -134,58 +112,35 @@ public class OrderManagementView {
         return result;
     }
 
-    // ─── Title Bar ──────────────────────────────
-    private HBox buildTitleBar() {
-        HBox bar = new HBox();
-        bar.setPrefSize(1380, 30);
-        bar.setAlignment(Pos.CENTER);
-        bar.setStyle("-fx-background-color: linear-gradient(to bottom, #3a3a3a, #2a2a2a);"
-                + "-fx-background-radius: 12 12 0 0;"
-                + "-fx-padding: 0 10;");
-
-        Label title = new Label("Order Management System");
-        title.setFont(Font.font("IBM Plex Mono", 13));
-        title.setTextFill(Color.web("#FFFFFF", 0.6));
-
-        bar.getChildren().add(title);
-        return bar;
-    }
-
-    // ─── Company Bar ────────────────────────────
-    private HBox buildCompanyBar() {
+    // ─── Header Bar ─────────────────────────────
+    private HBox buildHeaderBar() {
         HBox bar = new HBox(15);
         bar.setAlignment(Pos.CENTER_LEFT);
-        bar.setPrefHeight(65);
-        bar.setPrefWidth(569);
-        bar.setStyle("-fx-background-color: rgba(34,33,33,0.6);"
-                + "-fx-border-color: white;"
-                + "-fx-border-width: 1;"
-                + "-fx-padding: 8 15;");
+        bar.setPadding(new Insets(8, 15, 8, 15));
+        bar.setStyle("-fx-background-color: rgba(34,33,33,0.5);"
+                + "-fx-border-color: rgba(255,255,255,0.12);"
+                + "-fx-border-width: 0 0 1 0;");
 
-        SVGPath logoSvg = new SVGPath();
-        logoSvg.setContent("M31.25 18.03L11.75 6.78M2.58 12.74L21.5 23.68L40.42 12.74M21.5 45.5V23.66");
-        logoSvg.setStroke(Color.WHITE);
-        logoSvg.setStrokeWidth(3);
-        logoSvg.setFill(Color.TRANSPARENT);
-        logoSvg.setScaleX(0.6);
-        logoSvg.setScaleY(0.6);
+        SVGPath logo = new SVGPath();
+        logo.setContent("M31.25 18.03L11.75 6.78M2.58 12.74L21.5 23.68L40.42 12.74M21.5 45.5V23.66");
+        logo.setStroke(Color.WHITE);
+        logo.setStrokeWidth(3);
+        logo.setFill(Color.TRANSPARENT);
+        logo.setScaleX(0.6);
+        logo.setScaleY(0.6);
 
         VBox textBlock = new VBox(2);
-        Label companyName = new Label(warehouseName);
-        companyName.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 20));
-        companyName.setTextFill(Color.WHITE);
+        Label name = new Label(warehouseName);
+        name.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 20));
+        name.setTextFill(Color.WHITE);
+        Label idLbl = new Label("ID: " + warehouseId);
+        idLbl.setFont(Font.font("IBM Plex Mono", 13));
+        idLbl.setTextFill(Color.web("#FFFFFF", 0.6));
+        textBlock.getChildren().addAll(name, idLbl);
 
-        Label locationLabel = new Label("ID: " + warehouseId);
-        locationLabel.setFont(Font.font("IBM Plex Mono", 13));
-        locationLabel.setTextFill(Color.web("#FFFFFF", 0.6));
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        textBlock.getChildren().addAll(companyName, locationLabel);
-        bar.getChildren().addAll(logoSvg, textBlock);
-        return bar;
-    }
-
-    // ─── Home Button ────────────────────────────
-    private Button buildHomeButton() {
         SVGPath homeSvg = new SVGPath();
         homeSvg.setContent("M11.75 35.08V18.42H21.75V35.08M1.75 13.42L16.75 1.75L31.75 13.42V31.75"
                 + "C31.75 32.63 31.4 33.48 30.77 34.11C30.15 34.73 29.3 35.08 28.42 35.08H5.08"
@@ -196,23 +151,37 @@ public class OrderManagementView {
         homeSvg.setScaleX(0.7);
         homeSvg.setScaleY(0.7);
 
-        WarehouseButton btn = WarehouseButton.icon(homeSvg);
-        btn.setOnAction(e -> homepage.show(stage, handler));
-        return btn;
+        WarehouseButton homeBtn = WarehouseButton.icon(homeSvg);
+        homeBtn.setOnAction(e -> homepage.show(stage, handler));
+
+        bar.getChildren().addAll(logo, textBlock, spacer, homeBtn);
+        return bar;
     }
 
-    // ─── Order List ─────────────────────────────
-    private VBox buildOrderListPanel() {
-        VBox panel = new VBox(0);
-        orderListView.setPrefSize(680, 750);
+    // ─── Center (list + right panel) ────────────
+    private HBox buildCenter() {
+        HBox center = new HBox(12);
+        center.setPadding(new Insets(12, 15, 12, 15));
+
         orderListView.setStyle("-fx-background-color: transparent;"
                 + "-fx-control-inner-background: transparent;");
         orderListView.setCellFactory(lv -> new OrderListCell());
         orderListView.getSelectionModel().selectFirst();
-        panel.getChildren().add(orderListView);
-        return panel;
+        HBox.setHgrow(orderListView, Priority.ALWAYS);
+
+        VBox rightPanel = new VBox(10);
+        VBox currentItemPane = buildCurrentItemPane();
+        VBox buttonBox = buildButtonBox();
+        VBox.setVgrow(currentItemPane, Priority.ALWAYS);
+        rightPanel.getChildren().addAll(currentItemPane, buttonBox);
+        rightPanel.setMinWidth(500);
+        rightPanel.setMaxWidth(700);
+
+        center.getChildren().addAll(orderListView, rightPanel);
+        return center;
     }
 
+    // ─── Order List Cell ────────────────────────
     private class OrderListCell extends ListCell<Order> {
         @Override
         protected void updateItem(Order order, boolean empty) {
@@ -224,9 +193,12 @@ public class OrderManagementView {
             }
 
             Pane cell = new Pane();
-            cell.setPrefSize(660, 64);
+            cell.prefWidthProperty().bind(orderListView.widthProperty().subtract(20));
+            cell.setPrefHeight(64);
 
-            Rectangle bg = new Rectangle(660, 64);
+            Rectangle bg = new Rectangle();
+            bg.widthProperty().bind(cell.prefWidthProperty());
+            bg.setHeight(64);
             bg.setFill(Color.TRANSPARENT);
             bg.setStroke(Color.WHITE);
             bg.setStrokeWidth(2);
@@ -255,17 +227,17 @@ public class OrderManagementView {
             orderLabel.setLayoutX(70);
             orderLabel.setLayoutY(17);
 
-            int itemCount = (int) getItems(order).size();
+            int itemCount = getItems(order).size();
             Label countLabel = new Label(itemCount + " item" + (itemCount != 1 ? "s" : ""));
             countLabel.setFont(Font.font("IBM Plex Mono", 14));
             countLabel.setTextFill(Color.web("#FFFFFF", 0.6));
-            countLabel.setLayoutX(460);
+            countLabel.layoutXProperty().bind(cell.prefWidthProperty().subtract(185));
             countLabel.setLayoutY(20);
 
             Label statusLabel = new Label(order.getOrderStatus());
             statusLabel.setFont(Font.font("IBM Plex Mono", 12));
             statusLabel.setTextFill(statusColor(order.getOrderStatus()));
-            statusLabel.setLayoutX(460);
+            statusLabel.layoutXProperty().bind(cell.prefWidthProperty().subtract(185));
             statusLabel.setLayoutY(38);
 
             SVGPath trashSvg = new SVGPath();
@@ -281,19 +253,20 @@ public class OrderManagementView {
             trashSvg.setScaleY(0.8);
 
             WarehouseButton deleteBtn = WarehouseButton.transparent(trashSvg);
-            deleteBtn.setLayoutX(620);
+            deleteBtn.layoutXProperty().bind(cell.prefWidthProperty().subtract(42));
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
                 handler.cancelOrder(order.getOrderID());
                 orders.remove(order);
-                selectedOrderIndex.set(Math.max(0, Math.min(selectedOrderIndex.get(), orders.size() - 1)));
+                selectedOrderIndex.set(
+                        Math.max(0, Math.min(selectedOrderIndex.get(), orders.size() - 1)));
                 selectedItemIndex.set(0);
                 updateCurrentItemDisplay();
             });
 
             cell.getChildren().addAll(bg, pkgIcon, orderLabel, countLabel, statusLabel, deleteBtn);
             cell.setOnMouseEntered(e -> { if (!isSelected()) cell.setOpacity(0.9); });
-            cell.setOnMouseExited(e -> { if (!isSelected()) cell.setOpacity(0.7); });
+            cell.setOnMouseExited(e  -> { if (!isSelected()) cell.setOpacity(0.7); });
 
             setGraphic(cell);
             setStyle("-fx-background-color: transparent; -fx-padding: 4 0;");
@@ -302,66 +275,59 @@ public class OrderManagementView {
 
     private Color statusColor(String status) {
         if (status == null) return Color.GRAY;
-        switch (status.toLowerCase()) {
-            case "incoming": return Color.web("#47CEFF");
-            case "started":  return Color.web("#EEAE3F");
-            case "completed": return Color.web("#28C840");
-            case "canceled": return Color.web("#FF5F57");
-            default: return Color.GRAY;
-        }
+        return switch (status.toLowerCase()) {
+            case "incoming"  -> Color.web("#47CEFF");
+            case "started"   -> Color.web("#EEAE3F");
+            case "completed" -> Color.web("#28C840");
+            case "canceled"  -> Color.web("#FF5F57");
+            default          -> Color.GRAY;
+        };
     }
 
     // ─── Current Item Pane ──────────────────────
-    private Pane buildCurrentItemPane() {
-        Pane pane = new Pane();
-        pane.setPrefSize(658, 420);
+    private VBox buildCurrentItemPane() {
+        VBox pane = new VBox(10);
+        pane.setPadding(new Insets(14));
+        pane.setStyle(PANEL_BG);
 
-        Rectangle bg = new Rectangle(658, 420);
-        bg.setFill(Color.web("#222121", 0.4));
-        bg.setStroke(Color.WHITE);
-        bg.setStrokeWidth(2);
-        pane.getChildren().add(bg);
-
+        // Header row
+        HBox headerRow = new HBox();
+        headerRow.setAlignment(Pos.CENTER_LEFT);
         Label header = new Label("Current Item:");
-        header.setFont(Font.font("IBM Plex Mono", 36));
+        header.setFont(Font.font("IBM Plex Mono", 26));
         header.setTextFill(Color.web("#E5F2E5"));
-        header.setLayoutX(10);
-        header.setLayoutY(5);
-        pane.getChildren().add(header);
-
-        currentItemIdLabel.setFont(Font.font("IBM Plex Mono", 24));
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        currentItemIdLabel.setFont(Font.font("IBM Plex Mono", 18));
         currentItemIdLabel.setTextFill(Color.web("#E6E6E6"));
-        currentItemIdLabel.setLayoutX(420);
-        currentItemIdLabel.setLayoutY(18);
-        pane.getChildren().add(currentItemIdLabel);
+        headerRow.getChildren().addAll(header, spacer, currentItemIdLabel);
 
-        Rectangle imgPlaceholder = new Rectangle(300, 260);
-        imgPlaceholder.setFill(Color.web("#333333"));
-        imgPlaceholder.setLayoutX(10);
-        imgPlaceholder.setLayoutY(70);
-        pane.getChildren().add(imgPlaceholder);
+        // Body: image + details
+        HBox bodyRow = new HBox(16);
+        bodyRow.setAlignment(Pos.CENTER_LEFT);
+        VBox.setVgrow(bodyRow, Priority.ALWAYS);
 
-        currentItemNameLabel.setFont(Font.font("IBM Plex Mono", 16));
-        currentItemNameLabel.setTextFill(Color.web("#E6E6E6"));
-        currentItemNameLabel.setLayoutX(10);
-        currentItemNameLabel.setLayoutY(345);
-        pane.getChildren().add(currentItemNameLabel);
+        Rectangle imgPlaceholder = new Rectangle(220, 190);
+        imgPlaceholder.setFill(Color.web("#333333", 0.7));
 
-        currentItemLocationLabel.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 24));
+        VBox details = new VBox(18);
+        details.setAlignment(Pos.CENTER_LEFT);
+        currentItemLocationLabel.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 18));
         currentItemLocationLabel.setTextFill(Color.WHITE);
-        currentItemLocationLabel.setLayoutX(340);
-        currentItemLocationLabel.setLayoutY(100);
-        pane.getChildren().add(currentItemLocationLabel);
-
-        currentItemQtyLabel.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 24));
+        currentItemQtyLabel.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 18));
         currentItemQtyLabel.setTextFill(Color.WHITE);
-        currentItemQtyLabel.setLayoutX(340);
-        currentItemQtyLabel.setLayoutY(230);
-        pane.getChildren().add(currentItemQtyLabel);
+        details.getChildren().addAll(currentItemLocationLabel, currentItemQtyLabel);
+        bodyRow.getChildren().addAll(imgPlaceholder, details);
+
+        // Footer: name + nav buttons
+        HBox footerRow = new HBox(8);
+        footerRow.setAlignment(Pos.CENTER_LEFT);
+        currentItemNameLabel.setFont(Font.font("IBM Plex Mono", 14));
+        currentItemNameLabel.setTextFill(Color.web("#E6E6E6"));
+        Region footerSpacer = new Region();
+        HBox.setHgrow(footerSpacer, Priority.ALWAYS);
 
         Button prevBtn = WarehouseButton.nav("\u25C0");
-        prevBtn.setLayoutX(500);
-        prevBtn.setLayoutY(345);
         prevBtn.setOnAction(e -> {
             if (orders.isEmpty()) return;
             List<Item> items = getItems(orders.get(selectedOrderIndex.get()));
@@ -369,11 +335,8 @@ public class OrderManagementView {
             selectedItemIndex.set(idx > 0 ? idx - 1 : items.size() - 1);
             updateCurrentItemDisplay();
         });
-        pane.getChildren().add(prevBtn);
 
         Button nextBtn = WarehouseButton.nav("\u25B6");
-        nextBtn.setLayoutX(580);
-        nextBtn.setLayoutY(345);
         nextBtn.setOnAction(e -> {
             if (orders.isEmpty()) return;
             List<Item> items = getItems(orders.get(selectedOrderIndex.get()));
@@ -381,45 +344,40 @@ public class OrderManagementView {
             selectedItemIndex.set(idx < items.size() - 1 ? idx + 1 : 0);
             updateCurrentItemDisplay();
         });
-        pane.getChildren().add(nextBtn);
 
+        footerRow.getChildren().addAll(currentItemNameLabel, footerSpacer, prevBtn, nextBtn);
+        pane.getChildren().addAll(headerRow, bodyRow, footerRow);
         return pane;
     }
 
     // ─── Button Box ─────────────────────────────
-    private Pane buildButtonBox() {
-        Pane pane = new Pane();
-        pane.setPrefSize(658, 310);
+    private VBox buildButtonBox() {
+        VBox pane = new VBox(10);
+        pane.setPadding(new Insets(14));
+        pane.setStyle(PANEL_BG);
 
-        Rectangle bg = new Rectangle(658, 310);
-        bg.setFill(Color.web("#222121", 0.4));
-        bg.setStroke(Color.WHITE);
-        bg.setStrokeWidth(2);
-        pane.getChildren().add(bg);
-
-        Button completeBtn = WarehouseButton.action("Complete Order", 615, 60, false);
-        completeBtn.setLayoutX(21);
-        completeBtn.setLayoutY(20);
+        Button completeBtn = WarehouseButton.action("Complete Order", 600, 60, false);
+        completeBtn.setMaxWidth(Double.MAX_VALUE);
         completeBtn.setOnAction(e -> {
             if (!orders.isEmpty()) {
                 handler.completeOrder(orders.get(selectedOrderIndex.get()).getOrderID());
                 refreshOrders();
             }
         });
-        pane.getChildren().add(completeBtn);
 
-        Button modifyBtn = WarehouseButton.action("Modify Order", 290, 54, false);
-        modifyBtn.setLayoutX(21);
-        modifyBtn.setLayoutY(110);
-        pane.getChildren().add(modifyBtn);
+        HBox row2 = new HBox(10);
+        Button modifyBtn = WarehouseButton.action("Modify Order", 0, 54, false);
+        modifyBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(modifyBtn, Priority.ALWAYS);
 
-        Button importBtn = WarehouseButton.action("Import Orders", 290, 54, false);
-        importBtn.setLayoutX(347);
-        importBtn.setLayoutY(110);
+        Button importBtn = WarehouseButton.action("Import Orders", 0, 54, false);
+        importBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(importBtn, Priority.ALWAYS);
         importBtn.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+            chooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("JSON Files", "*.json"));
             File file = chooser.showOpenDialog(stage);
             if (file != null) {
                 JsonParser parser = new JsonParser();
@@ -428,31 +386,33 @@ public class OrderManagementView {
                 refreshOrders();
             }
         });
-        pane.getChildren().add(importBtn);
+        row2.getChildren().addAll(modifyBtn, importBtn);
 
-        Button printBtn = WarehouseButton.action("Print Label", 290, 54, false);
-        printBtn.setLayoutX(21);
-        printBtn.setLayoutY(190);
-        pane.getChildren().add(printBtn);
+        HBox row3 = new HBox(10);
+        Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);
+        printBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(printBtn, Priority.ALWAYS);
 
-        Button exportBtn = WarehouseButton.action("Export Orders", 290, 54, true);
-        exportBtn.setLayoutX(347);
-        exportBtn.setLayoutY(190);
+        Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
+        exportBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(exportBtn, Priority.ALWAYS);
         exportBtn.setOnAction(e -> handler.saveData(homepage.SAVE_FILE));
-        pane.getChildren().add(exportBtn);
+        row3.getChildren().addAll(printBtn, exportBtn);
 
+        pane.getChildren().addAll(completeBtn, row2, row3);
         return pane;
     }
 
     // ─── Listeners & State ──────────────────────
     private void setupListeners() {
-        orderListView.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.intValue() >= 0) {
-                selectedOrderIndex.set(newVal.intValue());
-                selectedItemIndex.set(0);
-                updateCurrentItemDisplay();
-            }
-        });
+        orderListView.getSelectionModel().selectedIndexProperty()
+                .addListener((obs, oldVal, newVal) -> {
+                    if (newVal.intValue() >= 0) {
+                        selectedOrderIndex.set(newVal.intValue());
+                        selectedItemIndex.set(0);
+                        updateCurrentItemDisplay();
+                    }
+                });
     }
 
     private void updateCurrentItemDisplay() {
@@ -478,15 +438,12 @@ public class OrderManagementView {
         Item item = items.get(selectedItemIndex.get());
         currentItemIdLabel.setText("#" + item.getItemID());
         currentItemNameLabel.setText(item.getItemName());
-        currentItemLocationLabel.setText("Location: " + (item.getWarehouseLocation() != null ? item.getWarehouseLocation() : "N/A"));
+        currentItemLocationLabel.setText("Location: "
+                + (item.getWarehouseLocation() != null ? item.getWarehouseLocation() : "N/A"));
         currentItemQtyLabel.setText("Qty: " + item.getItemQuantity());
     }
 
     // ─── Getters ────────────────────────────────
     public StackPane getRoot() { return root; }
     public HBox getTitleBar() { return titleBar; }
-    public double getDragOffsetX() { return dragOffsetX; }
-    public double getDragOffsetY() { return dragOffsetY; }
-    public void setDragOffsetX(double x) { this.dragOffsetX = x; }
-    public void setDragOffsetY(double y) { this.dragOffsetY = y; }
 }
