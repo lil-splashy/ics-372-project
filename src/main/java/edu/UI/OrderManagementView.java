@@ -4,6 +4,7 @@ import edu.ics372.Item;
 import edu.ics372.JsonParser;
 import edu.ics372.Order;
 import edu.ics372.OrderHandler;
+import edu.ics372.OrderLock;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class OrderManagementView {
 
-    private static final String GLASS_BG   = "-fx-background-color: rgba(34,33,33,0.72);";
+    private static final String GLASS_BG   = "-fx-background-color: rgba(0,0,0,0.72);";
     private static final String PANEL_BG   = "-fx-background-color: rgba(34,33,33,0.55);"
                                            + "-fx-border-color: rgba(255,255,255,0.2);"
                                            + "-fx-border-width: 1;";
@@ -46,6 +47,7 @@ public class OrderManagementView {
     private final Label currentItemQtyLabel      = new Label();
 
     private final ListView<Order> orderListView;
+    private final VBox buttonBoxWrapper = new VBox();
 
     public OrderManagementView(OrderHandler handler, String warehouseId,
                                String warehouseName, Stage stage) {
@@ -77,6 +79,7 @@ public class OrderManagementView {
 
         setupListeners();
         updateCurrentItemDisplay();
+        rebuildButtonBox();
     }
 
     // ─── Data ───────────────────────────────────
@@ -100,6 +103,7 @@ public class OrderManagementView {
         selectedOrderIndex.set(0);
         selectedItemIndex.set(0);
         updateCurrentItemDisplay();
+        rebuildButtonBox();
     }
 
     private List<Item> getItems(Order order) {
@@ -112,7 +116,7 @@ public class OrderManagementView {
         return result;
     }
 
-    // ─── Header Bar ─────────────────────────────
+    // ─── Header ─────────────────────────────
     private HBox buildHeaderBar() {
         HBox bar = new HBox(15);
         bar.setAlignment(Pos.CENTER_LEFT);
@@ -152,7 +156,12 @@ public class OrderManagementView {
         homeSvg.setScaleY(0.7);
 
         WarehouseButton homeBtn = WarehouseButton.icon(homeSvg);
-        homeBtn.setOnAction(e -> homepage.show(stage, handler));
+        homeBtn.setOnAction(e -> Homepage.show(stage, handler));
+
+        // Allow dragging the window by the header bar
+        final double[] dragDelta = new double[2];
+        bar.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
+        bar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
         bar.getChildren().addAll(logo, textBlock, spacer, homeBtn);
         return bar;
@@ -171,9 +180,8 @@ public class OrderManagementView {
 
         VBox rightPanel = new VBox(10);
         VBox currentItemPane = buildCurrentItemPane();
-        VBox buttonBox = buildButtonBox();
         VBox.setVgrow(currentItemPane, Priority.ALWAYS);
-        rightPanel.getChildren().addAll(currentItemPane, buttonBox);
+        rightPanel.getChildren().addAll(currentItemPane, buttonBoxWrapper);
         rightPanel.setMinWidth(500);
         rightPanel.setMaxWidth(700);
 
@@ -257,11 +265,13 @@ public class OrderManagementView {
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
                 handler.cancelOrder(order.getOrderID());
+                OrderLock.unlock(order.getOrderID());
                 orders.remove(order);
                 selectedOrderIndex.set(
                         Math.max(0, Math.min(selectedOrderIndex.get(), orders.size() - 1)));
                 selectedItemIndex.set(0);
                 updateCurrentItemDisplay();
+                rebuildButtonBox();
             });
 
             cell.getChildren().addAll(bg, pkgIcon, orderLabel, countLabel, statusLabel, deleteBtn);
@@ -351,18 +361,64 @@ public class OrderManagementView {
     }
 
     // ─── Button Box ─────────────────────────────
-    private VBox buildButtonBox() {
+    private void rebuildButtonBox() {
+        buttonBoxWrapper.getChildren().clear();
+        if (orders.isEmpty()) {
+            buttonBoxWrapper.getChildren().add(buildStartButtonPanel(null));
+            return;
+        }
+        Order order = orders.get(selectedOrderIndex.get());
+        switch (order.getOrderStatus()) {
+            case "started"            -> buttonBoxWrapper.getChildren().add(buildFullButtonPanel(order));
+            case "completed",
+                 "canceled"           -> buttonBoxWrapper.getChildren().add(buildReadOnlyButtonPanel(order));
+            default                   -> buttonBoxWrapper.getChildren().add(buildStartButtonPanel(order));
+        }
+    }
+
+    /** Only shown when the selected order is incoming. */
+    private VBox buildStartButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
         pane.setStyle(PANEL_BG);
 
-        Button completeBtn = WarehouseButton.action("Complete Order", 600, 60, false);
+        boolean locked = order != null && OrderLock.isLocked(order.getOrderID());
+        Button startBtn = WarehouseButton.success(locked ? "Order In Progress" : "Start Order", 600, 60);
+        startBtn.setMaxWidth(Double.MAX_VALUE);
+        startBtn.setDisable(order == null || locked);
+
+        if (order != null && !locked) {
+            startBtn.setOnAction(e -> {
+                if (OrderLock.tryLock(order.getOrderID())) {
+                    handler.startOrder(order.getOrderID());
+                    refreshOrders();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Order Locked");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This order is already being handled in another session.");
+                    alert.showAndWait();
+                    rebuildButtonBox();
+                }
+            });
+        }
+
+        pane.getChildren().add(startBtn);
+        return pane;
+    }
+
+    /** Shown once the selected order has been started. */
+    private VBox buildFullButtonPanel(Order order) {
+        VBox pane = new VBox(10);
+        pane.setPadding(new Insets(14));
+        pane.setStyle(PANEL_BG);
+
+        Button completeBtn = WarehouseButton.success("Complete Order", 600, 60);
         completeBtn.setMaxWidth(Double.MAX_VALUE);
         completeBtn.setOnAction(e -> {
-            if (!orders.isEmpty()) {
-                handler.completeOrder(orders.get(selectedOrderIndex.get()).getOrderID());
-                refreshOrders();
-            }
+            handler.completeOrder(order.getOrderID());
+            OrderLock.unlock(order.getOrderID());
+            refreshOrders();
         });
 
         HBox row2 = new HBox(10);
@@ -396,10 +452,31 @@ public class OrderManagementView {
         Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
         exportBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(exportBtn, Priority.ALWAYS);
-        exportBtn.setOnAction(e -> handler.saveData(homepage.SAVE_FILE));
+        exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
         row3.getChildren().addAll(printBtn, exportBtn);
 
         pane.getChildren().addAll(completeBtn, row2, row3);
+        return pane;
+    }
+
+    /** Shown for completed or canceled orders — no actions available. */
+    private VBox buildReadOnlyButtonPanel(Order order) {
+        VBox pane = new VBox(10);
+        pane.setPadding(new Insets(14));
+        pane.setStyle(PANEL_BG);
+
+        HBox row = new HBox(10);
+        Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);
+        printBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(printBtn, Priority.ALWAYS);
+
+        Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
+        exportBtn.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(exportBtn, Priority.ALWAYS);
+        exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
+        row.getChildren().addAll(printBtn, exportBtn);
+
+        pane.getChildren().add(row);
         return pane;
     }
 
@@ -411,6 +488,7 @@ public class OrderManagementView {
                         selectedOrderIndex.set(newVal.intValue());
                         selectedItemIndex.set(0);
                         updateCurrentItemDisplay();
+                        rebuildButtonBox();
                     }
                 });
     }

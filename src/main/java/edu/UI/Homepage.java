@@ -23,10 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class homepage extends Application {
+public class Homepage extends Application {
 
     static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
-
     @Override
     public void start(Stage stage) {
         stage.initStyle(StageStyle.UNIFIED);
@@ -56,6 +55,11 @@ public class homepage extends Application {
         titleBox.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
                 + "-fx-border-color: rgba(255,255,255,0.1);"
                 + "-fx-border-width: 0 0 1 0;");
+
+        // Allow dragging the window by the title bar
+        final double[] dragDelta = new double[2];
+        titleBox.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
+        titleBox.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
         root.setTop(titleBox);
 
@@ -127,6 +131,10 @@ public class homepage extends Application {
 
         Scene scene = new Scene(root, 1100, 850);
         scene.setFill(Color.TRANSPARENT);
+
+        scene.getStylesheets().add(
+                Homepage.class.getResource("resources/styles/orders.css").toExternalForm());
+
         stage.setTitle("Warehouse Order Manager");
         stage.setScene(scene);
     }
