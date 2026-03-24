@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════
+   Order Management System - JavaFX Stylesheet
+   Place in: src/main/resources/styles/orders.css
+   ═══════════════════════════════════════════════ */
+
+/* ─── Root ─── */
+.root {
+    -fx-font-family: "IBM Plex Mono", monospace;
+    -fx-background-color: #1a0a22;
+}
+
+/* ─── ListView ─── */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 4 0;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+.list-view .list-cell:focused {
+    -fx-background-color: transparent;
+}
+
+/* Remove focus ring on list */
+.list-view:focused {
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+/* ─── Scroll Bars ─── */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: rgba(219, 219, 219, 0.24);
+    -fx-background-radius: 4;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: rgba(219, 219, 219, 0.4);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+/* ─── Buttons ─── */
+.button {
+    -fx-font-family: "IBM Plex Mono", monospace;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.button:focused {
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+/* ─── Tooltips ─── */
+.tooltip {
+    -fx-background-color: rgba(34, 33, 33, 0.9);
+    -fx-text-fill: white;
+    -fx-font-family: "IBM Plex Mono", monospace;
+    -fx-font-size: 12;
+    -fx-background-radius: 4;
+}

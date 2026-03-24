@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -26,7 +27,9 @@ import java.util.Map;
 
 public class homepage extends Application {
 
-    private static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
+    static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
+
+    private static double dragOffsetX, dragOffsetY;
 
     @Override
     public void start(Stage stage) {
@@ -44,15 +47,18 @@ public class homepage extends Application {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #1a1a1a;");
 
-        // Title
-        Label title = new Label("Warehouse Order Manager");
-        title.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
-        Label subtitle = new Label("Select a Warehouse");
-        subtitle.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; -fx-text-fill: #aaaaaa;");
-        VBox titleBox = new VBox(8, title, subtitle);
-        titleBox.setAlignment(Pos.CENTER);
-        titleBox.setPadding(new Insets(40, 0, 30, 0));
-        root.setTop(titleBox);
+        // ─── Title bar ───
+        HBox titleBar = new HBox();
+        titleBar.setPrefHeight(30);
+        titleBar.setStyle("-fx-background-color: linear-gradient(to bottom, #3a3a3a, #2a2a2a); -fx-padding: 0 10;");
+        titleBar.setAlignment(Pos.CENTER_LEFT);
+
+        Label appTitle = new Label("Warehouse Order Manager");
+        appTitle.setStyle("-fx-font-family: 'IBM Plex Mono'; -fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.6);");
+
+        titleBar.getChildren().add(appTitle);
+        titleBar.setOnMousePressed(e -> { dragOffsetX = e.getSceneX(); dragOffsetY = e.getSceneY(); });
+        titleBar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() - dragOffsetX); stage.setY(e.getScreenY() - dragOffsetY); });
 
         // Warehouse cards
         FlowPane cardGrid = new FlowPane();
@@ -97,9 +103,7 @@ public class homepage extends Application {
         root.setCenter(scrollPane);
 
         // Import button
-        Button importBtn = new Button("Import Orders");
-        importBtn.setStyle("-fx-background-color: #F35621; -fx-text-fill: white; " +
-                "-fx-font-family: 'Monospaced'; -fx-font-size: 14px; -fx-padding: 10 24;");
+        WarehouseButton importBtn = WarehouseButton.primary("Import Orders");
         importBtn.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Import Orders");

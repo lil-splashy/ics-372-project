@@ -3,6 +3,7 @@ package edu.UI;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
@@ -10,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Paint;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Rotate;
@@ -17,6 +19,13 @@ import javafx.util.Duration;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.IntegerProperty;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +34,7 @@ import edu.ics372.Order;
 public class Rolodex {
 
     private static final int ITEM_HEIGHT = 87;
+    private static final String RESOURCES_DIR = "src/main/java/edu/UI/resources/";
 
     private final List<Order> orders;
     private final String warehouseName;
@@ -40,6 +50,38 @@ public class Rolodex {
         this.orders = new ArrayList<>(orders);
         this.warehouseName = warehouseName;
         this.totalItems = orders.isEmpty() ? 1 : orders.size();
+    }
+
+    // Loads all <path d="..."> values from an SVG file
+    private static List<String> loadPathData(String fileName) {
+        List<String> paths = new ArrayList<>();
+        try (InputStream is = new FileInputStream(RESOURCES_DIR + fileName)) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(is);
+            NodeList pathNodes = doc.getElementsByTagName("path");
+            for (int i = 0; i < pathNodes.getLength(); i++) {
+                Element el = (Element) pathNodes.item(i);
+                String d = el.getAttribute("d");
+                if (!d.isEmpty()) paths.add(d);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to load SVG: " + fileName + " — " + e.getMessage());
+        }
+        return paths;
+    }
+
+    // Builds a Group of SVGPaths from an SVG file with the given fill and stroke
+    private static Group loadSvgGroup(String fileName, Paint fill, Paint stroke, double strokeWidth) {
+        Group group = new Group();
+        for (String d : loadPathData(fileName)) {
+            SVGPath path = new SVGPath();
+            path.setContent(d);
+            if (fill != null) path.setFill(fill);
+            if (stroke != null) { path.setStroke(stroke); path.setStrokeWidth(strokeWidth); }
+            group.getChildren().add(path);
+        }
+        return group;
     }
 
     public StackPane getView() {
@@ -91,13 +133,10 @@ public class Rolodex {
                 "-fx-font-size: 24px; -fx-text-fill: white;");
         headerLabel.setAlignment(Pos.CENTER);
 
-        SVGPath packageIcon = new SVGPath();
-        packageIcon.setContent("M31.25 18.0289L11.75 6.78389M2.585 12.7422L21.5 23.6839L40.415 12.7422M21.5 45.5022V23.6622M41 32.3289V14.9956C40.9992 14.2357 40.7986 13.4893 40.4183 12.8314C40.038 12.1735 39.4914 11.6272 38.8333 11.2472L23.6667 2.58056C23.0079 2.20023 22.2607 2 21.5 2C20.7393 2 19.9921 2.20023 19.3333 2.58056L4.16667 11.2472C3.50857 11.6272 2.96196 12.1735 2.58167 12.8314C2.20138 13.4893 2.00078 14.2357 2 14.9956V32.3289C2.00078 33.0888 2.20138 33.8351 2.58167 34.493C2.96196 35.1509 3.50857 35.6973 4.16667 36.0772L19.3333 44.7439C19.9921 45.1242 20.7393 45.3244 21.5 45.3244C22.2607 45.3244 23.0079 45.1242 23.6667 44.7439L38.8333 36.0772C39.4914 35.6973 40.038 35.1509 40.4183 34.493C40.7986 33.8351 40.9992 33.0888 41 32.3289Z");
-        packageIcon.setFill(createOrangeGradient());
-        packageIcon.setStroke(createOrangeGradient());
-        packageIcon.setStrokeWidth(2);
-        packageIcon.setScaleX(0.8);
-        packageIcon.setScaleY(0.8);
+        // Load package icon from resources
+        Group packageIcon = loadSvgGroup("order-filled.svg", createOrangeGradient(), createOrangeGradient(), 1.5);
+        packageIcon.setScaleX(0.55);
+        packageIcon.setScaleY(0.55);
 
         StackPane iconContainer = new StackPane(packageIcon);
         iconContainer.setPrefSize(52, 52);
@@ -249,19 +288,23 @@ public class Rolodex {
             dropShadow.setRadius(4);
             border.setEffect(dropShadow);
 
+            // Archive icon from resources
             archiveIcon = new SVGPath();
-            archiveIcon.setContent("M18.6483 30.1449L26.9365 22.1063L24.0356 19.2928L20.7204 22.5082V14.0676H16.5763V22.5082L13.261 19.2928L10.3602 22.1063L18.6483 30.1449ZM4.14408 10.0483V32.1546H33.1526V10.0483H4.14408ZM4.14408 36.1739C3.00446 36.1739 2.02024 35.7887 1.19142 35.0184C0.397141 34.2145 0 33.2599 0 32.1546V7.08406C0 6.61514 0.0690684 6.16296 0.207205 5.72754C0.379874 5.29211 0.621612 4.89018 0.932418 4.52174L3.52247 1.45701C3.90234 0.988084 4.36855 0.636393 4.92109 0.401932C5.50817 0.133977 6.11251 0 6.73413 0H30.5626C31.1842 0 31.7713 0.133977 32.3238 0.401932C32.9109 0.636393 33.3944 0.988084 33.7742 1.45701L36.3643 4.52174C36.6751 4.89018 36.8995 5.29211 37.0377 5.72754C37.2104 6.16296 37.2967 6.61514 37.2967 7.08406V32.1546C37.2967 33.2599 36.8823 34.2145 36.0535 35.0184C35.2592 35.7887 34.2922 36.1739 33.1526 36.1739H4.14408ZM4.97289 6.02899H32.3238L30.5626 4.01933H6.73413L4.97289 6.02899Z");
+            List<String> archivePaths = loadPathData("filling-order.svg");
+            if (!archivePaths.isEmpty()) archiveIcon.setContent(archivePaths.get(0));
             archiveIcon.setFill(Color.WHITE);
-            archiveIcon.setScaleX(0.9);
-            archiveIcon.setScaleY(0.9);
+            archiveIcon.setScaleX(0.6);
+            archiveIcon.setScaleY(0.6);
 
             StackPane iconContainer = new StackPane(archiveIcon);
             iconContainer.setPrefSize(50, 48);
             StackPane.setAlignment(iconContainer, Pos.CENTER_LEFT);
             StackPane.setMargin(iconContainer, new Insets(0, 0, 0, 10));
 
+            // Trash icon from resources
             SVGPath trashIcon = new SVGPath();
-            trashIcon.setContent("M1.5 6.44686H4.0502M4.0502 6.44686H24.4518M4.0502 6.44686L4.0502 23.7609C4.0502 24.4169 4.31888 25.046 4.79714 25.5098C5.27539 25.9737 5.92405 26.2343 6.6004 26.2343H19.3514C20.0278 26.2343 20.6764 25.9737 21.1547 25.5098C21.6329 25.046 21.9016 24.4169 21.9016 23.7609V6.44686M7.8755 6.44686V3.97343C7.8755 3.31744 8.14418 2.68831 8.62244 2.22445C9.10069 1.76059 9.74935 1.5 10.4257 1.5H15.5261C16.2025 1.5 16.8511 1.76059 17.3294 2.22445C17.8076 2.68831 18.0763 3.31744 18.0763 3.97343V6.44686M10.4257 12.6304V20.0507M15.5261 12.6304V20.0507");
+            List<String> trashPaths = loadPathData("trash.svg");
+            if (!trashPaths.isEmpty()) trashIcon.setContent(trashPaths.get(0));
             trashIcon.setStroke(Color.WHITE);
             trashIcon.setStrokeWidth(2);
             trashIcon.setFill(Color.TRANSPARENT);

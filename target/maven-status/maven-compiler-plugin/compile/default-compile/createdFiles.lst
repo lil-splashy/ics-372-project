@@ -1,7 +1,13 @@
 edu/ics372/Customer.class
-edu/UI/MainWindow.class
+edu/UI/WarehouseButton.class
 edu/UI/Rolodex.class
 edu/UI/homepage.class
-edu/UI/Rolodex$OrderListItem.class
-edu/ics372/Warehouse.class
+edu/UI/OrderItem.class
 edu/UI/UserEvent.class
+edu/UI/CurrentOrder.class
+edu/UI/MainWindow.class
+edu/UI/OrderManagementView$OrderListCell.class
+edu/UI/OrderManagementView.class
+edu/UI/Rolodex$OrderListItem.class
+edu/UI/OrderManagementApp.class
+edu/ics372/Warehouse.class
