@@ -8,7 +8,24 @@ Our Git Repo, Public
 
 https://github.com/lil-splashy/ics-372-project
 
+## Run With GUI
 
+Maven must be installed to run this program.
+
+while in the root directory (`ics-372-project/`)
+
+run ``mvn javafx:run``
+
+
+
+
+
+
+
+
+
+
+#### *Previous Terminal Version*
 
 Run with main in {ics-372-project\src\main\java\edu\ics372}
 
