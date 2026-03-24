@@ -87,9 +87,10 @@ public class Order {
     /**
      * remove ID when order is finished or cancelled
      */
-    public static void removeOrderID(String orderID) {
+    //For future build
+    /**public static void removeOrderID(String orderID) {
         orderIDs.remove(orderID);
-    }
+    }*/
 
     // returns items
     public Item[] getItems() {
