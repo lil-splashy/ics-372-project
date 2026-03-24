@@ -83,8 +83,7 @@ public class XmlParser implements ParserInterface {
         }
     }
 
-    @Override
-    public void exportJSON(List<Order> orders, String filePath) {
+    public void exportOrders(List<Order> orders, String filePath) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
