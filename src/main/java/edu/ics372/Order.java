@@ -29,6 +29,7 @@ public class Order {
         this.warehouse = warehouse;
     }
 
+    // also use for xml data
     //constructor for creating orders that already have an order id
     // the order constructor
     public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
