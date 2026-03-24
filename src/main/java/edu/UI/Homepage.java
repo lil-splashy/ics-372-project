@@ -23,10 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class homepage extends Application {
+public class Homepage extends Application {
 
     static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
-
     @Override
     public void start(Stage stage) {
         stage.initStyle(StageStyle.UNIFIED);
@@ -127,6 +126,13 @@ public class homepage extends Application {
 
         Scene scene = new Scene(root, 1100, 850);
         scene.setFill(Color.TRANSPARENT);
+
+        String stylesheetPath = homepage.class.getResource("resources/styles/orders.css").toExternalForm();
+
+        stage.setTitle(" ");
+        stage.setScene(scene);
+
+
         stage.setTitle("Warehouse Order Manager");
         stage.setScene(scene);
     }

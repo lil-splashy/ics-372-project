@@ -1,12 +1,26 @@
 /* ═══════════════════════════════════════════════
    Order Management System - JavaFX Stylesheet
-   Place in: src/main/resources/styles/orders.css
    ═══════════════════════════════════════════════ */
 
 /* ─── Root ─── */
 .root {
     -fx-font-family: "IBM Plex Mono", monospace;
-    -fx-background-color: #1a0a22;
+    -fx-background-color: transparent;
+}
+
+/* ─── Generic pane transparency ─── */
+.border-pane,
+.vbox,
+.hbox,
+.flow-pane,
+.stack-pane,
+.pane {
+    -fx-background-color: transparent;
+}
+
+/* ─── Labels ─── */
+.label {
+    -fx-background-color: transparent;
 }
 
 /* ─── ListView ─── */
@@ -14,6 +28,7 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-padding: 0;
+    -fx-border-color: transparent;
 }
 
 .list-view .list-cell {
@@ -29,10 +44,25 @@
     -fx-background-color: transparent;
 }
 
-/* Remove focus ring on list */
 .list-view:focused {
     -fx-background-color: transparent;
     -fx-effect: none;
+}
+
+/* ─── ScrollPane ─── */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
 }
 
 /* ─── Scroll Bars ─── */
@@ -41,12 +71,12 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: rgba(219, 219, 219, 0.24);
+    -fx-background-color: rgba(219, 219, 219, 0.2);
     -fx-background-radius: 4;
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: rgba(219, 219, 219, 0.4);
+    -fx-background-color: rgba(219, 219, 219, 0.38);
 }
 
 .scroll-bar .increment-button,
@@ -62,7 +92,8 @@
 }
 
 .scroll-bar .track {
-    -fx-background-color: transparent;
+    -fx-background-color: rgba(255, 255, 255, 0.04);
+    -fx-background-radius: 4;
 }
 
 /* ─── Buttons ─── */
@@ -71,6 +102,7 @@
     -fx-border-color: transparent;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
 }
 
 .button:focused {
@@ -80,9 +112,37 @@
 
 /* ─── Tooltips ─── */
 .tooltip {
-    -fx-background-color: rgba(34, 33, 33, 0.9);
-    -fx-text-fill: white;
+    -fx-background-color: rgba(34, 33, 33, 0.85);
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
     -fx-font-family: "IBM Plex Mono", monospace;
     -fx-font-size: 12;
     -fx-background-radius: 4;
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+/* ─── Text input (if used) ─── */
+.text-field,
+.text-area {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.35);
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field:focused,
+.text-area:focused {
+    -fx-border-color: rgba(71, 206, 255, 0.6);
+    -fx-effect: none;
+}
+
+/* ─── Separator ─── */
+.separator .line {
+    -fx-border-color: rgba(255, 255, 255, 0.12);
 }
