@@ -10,7 +10,7 @@ https://github.com/lil-splashy/ics-372-project
 
 ## Run With GUI
 
-Maven must be installed to run this program.
+#### **Maven must be installed to run this program.**
 
 while in the root directory (`ics-372-project/`)
 
