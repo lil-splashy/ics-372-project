@@ -151,8 +151,9 @@ public class OrderHandler {
             System.out.println("No completed orders to export.");
             return;
         }
-        if(!extension.equals(".json") || !extension.equals(".xml")){
+        if(!extension.equals(".json") && !extension.equals(".xml")){
             System.out.print("Use .json or .xml as the entension.");
+            return;
         }
 
         String timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
@@ -162,6 +163,10 @@ public class OrderHandler {
         parser.exportOrders(completedOrders, filePath);
 
         System.out.println("Completed orders ecported to: " + filePath);
+
+        for(Order order: completedOrders){
+            ordersById.remove(order.getOrderID());
+        }
 
         completedOrders.clear();
     }
@@ -247,7 +252,7 @@ public class OrderHandler {
     }
 
     public void saveData(){
-        List<Order> allOrders = new ArrayList<>();
+        List<Order> allOrders = new ArrayList<>(ordersById.values());
         jParser.exportOrders(allOrders, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
     }
