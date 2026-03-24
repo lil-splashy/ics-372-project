@@ -10,7 +10,7 @@ import java.util.*;
 public class JsonParser implements ParserInterface {
 
 
-    private  String filePath = "order.json";
+    private  String filePath = "src/main/orders/order.json";
 
     public String getFilePath() {
         return filePath;
@@ -36,8 +36,13 @@ public class JsonParser implements ParserInterface {
 
             JSONArray items = order.getJSONArray("items");
 
+            // Read warehouse if present, otherwise use a default
+            String warehouseID = order.optString("warehouseID", "W000");
+            String warehouseName = order.optString("warehouseName", "Default Warehouse");
+            Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
+
             // Add create new order
-            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null, null);
+            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null, warehouse);
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
@@ -80,6 +85,11 @@ public class JsonParser implements ParserInterface {
 
         orderJson.put("items", itemsArray);
         orderJson.put("item_count", itemsArray.length());
+
+        if (order.getWarehouse() != null) {
+            orderJson.put("warehouseID", order.getWarehouse().getWarehouseID());
+            orderJson.put("warehouseName", order.getWarehouse().getWarehouseName());
+        }
 
         return orderJson;
     }
@@ -137,9 +147,13 @@ public class JsonParser implements ParserInterface {
                 String type = orderJson.getString("type");
                 JSONArray itemsArray = orderJson.getJSONArray("items");
 
+                // Read warehouse if present
+                String warehouseID = orderJson.optString("warehouseID", "W000");
+                String warehouseName = orderJson.optString("warehouseName", "Default Warehouse");
+                Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
+
                 //rebuilds the saved order using the import constructor so the original order ID is kept.
-                //might need to assign warehouses somewhere and add here when orders are assigned to them.
-                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null, null);
+                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null, warehouse);
 
                 //loop through each saved item and rebuild it before adding it back to the order
                 for (int j = 0; j < itemsArray.length(); j++){

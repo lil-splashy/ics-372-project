@@ -1,0 +1,171 @@
+package edu.UI;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import edu.ics372.JsonParser;
+import edu.ics372.Order;
+import edu.ics372.OrderHandler;
+import edu.ics372.Warehouse;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class homepage extends Application {
+
+    static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
+
+    private static double dragOffsetX, dragOffsetY;
+
+    @Override
+    public void start(Stage stage) {
+        stage.initStyle(StageStyle.UNIFIED);
+        OrderHandler handler = new OrderHandler();
+        if (new File(SAVE_FILE).exists()) {
+            handler.importProgramOrders(SAVE_FILE);
+        }
+        stage.setOnCloseRequest(e -> handler.saveData(SAVE_FILE));
+        show(stage, handler);
+        stage.show();
+    }
+
+    public static void show(Stage stage, OrderHandler handler) {
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: #1a1a1a;");
+
+        // ─── Title bar ───
+        HBox titleBar = new HBox();
+        titleBar.setPrefHeight(30);
+        titleBar.setStyle("-fx-background-color: linear-gradient(to bottom, #3a3a3a, #2a2a2a); -fx-padding: 0 10;");
+        titleBar.setAlignment(Pos.CENTER_LEFT);
+
+        Label appTitle = new Label("Warehouse Order Manager");
+        appTitle.setStyle("-fx-font-family: 'IBM Plex Mono'; -fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.6);");
+
+        titleBar.getChildren().add(appTitle);
+        titleBar.setOnMousePressed(e -> { dragOffsetX = e.getSceneX(); dragOffsetY = e.getSceneY(); });
+        titleBar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() - dragOffsetX); stage.setY(e.getScreenY() - dragOffsetY); });
+
+        // Warehouse cards
+        FlowPane cardGrid = new FlowPane();
+        cardGrid.setHgap(20);
+        cardGrid.setVgap(20);
+        cardGrid.setPadding(new Insets(20));
+        cardGrid.setAlignment(Pos.CENTER);
+
+        Map<String, Warehouse> warehouses = new LinkedHashMap<>();
+        Map<String, Integer> orderCounts = new LinkedHashMap<>();
+
+        List<Order> allOrders = new ArrayList<>();
+        allOrders.addAll(handler.getIncomingOrders());
+        allOrders.addAll(handler.getStartedOrders());
+        allOrders.addAll(handler.getCompletedOrders());
+
+        for (Order order : allOrders) {
+            Warehouse w = order.getWarehouse();
+            if (w != null) {
+                warehouses.put(w.getWarehouseID(), w);
+                orderCounts.merge(w.getWarehouseID(), 1, Integer::sum);
+            }
+        }
+
+        if (warehouses.isEmpty()) {
+            Label empty = new Label("No warehouses found.\nImport orders to get started.");
+            empty.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; " +
+                    "-fx-text-fill: #666666; -fx-text-alignment: center;");
+            empty.setAlignment(Pos.CENTER);
+            cardGrid.getChildren().add(empty);
+        } else {
+            for (Map.Entry<String, Warehouse> entry : warehouses.entrySet()) {
+                Warehouse w = entry.getValue();
+                int count = orderCounts.getOrDefault(w.getWarehouseID(), 0);
+                cardGrid.getChildren().add(createWarehouseCard(w, count, stage, handler));
+            }
+        }
+
+        ScrollPane scrollPane = new ScrollPane(cardGrid);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+        scrollPane.setFitToWidth(true);
+        root.setCenter(scrollPane);
+
+        // Import button
+        WarehouseButton importBtn = WarehouseButton.primary("Import Orders");
+        importBtn.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Import Orders");
+            chooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+            File file = chooser.showOpenDialog(stage);
+            if (file != null) {
+                JsonParser parser = new JsonParser();
+                parser.setNewPath(file.getAbsolutePath());
+                handler.loadOrders(parser);
+                show(stage, handler);
+            }
+        });
+
+        HBox bottomBar = new HBox(importBtn);
+        bottomBar.setAlignment(Pos.CENTER);
+        bottomBar.setPadding(new Insets(24));
+        root.setBottom(bottomBar);
+
+        Scene scene = new Scene(root, 1100, 850);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setTitle("Warehouse Order Manager");
+        stage.setScene(scene);
+    }
+
+    private static StackPane createWarehouseCard(Warehouse warehouse, int orderCount,
+                                                  Stage stage, OrderHandler handler) {
+        StackPane card = new StackPane();
+        card.setPrefSize(200, 140);
+        card.setStyle("-fx-background-color: #2a2a2a; -fx-border-color: white; " +
+                "-fx-border-width: 2; -fx-cursor: hand;");
+
+        Label nameLabel = new Label(warehouse.getWarehouseName());
+        nameLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; " +
+                "-fx-font-weight: bold; -fx-text-fill: white;");
+        nameLabel.setWrapText(true);
+        nameLabel.setAlignment(Pos.CENTER);
+
+        String countText = orderCount == 1 ? "1 order" : orderCount + " orders";
+        Label countLabel = new Label(countText);
+        countLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 13px; -fx-text-fill: #aaaaaa;");
+
+        Label idLabel = new Label("ID: " + warehouse.getWarehouseID());
+        idLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 11px; -fx-text-fill: #666666;");
+
+        VBox content = new VBox(8, nameLabel, countLabel, idLabel);
+        content.setAlignment(Pos.CENTER);
+        card.getChildren().add(content);
+
+        card.setOnMouseEntered(e -> card.setStyle(
+                "-fx-background-color: #3a3a3a; -fx-border-color: #47CEFF; " +
+                "-fx-border-width: 2; -fx-cursor: hand;"));
+        card.setOnMouseExited(e -> card.setStyle(
+                "-fx-background-color: #2a2a2a; -fx-border-color: white; " +
+                "-fx-border-width: 2; -fx-cursor: hand;"));
+        card.setOnMouseClicked(e ->
+                MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
+
+        return card;
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
