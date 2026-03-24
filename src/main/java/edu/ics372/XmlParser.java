@@ -29,6 +29,7 @@ public class XmlParser implements ParserInterface {
         this.filePath = newPath;
     }
 
+    //https://www.youtube.com/watch?v=w3WibDOie1Y
     @Override
     public Order parseFile(String filePath) {
         try {
@@ -37,21 +38,42 @@ public class XmlParser implements ParserInterface {
             Document doc = builder.parse(new File(filePath));
             doc.getDocumentElement().normalize();
 
-            Element orderEl = doc.getDocumentElement();
+            //gets the root element of the XML file, which should be <Orders>
+            Element root = doc.getDocumentElement();
 
-            String orderType = orderEl.getElementsByTagName("type").item(0).getTextContent();
-            long orderDate = Long.parseLong(orderEl.getElementsByTagName("order_date").item(0).getTextContent());
+            // gets the first <Order> element found insdie the root <Orders> element
+            Element orderEl = (Element) root.getElementsByTagName("Order").item(0);
+            
+            // reads the order id attribute from <Order id="485">
+            String orderID = orderEl.getAttribute("id");
 
-            NodeList itemNodes = orderEl.getElementsByTagName("item");
-            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength(), null, null);
+            // read the text inside the <OrderType> tag
+            String orderType = orderEl.getElementsByTagName("OrderType").item(0).getTextContent();
 
+            // gets all <Item> elements that belong in this order
+            NodeList itemNodes = orderEl.getElementsByTagName("Item");
+
+            // creates a new order with the second constructor.
+            // used java systems to display a date since the sample file didnt include one
+            // used "New" for order status like in the JSON parser
+            Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType,itemNodes.getLength(), null, null);
+
+            // Loop through each <Item> element inside the order
             for (int i = 0; i < itemNodes.getLength(); i++) {
+                
+                //gets the current <Item> element from the nodeList
                 Element itemEl = (Element) itemNodes.item(i);
-                String name = itemEl.getElementsByTagName("name").item(0).getTextContent();
-                double price = Double.parseDouble(itemEl.getElementsByTagName("price").item(0).getTextContent());
-                int quantity = Integer.parseInt(itemEl.getElementsByTagName("quantity").item(0).getTextContent());
 
-                newOrder.addItem(new Item("I" + i, name, price, quantity, ""));
+                // reads the item name from the type attribute in <Item type="Rubber duck">
+                String name = itemEl.getAttribute("type");
+
+                // rads the price value from the <Price> tag and converts it from text to a double
+                double price = Double.parseDouble(itemEl.getElementsByTagName("Price").item(0).getTextContent());
+
+                //rads the quantity value from the <Quantity> tag and converts it from text to an int
+                int quantity = Integer.parseInt(itemEl.getElementsByTagName("Quantity").item(0).getTextContent());
+
+                newOrder.addItem(new Item("I" + i, name, price, quantity,null));
             }
 
             return newOrder;

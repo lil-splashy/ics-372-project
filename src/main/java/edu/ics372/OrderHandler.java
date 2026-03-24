@@ -12,6 +12,9 @@ public class OrderHandler {
     private LinkedList<Order> startedOrders;
     private LinkedList<Order> completedOrders;
 
+    //variable for file name for saved program orders
+    private static final String SAVE_FILE = "saved_orders.json";
+
     //Using map to associate orders with an id per instruction 3
     private Map<String,Order> ordersById;
 
@@ -20,6 +23,7 @@ public class OrderHandler {
 
     //Calling parserInterface to have methods that can load and save data using the parser class
     private ParserInterface parser = new Parser();
+    private JsonParser jParser = new JsonParser();
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -50,9 +54,9 @@ public class OrderHandler {
 
 
     // Takes the JsonParser object created in UserInterface with the file path
-    public void loadOrders(JsonParser parser) {
+    public void loadOrders(String filePath) {
 
-        Order order = parser.parseFile(parser.getFilePath());
+        Order order = parser.parseFile(filePath);
 
         if (order == null) {
             System.out.println("No order loaded from file");
@@ -221,9 +225,10 @@ public class OrderHandler {
         return totalPrice;
     }
 
-    public void saveData(String filePath){
+    public void saveData(){
         List<Order> allOrders = new ArrayList<>(ordersById.values());
-        parser.exportJSON(allOrders,filePath);
+        jParser.exportJSON(allOrders, SAVE_FILE);
+        System.out.println("Program data saved to " + SAVE_FILE);
     }
 
     /**
@@ -232,9 +237,9 @@ public class OrderHandler {
      *
      * @param filePath path to the saved program-orders file
      */
-    public void importProgramOrders(String filePath){
+    public void importProgramOrders(){
         //ask the parser to rebuild order objects from the save file
-        List<Order> importedOrders = parser.importProgramOrders(filePath);
+        List<Order> importedOrders = jParser.importProgramOrders(SAVE_FILE);
 
         //stop if nothing was loaded from the file
         if(importedOrders == null || importedOrders.isEmpty()){
