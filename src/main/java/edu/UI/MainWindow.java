@@ -1,58 +1,80 @@
 package edu.UI;
 
-import javafx.application.*;
-import javafx.geometry.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.stage.*;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
-public class MainWindow extends Application {
+import edu.ics372.Order;
+import edu.ics372.OrderHandler;
 
-    @Override
-    public void start(Stage primaryStage) {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainWindow {
+
+    public static void show(Stage stage, OrderHandler handler,
+                            String warehouseId, String warehouseName) {
         BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
 
-        // Header
-        Label header = new Label("Warehouse Order Manager");
-        header.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
-        BorderPane.setAlignment(header, Pos.CENTER);
-        BorderPane.setMargin(header, new Insets(16));
-        root.setTop(header);
+        // Top bar
+        Button backBtn = new Button("← Warehouses");
+        backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; " +
+                "-fx-font-family: 'Monospaced'; -fx-font-size: 13px; " +
+                "-fx-border-color: white; -fx-border-width: 1; -fx-cursor: hand;");
+        backBtn.setOnAction(e -> homepage.show(stage, handler));
 
-        // Main menu buttons
-        VBox menu = new VBox(10);
-        menu.setAlignment(Pos.CENTER);
-        menu.setPadding(new Insets(10));
+        Label header = new Label(warehouseName);
+        header.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 20px; " +
+                "-fx-font-weight: bold; -fx-text-fill: white;");
 
+        HBox topBar = new HBox(20, backBtn, header);
+        topBar.setAlignment(Pos.CENTER_LEFT);
+        topBar.setPadding(new Insets(16));
+        root.setTop(topBar);
 
-        // Left-Pane List
-        Rolodex rolodex = new Rolodex();
+        // Filter orders for this warehouse
+        List<Order> warehouseOrders = new ArrayList<>();
+        for (Order o : handler.getIncomingOrders()) {
+            if (o.getWarehouse() != null && o.getWarehouse().getWarehouseID().equals(warehouseId)) {
+                warehouseOrders.add(o);
+            }
+        }
+        for (Order o : handler.getStartedOrders()) {
+            if (o.getWarehouse() != null && o.getWarehouse().getWarehouseID().equals(warehouseId)) {
+                warehouseOrders.add(o);
+            }
+        }
+        for (Order o : handler.getCompletedOrders()) {
+            if (o.getWarehouse() != null && o.getWarehouse().getWarehouseID().equals(warehouseId)) {
+                warehouseOrders.add(o);
+            }
+        }
+
+        // Rolodex on the left
+        Rolodex rolodex = new Rolodex(warehouseOrders, warehouseName);
         root.setLeft(rolodex.getView());
 
-        root.setCenter(menu);
+        // Center content area
+        VBox center = new VBox();
+        center.setAlignment(Pos.CENTER);
+        center.setPadding(new Insets(10));
+        root.setCenter(center);
 
         // Status bar
-        Label statusBar = new Label("Ready");
-        statusBar.setStyle("-fx-padding: 4px 8px;");
+        String countText = warehouseOrders.size() == 1 ? "1 order" : warehouseOrders.size() + " orders";
+        Label statusBar = new Label(countText);
+        statusBar.setStyle("-fx-padding: 4px 8px; -fx-text-fill: #aaaaaa; -fx-font-family: 'Monospaced';");
         root.setBottom(statusBar);
 
-
-
-        // Window actual
         Scene scene = new Scene(root, 1100, 850);
         scene.setFill(Color.TRANSPARENT);
-        primaryStage.initStyle(StageStyle.UNIFIED);
-
-        primaryStage.setTitle("Warehouse Order Manager");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        root.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
-    }
-
-    public static void main(String[] args) {
-        launch(args);
+        stage.setTitle("Warehouse Order Manager - " + warehouseName);
+        stage.setScene(scene);
     }
 }

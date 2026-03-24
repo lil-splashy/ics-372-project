@@ -141,6 +141,13 @@ public class Order {
         this.orderType = orderType;
     }
 
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
     public double getOrderPrice() {
         return orderPrice;
     }

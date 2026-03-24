@@ -17,7 +17,7 @@ import java.util.List;
 
 public class XmlParser implements ParserInterface {
 
-    private String filePath = "order.xml";
+    private String filePath = "src/main/orders/order.xml";
 
     @Override
     public String getFilePath() {
