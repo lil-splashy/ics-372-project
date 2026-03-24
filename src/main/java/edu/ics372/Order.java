@@ -33,7 +33,7 @@ public class Order {
     //constructor for creating orders that already have an order id
     // the order constructor
     public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
-        if(orderID.charAt(0) != 'J' || orderID.charAt(0) != 'X') {
+        if(orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
             this.orderID = "X" + orderID;
         }else{
             this.orderID = orderID;
@@ -156,13 +156,14 @@ public class Order {
     // simply returns a readable order
     @Override
     public String toString() {
+        String customerName = (customer == null) ? "Unassigned" : customer.getName();
         StringBuilder exitLook = new StringBuilder(
                 "\nOrder { " +
                         "\n\torderID = " + orderID +
                         "\n\torderStatus = " + orderStatus +
                         "\n\torderType = " + orderType +
                         "\n\torderDate = " + orderDate +
-                        "\n\tcustomer = " + customer.getName() +
+                        "\n\tcustomer = " + customerName +
                         "\n\twarehouse = " + warehouse.getWarehouseName());
         for (int i = 0; i < items.length; i++){
             if (items[i] != null) {

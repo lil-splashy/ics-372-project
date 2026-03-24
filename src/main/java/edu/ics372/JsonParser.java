@@ -72,6 +72,9 @@ public class JsonParser implements ParserInterface {
 
         if (items != null) {
             for (Item item : items) {
+                if (item == null){
+                    continue;
+                }
                 JSONObject itemJson = new JSONObject();
                 itemJson.put("itemID", item.getItemID());
                 itemJson.put("name", item.getItemName());
