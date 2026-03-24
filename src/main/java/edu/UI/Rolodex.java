@@ -39,7 +39,7 @@ public class Rolodex extends Application {
         // Main container
         StackPane root = new StackPane();
         root.setStyle("-fx-background-color: #1a1a1a;");
-        root.setPrefSize(700, 850);
+        root.setPrefSize(700, 800);
 
         // Create header
         Pane header = createHeader();
@@ -88,7 +88,7 @@ public class Rolodex extends Application {
 
     private Pane createHeader() {
         StackPane header = new StackPane();
-        header.setPrefSize(635, 66);
+        header.setPrefSize(600, 60);
 
         // Border
         header.setStyle("-fx-border-color: white; -fx-border-width: 2;");
@@ -143,12 +143,12 @@ public class Rolodex extends Application {
 
     private Pane createScrollbarIndicator() {
         VBox scrollbarBg = new VBox();
-        scrollbarBg.setPrefSize(6, 700);
-        scrollbarBg.setStyle("-fx-background-color: rgba(219, 219, 219, 0.24);");
+        scrollbarBg.setPrefSize(4, 700);
+        scrollbarBg.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4);");
 
         Region thumb = new Region();
-        thumb.setPrefSize(6, 700.0 / TOTAL_ITEMS);
-        thumb.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-background-radius: 3;");
+        thumb.setPrefSize(4, 700.0 / TOTAL_ITEMS);
+        thumb.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 3;");
 
         scrollbarBg.getChildren().add(thumb);
 
@@ -256,7 +256,7 @@ public class Rolodex extends Application {
 
             // Border pane
             border = new Pane();
-            border.setPrefSize(635, 64);
+            border.setPrefSize(600, 64);
             border.setStyle("-fx-border-color: white; -fx-border-width: 2;");
 
             // Drop shadow

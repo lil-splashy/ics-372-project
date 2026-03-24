@@ -12,7 +12,6 @@ public class JsonParser implements ParserInterface {
 
     private  String filePath = "order.json";
 
-
     public String getFilePath() {
         return filePath;
     }
@@ -23,7 +22,6 @@ public class JsonParser implements ParserInterface {
 
 
     public Order parseFile(String filePath) {
-
         try {
 
             // Read file and create object

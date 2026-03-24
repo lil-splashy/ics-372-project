@@ -43,7 +43,7 @@ public class XmlParser implements ParserInterface {
             long orderDate = Long.parseLong(orderEl.getElementsByTagName("order_date").item(0).getTextContent());
 
             NodeList itemNodes = orderEl.getElementsByTagName("item");
-            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength());
+            Order newOrder = new Order(orderDate, "NEW", orderType, itemNodes.getLength(), null, null);
 
             for (int i = 0; i < itemNodes.getLength(); i++) {
                 Element itemEl = (Element) itemNodes.item(i);
@@ -51,7 +51,7 @@ public class XmlParser implements ParserInterface {
                 double price = Double.parseDouble(itemEl.getElementsByTagName("price").item(0).getTextContent());
                 int quantity = Integer.parseInt(itemEl.getElementsByTagName("quantity").item(0).getTextContent());
 
-                newOrder.addItem(new Item("I" + i, name, price, quantity));
+                newOrder.addItem(new Item("I" + i, name, price, quantity, ""));
             }
 
             return newOrder;
@@ -59,6 +59,11 @@ public class XmlParser implements ParserInterface {
             System.out.println(e);
             return null;
         }
+    }
+
+    @Override
+    public List<Order> importProgramOrders(String filePath) {
+        return new java.util.ArrayList<>();
     }
 
     @Override
