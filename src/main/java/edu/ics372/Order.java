@@ -14,25 +14,25 @@ public class Order {
     private int itemCount;
     private static final ArrayList<String> orderIDs = new ArrayList<>();
 
-    private final Customer customer;
+    //private final Customer customer; future builds
     private Warehouse warehouse;
 
     // the order constructor
-    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
         this.orderID = "J" + generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
         this.items = new Item[maxItems];
         this.itemCount = 0;
-        this.customer = customer;
+        //this.customer = customer;
         this.warehouse = warehouse;
     }
 
     // also use for xml data
     //constructor for creating orders that already have an order id
     // the order constructor
-    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
         if(orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
             this.orderID = "X" + orderID;
         }else{
@@ -43,7 +43,7 @@ public class Order {
         this.orderType = orderType;
         this.items = new Item[maxItems];
         this.itemCount = 0;
-        this.customer = customer;
+        //this.customer = customer;
         this.warehouse = warehouse;
         registerExistingOrder(orderID);
     }

@@ -42,7 +42,7 @@ public class JsonParser implements ParserInterface {
             Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
 
             // Add create new order
-            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null, warehouse);
+            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), warehouse);
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
@@ -156,7 +156,7 @@ public class JsonParser implements ParserInterface {
                 Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
 
                 //rebuilds the saved order using the import constructor so the original order ID is kept.
-                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null, warehouse);
+                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), warehouse);
 
                 //loop through each saved item and rebuild it before adding it back to the order
                 for (int j = 0; j < itemsArray.length(); j++){
