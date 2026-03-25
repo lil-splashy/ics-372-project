@@ -1,6 +1,6 @@
 package edu.ics372;
 
-
+import org.junit.jupiter.api.Test;
 
 /**
  * Manual Unit Test for the Item class
@@ -33,6 +33,7 @@ public class ItemTest {
     }
 
     // Test method to verify the constructor and getter methods
+    @Test
     public void testConstructorAndGetters() {
         System.out.println("Test 1: Constructor and Getters");
         try {
@@ -62,6 +63,7 @@ public class ItemTest {
     }
 
     // Test method to verify the setter methods
+    @Test
     public void testSetters() {
         System.out.println("Test 2: Setters");
         try {
@@ -98,6 +100,7 @@ public class ItemTest {
     }
 
     // Test method to verify that toString() includes all attribute values
+    @Test
     public void testToString() {
         System.out.println("Test 3: toString()");
         try {
