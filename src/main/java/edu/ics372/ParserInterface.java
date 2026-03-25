@@ -30,7 +30,7 @@ public interface ParserInterface {
 
   /**
    * @param filePath The file path of the file to be parsed
-   * @return Order list
+   * @return List of orders contained within the given file
    */
   List<Order> parseFile(String filePath);
 

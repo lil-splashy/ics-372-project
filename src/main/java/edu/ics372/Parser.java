@@ -32,6 +32,12 @@ public class Parser implements ParserInterface {
         parser.exportOrders(orders, filePath);
     }
 
+    /**
+     * Determines the parser to be used on a given file
+     *
+     * @param filePath The file to be parsed
+     * @return A parser that implements the ParserInterface
+     */
     private ParserInterface resolveParser(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             System.out.println("FileParser: file path is empty.");
