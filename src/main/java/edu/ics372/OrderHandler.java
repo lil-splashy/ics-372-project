@@ -251,7 +251,7 @@ public class OrderHandler {
         return totalPrice;
     }
 
-    public void saveData(){
+    public void saveData(String filePath){
         List<Order> allOrders = new ArrayList<>(ordersById.values());
         jParser.exportOrders(allOrders, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
@@ -263,7 +263,7 @@ public class OrderHandler {
      *
      * @param filePath path to the saved program-orders file
      */
-    public void importProgramOrders(){
+    public void importProgramOrders(String filePath){
         //ask the parser to rebuild order objects from the save file
         List<Order> importedOrders = jParser.importProgramOrders(SAVE_FILE);
         //stop if nothing was loaded from the file

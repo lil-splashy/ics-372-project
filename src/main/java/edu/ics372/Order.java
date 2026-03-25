@@ -14,25 +14,25 @@ public class Order {
     private int itemCount;
     private static final ArrayList<String> orderIDs = new ArrayList<>();
 
-    private final Customer customer;
+    //private final Customer customer; future builds
     private Warehouse warehouse;
 
     // the order constructor
-    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
         this.orderID = "J" + generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
         this.items = new Item[maxItems];
         this.itemCount = 0;
-        this.customer = customer;
+        //this.customer = customer;
         this.warehouse = warehouse;
     }
 
     // also use for xml data
     //constructor for creating orders that already have an order id
     // the order constructor
-    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
         if(orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
             this.orderID = "X" + orderID;
         }else{
@@ -43,7 +43,7 @@ public class Order {
         this.orderType = orderType;
         this.items = new Item[maxItems];
         this.itemCount = 0;
-        this.customer = customer;
+        //this.customer = customer;
         this.warehouse = warehouse;
         registerExistingOrder(orderID);
     }
@@ -105,6 +105,7 @@ public class Order {
     }
 
     /**
+     * For Future builds
      * remove ID when order is finished or cancelled
      */
     //For future build
@@ -164,14 +165,15 @@ public class Order {
     // simply returns a readable order
     @Override
     public String toString() {
-        String customerName = (customer == null) ? "Unassigned" : customer.getName();
+        //String customerName = (customer == null) ? "Unassigned" : customer.getName(); future builds
+        //"\n\tcustomer = " + customerName + // simply append toString for future builds
         StringBuilder exitLook = new StringBuilder(
                 "\nOrder { " +
                         "\n\torderID = " + orderID +
                         "\n\torderStatus = " + orderStatus +
                         "\n\torderType = " + orderType +
                         "\n\torderDate = " + orderDate +
-                        "\n\tcustomer = " + customerName +
+
                         "\n\twarehouse = " + warehouse.getWarehouseName());
         for (int i = 0; i < items.length; i++){
             if (items[i] != null) {

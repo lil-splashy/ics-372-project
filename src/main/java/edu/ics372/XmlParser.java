@@ -56,7 +56,7 @@ public class XmlParser implements ParserInterface {
             // creates a new order with the second constructor.
             // used java systems to display a date since the sample file didnt include one
             // used "New" for order status like in the JSON parser
-            Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType,itemNodes.getLength(), null, null);
+            Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType,itemNodes.getLength(), null);
 
             // Loop through each <Item> element inside the order
             for (int i = 0; i < itemNodes.getLength(); i++) {
