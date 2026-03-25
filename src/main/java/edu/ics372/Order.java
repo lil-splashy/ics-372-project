@@ -174,7 +174,7 @@ public class Order {
                         "\n\torderType = " + orderType +
                         "\n\torderDate = " + orderDate +
 
-                        "\n\twarehouse = " + warehouse.getWarehouseName());
+                        "\n\twarehouse = " + (warehouse != null ? warehouse.getWarehouseName() : "Unassigned"));
         for (int i = 0; i < items.length; i++){
             if (items[i] != null) {
                 exitLook.append(items[i].toString());

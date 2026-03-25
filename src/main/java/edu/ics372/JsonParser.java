@@ -70,13 +70,8 @@ public class JsonParser implements ParserInterface {
 
             JSONArray items = orderJson.getJSONArray("items");
 
-            // Read warehouse if present, otherwise use a default
-            String warehouseID = orderJson.optString("warehouseID", "W000");
-            String warehouseName = orderJson.optString("warehouseName", "Default Warehouse");
-            Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
-
             // Create new order
-            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), warehouse);
+            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null);
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
@@ -186,13 +181,8 @@ public class JsonParser implements ParserInterface {
                 String type = orderJson.getString("type");
                 JSONArray itemsArray = orderJson.getJSONArray("items");
 
-                // Read warehouse if present
-                String warehouseID = orderJson.optString("warehouseID", "W000");
-                String warehouseName = orderJson.optString("warehouseName", "Default Warehouse");
-                Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
-
                 //rebuilds the saved order using the import constructor so the original order ID is kept.
-                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), warehouse);
+                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null);
 
                 //loop through each saved item and rebuild it before adding it back to the order
                 for (int j = 0; j < itemsArray.length(); j++){

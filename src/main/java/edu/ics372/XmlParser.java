@@ -43,13 +43,6 @@ public class XmlParser implements ParserInterface {
             //gets the root element of the XML file, which should be <Orders>
             Element root = doc.getDocumentElement();
 
-            // read warehouse info from the root <Orders> element attributes, fall back to defaults
-            String warehouseID = root.getAttribute("warehouseID");
-            String warehouseName = root.getAttribute("warehouseName");
-            if (warehouseID == null || warehouseID.isEmpty()) warehouseID = "W000";
-            if (warehouseName == null || warehouseName.isEmpty()) warehouseName = "Default Warehouse";
-            Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
-
             // gets all <Order> elements found inside the root element
             NodeList orderNodes = root.getElementsByTagName("Order");
 
@@ -65,7 +58,7 @@ public class XmlParser implements ParserInterface {
                 // gets all <Item> elements that belong in this order
                 NodeList itemNodes = orderEl.getElementsByTagName("Item");
 
-                Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType, itemNodes.getLength(), warehouse);
+                Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType, itemNodes.getLength(), null);
 
                 // Loop through each <Item> element inside the order
                 for (int i = 0; i < itemNodes.getLength(); i++) {
