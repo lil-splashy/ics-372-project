@@ -34,6 +34,7 @@ public class Homepage extends Application {
      */
     @Override
     public void start(Stage stage) {
+        // Checks for OS to render properly
         String os = System.getProperty("os.name").toLowerCase();
         stage.initStyle(os.contains("mac") ? StageStyle.UNIFIED : StageStyle.DECORATED);
         OrderHandler handler = new OrderHandler();
@@ -66,9 +67,7 @@ public class Homepage extends Application {
         VBox titleBox = new VBox(8, title, subtitle);
         titleBox.setAlignment(Pos.CENTER);
         titleBox.setPadding(new Insets(30, 0, 20, 0));
-        titleBox.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
-                + "-fx-border-color: rgba(255,255,255,0.1);"
-                + "-fx-border-width: 0 0 1 0;");
+        titleBox.getStyleClass().add("header-bar");
 
         // Allow dragging the window by the title bar
         final double[] dragDelta = new double[2];
@@ -114,6 +113,7 @@ public class Homepage extends Application {
             }
         }
 
+        // Scroll pane
         ScrollPane scrollPane = new ScrollPane(cardGrid);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
         scrollPane.setFitToWidth(true);
@@ -140,9 +140,7 @@ public class Homepage extends Application {
         HBox bottomBar = new HBox(importBtn);
         bottomBar.setAlignment(Pos.CENTER);
         bottomBar.setPadding(new Insets(24));
-        bottomBar.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
-                + "-fx-border-color: rgba(255,255,255,0.1);"
-                + "-fx-border-width: 1 0 0 0;");
+        bottomBar.getStyleClass().add("footer-bar");
         root.setBottom(bottomBar);
 
         Scene scene = new Scene(root, 1100, 850);
@@ -155,6 +153,7 @@ public class Homepage extends Application {
         stage.setTitle("Warehouse Order Manager");
         stage.setScene(scene);
     }
+
 
     /**
      * Creates a StackPane for a provided Warehouse
@@ -169,8 +168,7 @@ public class Homepage extends Application {
                                                   Stage stage, OrderHandler handler) {
         StackPane card = new StackPane();
         card.setPrefSize(200, 140);
-        card.setStyle("-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
-                "-fx-border-width: 2; -fx-cursor: hand;");
+        card.getStyleClass().add("warehouse-card");
 
         Label nameLabel = new Label(warehouse.getWarehouseName());
         nameLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; " +
@@ -189,12 +187,6 @@ public class Homepage extends Application {
         content.setAlignment(Pos.CENTER);
         card.getChildren().add(content);
 
-        card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: rgba(58,58,58,0.75); -fx-border-color: #47CEFF; " +
-                "-fx-border-width: 2; -fx-cursor: hand;"));
-        card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
-                "-fx-border-width: 2; -fx-cursor: hand;"));
         card.setOnMouseClicked(e ->
                 MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
 
