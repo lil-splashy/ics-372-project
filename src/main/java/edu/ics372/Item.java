@@ -9,7 +9,9 @@ public class Item {
 
     private String warehouseLocation;
 
-    // the item object constructor
+    // Constructor for the Item class
+    // This method is called when a new Item object is created
+    // It initializes all the attributes of the Item with the provided values
     public Item(String itemID, String itemName, double itemPrice, int itemQuantity, String warehouseLocation) {
         this.itemID = itemID;
         this.itemName = itemName;
@@ -17,6 +19,7 @@ public class Item {
         this.itemQuantity = itemQuantity;
         this.warehouseLocation = warehouseLocation;
     }
+
     //getters and setters
     public String getItemID() {
         return itemID;
