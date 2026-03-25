@@ -26,7 +26,10 @@ public class OrderHandler {
     private JsonParser jParser = new JsonParser();
 
     // single warehouse for the program
-    private final Warehouse warehouse = new Warehouse("W001", "Main Warehouse");
+    private final Warehouse mainWarehouse = new Warehouse("W001", "Main Warehouse");
+    private final Warehouse bullseyeWarehouse = new Warehouse("W002", "Bullseye");
+    private final Warehouse wallyworldWarehouse = new Warehouse("W003", "WallyWorld");
+
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -39,8 +42,16 @@ public class OrderHandler {
         this.canceledOrders = new HashMap<>();
     }
 
-    public Warehouse getWarehouse() {
-        return warehouse;
+    public Warehouse getMainWarehouse() {
+        return mainWarehouse;
+    }
+
+    public Warehouse getBullseyeWarehouse(){
+        return bullseyeWarehouse;
+    }
+
+    public Warehouse getWallyworldWarehouse() {
+        return wallyworldWarehouse;
     }
 
     public void addOrder(Order order) {
@@ -76,7 +87,7 @@ public class OrderHandler {
         for (Order order : orders) {
             System.out.print("Order successfully loaded :D \n");
             order.setOrderStatus("incoming");
-            order.setWarehouse(warehouse);
+            order.setWarehouse(mainWarehouse);
             incomingOrders.add(order);
             ordersById.put(order.getOrderID(), order);
         }
@@ -263,6 +274,11 @@ public class OrderHandler {
         return totalPrice;
     }
 
+    /**
+     * Saves all orders that have not already been exported or removed, usually before exiting the session
+     *
+     * @param filePath The directory in which the file containing the orders is located
+     */
     public void saveData(String filePath){
         List<Order> allOrders = new ArrayList<>(ordersById.values());
         jParser.exportOrders(allOrders, SAVE_FILE);
@@ -303,7 +319,7 @@ public class OrderHandler {
      * @param order imported order to be restored into the proper list/map
      */
     private void addOrderToCorrectList(Order order){
-        order.setWarehouse(warehouse);
+        order.setWarehouse(mainWarehouse);
         //read the saved status of order so it can be put in the correct list
         String status = order.getOrderStatus();
 

@@ -133,6 +133,29 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    /**
+     * This will return the company that the order was sourced from, by checking the identifier on the orderID
+     * @return A string containing the source of the order
+     */
+    public String getSource()
+    {
+        String orderSource;
+        switch(this.orderID.charAt(0))
+        {
+            case 'J':  //J is assigned to files imported from json files, which are currently used only by Bullseye
+                orderSource = "Bullseye";
+                break;
+
+            case 'X':  //X respectively corresponds to xml, which used only by Wallyworld in our current system
+                orderSource = "Wallyworld";
+                break;
+
+            default:
+                orderSource = "Unknown Source";  //If neither identifier are found specify that the source is not known
+                break;
+        }
+        return orderSource;
+    }
 
     public String getOrderStatus() {
         return orderStatus;

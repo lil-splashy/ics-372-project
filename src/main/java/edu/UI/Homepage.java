@@ -27,6 +27,11 @@ public class Homepage extends Application {
 
     static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
 
+    /**
+     * This method will boot up the GUI, construct the OrderHandler and load in orders saved when the last session closed
+     *
+     * @param stage The window
+     */
     @Override
     public void start(Stage stage) {
         // Checks for OS to render properly
@@ -41,6 +46,13 @@ public class Homepage extends Application {
         stage.show();
     }
 
+    /**
+     * The "home" screen of the GUI that will display any warehouses that currently have orders assigned,
+     *  if no orders are present a prompt will show requesting that orders be imported along with a button.
+     *
+     * @param stage The window, should be the same as the one passed by the start method
+     * @param handler The OrderHandler that is currently being used by the program
+     */
     public static void show(Stage stage, OrderHandler handler) {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: rgba(26,26,26,0.72);"
@@ -143,14 +155,14 @@ public class Homepage extends Application {
     }
 
 
-
     /**
-        Create warehouse card - creates the card for available warehouses to work from
-        @param Warehouse
-        @param orderCount
-        @param stage
-        @param handler (orderHandler)
-        @return new pane
+     * Creates a StackPane for a provided Warehouse
+     *
+     * @param warehouse The warehouse that will be displayed on the menu
+     * @param orderCount The number of orders based in the Warehouse.
+     * @param stage The window housing the added warehouse
+     * @param handler The Order Handler being used
+     * @return A stackPane that allows the user to view the orders contained in the Warehouse
      */
     private static StackPane createWarehouseCard(Warehouse warehouse, int orderCount,
                                                   Stage stage, OrderHandler handler) {

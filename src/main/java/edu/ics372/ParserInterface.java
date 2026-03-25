@@ -29,15 +29,15 @@ public interface ParserInterface {
 
 
   /**
-   * @param JSON Filename
-   * @return Order list
+   * @param filePath The file path of the file to be parsed
+   * @return List of orders contained within the given file
    */
   List<Order> parseFile(String filePath);
 
 
      /**
      * @param orders - List of Orders to be exported
-     * @param filePath - Desired filepath for export
+     * @param exportDir - The directory in which the file containing the orders will be located in
      */
   void exportOrders(List<Order> orders, String exportDir);
 
