@@ -13,7 +13,8 @@ public class MainWindow {
         OrderManagementView view = new OrderManagementView(handler, warehouseId, warehouseName, stage);
 
         Scene scene = new Scene(view.getRoot(), 1380, 880);
-        scene.setFill(Color.TRANSPARENT);
+        boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+        scene.setFill(isMac ? Color.TRANSPARENT : Color.web("#1a1a1a"));
 
         String stylesheetPath = MainWindow.class.getResource("resources/styles/orders.css").toExternalForm();
         scene.getStylesheets().add(stylesheetPath);
