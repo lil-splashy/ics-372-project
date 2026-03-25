@@ -105,6 +105,7 @@ public class Order {
     }
 
     /**
+     * For Future builds
      * remove ID when order is finished or cancelled
      */
     //For future build
@@ -164,14 +165,15 @@ public class Order {
     // simply returns a readable order
     @Override
     public String toString() {
-        String customerName = (customer == null) ? "Unassigned" : customer.getName();
+        //String customerName = (customer == null) ? "Unassigned" : customer.getName(); future builds
+        //"\n\tcustomer = " + customerName + // simply append toString for future builds
         StringBuilder exitLook = new StringBuilder(
                 "\nOrder { " +
                         "\n\torderID = " + orderID +
                         "\n\torderStatus = " + orderStatus +
                         "\n\torderType = " + orderType +
                         "\n\torderDate = " + orderDate +
-                        "\n\tcustomer = " + customerName +
+
                         "\n\twarehouse = " + warehouse.getWarehouseName());
         for (int i = 0; i < items.length; i++){
             if (items[i] != null) {
