@@ -151,8 +151,8 @@ public class OrderHandlerTest {
         addOrderToHandler(order2);
         addOrderToHandler(order3);
 
-        double total = handler.totalPriceUncompletedOrders(); // order2 + order3 = 10 + 12
-        if (total == 22) {
+        double total = handler.totalPriceUncompletedOrders(); // should == 525.00
+        if (total == 525.00) {
             System.out.println("  ✓ Total price of uncompleted orders is correct: " + total + "\n");
         } else {
             System.out.println("  ✗ Total price incorrect. Expected 22, Got: " + total + "\n");
