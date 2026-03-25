@@ -12,7 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import edu.ics372.JsonParser;
+import edu.ics372.Parser;
 import edu.ics372.Order;
 import edu.ics372.OrderHandler;
 import edu.ics372.Warehouse;
@@ -110,13 +110,15 @@ public class Homepage extends Application {
         importBtn.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+            chooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Order Files", "*.json", "*.xml"),
+                    new FileChooser.ExtensionFilter("JSON Files", "*.json"),
+                    new FileChooser.ExtensionFilter("XML Files", "*.xml"));
             File file = chooser.showOpenDialog(stage);
             if (file != null) {
-                JsonParser parser = new JsonParser();
-                parser.setNewPath(file.getAbsolutePath());
-                handler.loadOrders(parser);
+                Parser p = new Parser();
+                List<Order> orders = p.parseFile(file.getAbsolutePath());
+                handler.loadOrders(orders);  // Pass the list of orders
                 show(stage, handler);
             }
         });

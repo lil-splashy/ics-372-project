@@ -25,6 +25,9 @@ public class OrderHandler {
     private ParserInterface parser = new Parser();
     private JsonParser jParser = new JsonParser();
 
+    // single warehouse for the program
+    private final Warehouse warehouse = new Warehouse("W001", "Main Warehouse");
+
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.incomingOrders = new LinkedList<>();
@@ -34,6 +37,10 @@ public class OrderHandler {
         this.ordersById = new HashMap<>();
         //used to record canceled orders
         this.canceledOrders = new HashMap<>();
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
     }
 
     public void addOrder(Order order) {
@@ -53,21 +60,26 @@ public class OrderHandler {
     }
 
 
-    // Takes the JsonParser object created in UserInterface with the file path
+    // Loads orders from a file path using the parser to detect format
     public void loadOrders(String filePath) {
+        List<Order> orders = parser.parseFile(filePath);
+        loadOrders(orders);
+    }
 
-        Order order = parser.parseFile(filePath);
-
-        if (order == null) {
-            System.out.println("No order loaded from file");
+    // Loads a list of already-parsed orders
+    public void loadOrders(List<Order> orders) {
+        if (orders == null || orders.isEmpty()) {
+            System.out.println("No orders loaded from file");
             return;
         }
 
-        System.out.print("Order successfully loaded :D \n");
-
-        order.setOrderStatus("incoming");
-        incomingOrders.add(order);
-        ordersById.put(order.getOrderID(), order);
+        for (Order order : orders) {
+            System.out.print("Order successfully loaded :D \n");
+            order.setOrderStatus("incoming");
+            order.setWarehouse(warehouse);
+            incomingOrders.add(order);
+            ordersById.put(order.getOrderID(), order);
+        }
     }
 
     // when prompted by user interface move specific incoming orders to started orders.
@@ -291,6 +303,7 @@ public class OrderHandler {
      * @param order imported order to be restored into the proper list/map
      */
     private void addOrderToCorrectList(Order order){
+        order.setWarehouse(warehouse);
         //read the saved status of order so it can be put in the correct list
         String status = order.getOrderStatus();
 

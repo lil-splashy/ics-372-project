@@ -8,3 +8,9 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+
+/createdFiles.lst/
+/inputFiles.lst/
+/TEST-edu.ics372.OrderHandlerTest.xml/
+/Test-edu.ics372.ParserTest.xml/

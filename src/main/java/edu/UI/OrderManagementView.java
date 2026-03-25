@@ -1,7 +1,7 @@
 package edu.UI;
 
 import edu.ics372.Item;
-import edu.ics372.JsonParser;
+import edu.ics372.Parser;
 import edu.ics372.Order;
 import edu.ics372.OrderHandler;
 import edu.ics372.OrderLock;
@@ -433,13 +433,18 @@ public class OrderManagementView {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Import Orders");
             chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+                    new FileChooser.ExtensionFilter("JSON or XML Files", "*.json", "*.xml"));
             File file = chooser.showOpenDialog(stage);
             if (file != null) {
-                JsonParser parser = new JsonParser();
-                parser.setNewPath(file.getAbsolutePath());
-                handler.loadOrders(parser);
-                refreshOrders();
+                try {
+                    Parser parser = new Parser();
+                    parser.setNewPath(file.getAbsolutePath());
+                    List<Order> orders = parser.parseFile(file.getAbsolutePath());
+                    handler.loadOrders(orders);
+                    refreshOrders();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         row2.getChildren().addAll(modifyBtn, importBtn);

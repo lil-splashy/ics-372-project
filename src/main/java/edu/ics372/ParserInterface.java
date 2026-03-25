@@ -30,9 +30,10 @@ public interface ParserInterface {
 
   /**
    * @param JSON Filename
-   * @return New Order
+   * @return Order list
    */
-  Order parseFile(String filePath);
+  List<Order> parseFile(String filePath);
+
 
      /**
      * @param orders - List of Orders to be exported

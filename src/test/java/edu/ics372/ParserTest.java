@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 
 public class ParserTest {
 
@@ -111,10 +112,12 @@ public class ParserTest {
             }
 
             JsonParser parser = new JsonParser();
-            Order order = parser.parseFile(TEST_JSON_PATH);
+            List<Order> orders = parser.parseFile(TEST_JSON_PATH);
 
-            if (order != null) {
+            if (orders != null && !orders.isEmpty()) {
+                Order order = orders.get(0);
                 System.out.println("  ✓ File parsed successfully");
+                System.out.println("  Orders parsed: " + orders.size());
                 System.out.println("  Order ID: " + order.getOrderID());
                 System.out.println("  Order Type: " + order.getOrderType());
                 System.out.println("  Order Status: " + order.getOrderStatus());
@@ -149,7 +152,7 @@ public class ParserTest {
                 }
                 System.out.println();
             } else {
-                System.out.println("  ✗ Failed to parse file - returned null\n");
+                System.out.println("  ✗ Failed to parse file - returned empty list\n");
             }
         } catch (Exception e) {
             System.out.println("  ✗ Exception: " + e.getMessage());
@@ -162,10 +165,10 @@ public class ParserTest {
         System.out.println("Test 4: exportJSON()");
         try {
             JsonParser parser = new JsonParser();
-            Order order = parser.parseFile(TEST_JSON_PATH);
+            List<Order> orders = parser.parseFile(TEST_JSON_PATH);
 
-            if (order != null) {
-                parser.exportOrders(Collections.singletonList(order), EXPORT_JSON_PATH);
+            if (orders != null && !orders.isEmpty()) {
+                parser.exportOrders(orders, EXPORT_JSON_PATH);
 
                 File exportedFile = new File(EXPORT_JSON_PATH);
                 if (exportedFile.exists()) {
@@ -174,8 +177,8 @@ public class ParserTest {
                     System.out.println("  File size: " + exportedFile.length() + " bytes");
 
                     // Try to re-import it
-                    Order reimportedOrder = parser.parseFile(EXPORT_JSON_PATH);
-                    if (reimportedOrder != null) {
+                    List<Order> reimportedOrders = parser.parseFile(EXPORT_JSON_PATH);
+                    if (reimportedOrders != null && !reimportedOrders.isEmpty()) {
                         System.out.println("  ✓ Exported file can be re-imported successfully\n");
                     } else {
                         System.out.println("  ✗ Exported file cannot be re-imported\n");
@@ -184,7 +187,7 @@ public class ParserTest {
                     System.out.println("  ✗ Export failed - file not created\n");
                 }
             } else {
-                System.out.println("  ✗ Cannot test export - no order to export\n");
+                System.out.println("  ✗ Cannot test export - no orders to export\n");
             }
         } catch (Exception e) {
             System.out.println("  ✗ Exception: " + e.getMessage() + "\n");

@@ -21,27 +21,61 @@ public class JsonParser implements ParserInterface {
     }
 
 
-    public Order parseFile(String filePath) {
-        try {
+    public List<Order> parseFile(String filePath) {
+        List<Order> orders = new ArrayList<>();
 
-            // Read file and create object
+        try {
+            // Read file and create objects
             String content = new String(Files.readAllBytes(Paths.get(filePath)));
             JSONObject jsonObject = new JSONObject(content);
 
+            // Check if the JSON contains an array of orders or a single order
+            if (jsonObject.has("orders")) {
+                // Handle multiple orders
+                JSONArray ordersArray = jsonObject.getJSONArray("orders");
 
-            JSONObject order = jsonObject.getJSONObject("order");
-            String orderType = order.getString("type");
-            long orderDate = order.getLong("order_date");
+                for (int i = 0; i < ordersArray.length(); i++) {
+                    JSONObject orderJson = ordersArray.getJSONObject(i);
+                    Order order = parseSingleOrder(orderJson, i);
+                    if (order != null) {
+                        orders.add(order);
+                    }
+                }
+            } else if (jsonObject.has("order")) {
+                // Handle single order (backward compatibility)
+                JSONObject orderJson = jsonObject.getJSONObject("order");
+                Order order = parseSingleOrder(orderJson, 0);
+                if (order != null) {
+                    orders.add(order);
+                }
+            } else {
+                // Assume the root object itself is an order
+                Order order = parseSingleOrder(jsonObject, 0);
+                if (order != null) {
+                    orders.add(order);
+                }
+            }
 
+            return orders;
+        } catch (Exception e) {
+            System.out.println("Error parsing file: " + e.getMessage());
+            return orders; // Return empty list instead of null
+        }
+    }
 
-            JSONArray items = order.getJSONArray("items");
+    private Order parseSingleOrder(JSONObject orderJson, int orderIndex) {
+        try {
+            String orderType = orderJson.getString("type");
+            long orderDate = orderJson.getLong("order_date");
+
+            JSONArray items = orderJson.getJSONArray("items");
 
             // Read warehouse if present, otherwise use a default
-            String warehouseID = order.optString("warehouseID", "W000");
-            String warehouseName = order.optString("warehouseName", "Default Warehouse");
+            String warehouseID = orderJson.optString("warehouseID", "W000");
+            String warehouseName = orderJson.optString("warehouseName", "Default Warehouse");
             Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
 
-            // Add create new order
+            // Create new order
             Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), warehouse);
 
             for (int j = 0; j < items.length(); j++) {
@@ -50,12 +84,14 @@ public class JsonParser implements ParserInterface {
                 double price = item.getDouble("price");
                 int quantity = item.getInt("quantity");
 
-                Item newItem = new Item("I" + j, name, price, quantity, null);
+                // Use orderIndex to ensure unique item IDs across orders
+                Item newItem = new Item("I" + orderIndex + "_" + j, name, price, quantity, null);
                 newOrder.addItem(newItem);
             }
+
             return newOrder;
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error parsing order " + orderIndex + ": " + e.getMessage());
             return null;
         }
     }

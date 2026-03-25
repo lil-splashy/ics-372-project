@@ -33,10 +33,10 @@ public class OrderHandlerTest {
     public OrderHandlerTest() {
         handler = new OrderHandler();
 
-        // Create sample orders
-        order1 = new Order(1L, "Alice", "Pizza", 15, null, null); // id, customerName, itemName, price
-        order2 = new Order(2L, "Bob", "Burger", 10, null, null);
-        order3 = new Order(3L, "Charlie", "Salad", 12, null, null);
+        // Create sample orders (orderDate, orderStatus, orderType, maxItems, warehouse)
+        order1 = new Order(1L, "incoming", "Pizza", 15, null);
+        order2 = new Order(2L, "incoming", "Burger", 10, null);
+        order3 = new Order(3L, "incoming", "Salad", 12, null);
 
         // Initially set status to "incoming"
         order1.setOrderStatus("incoming");

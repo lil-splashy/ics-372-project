@@ -1,4 +1,5 @@
 package edu.ics372;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser implements ParserInterface {
@@ -16,9 +17,9 @@ public class Parser implements ParserInterface {
     }
 
     @Override
-    public Order parseFile(String filePath) {
+    public List<Order> parseFile(String filePath) {
         ParserInterface parser = resolveParser(filePath);
-        if (parser == null) return null;
+        if (parser == null) return new ArrayList<>();
         return parser.parseFile(filePath);
     }
 

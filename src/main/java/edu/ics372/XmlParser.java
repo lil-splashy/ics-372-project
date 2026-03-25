@@ -13,6 +13,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XmlParser implements ParserInterface {
@@ -31,7 +32,8 @@ public class XmlParser implements ParserInterface {
 
     //https://www.youtube.com/watch?v=w3WibDOie1Y
     @Override
-    public Order parseFile(String filePath) {
+    public List<Order> parseFile(String filePath) {
+        List<Order> orders = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -41,46 +43,45 @@ public class XmlParser implements ParserInterface {
             //gets the root element of the XML file, which should be <Orders>
             Element root = doc.getDocumentElement();
 
-            // gets the first <Order> element found insdie the root <Orders> element
-            Element orderEl = (Element) root.getElementsByTagName("Order").item(0);
+            // read warehouse info from the root <Orders> element attributes, fall back to defaults
+            String warehouseID = root.getAttribute("warehouseID");
+            String warehouseName = root.getAttribute("warehouseName");
+            if (warehouseID == null || warehouseID.isEmpty()) warehouseID = "W000";
+            if (warehouseName == null || warehouseName.isEmpty()) warehouseName = "Default Warehouse";
+            Warehouse warehouse = new Warehouse(warehouseID, warehouseName);
 
-            // reads the order id attribute from <Order id="485">
-            String orderID = orderEl.getAttribute("id");
+            // gets all <Order> elements found inside the root element
+            NodeList orderNodes = root.getElementsByTagName("Order");
 
-            // read the text inside the <OrderType> tag
-            String orderType = orderEl.getElementsByTagName("OrderType").item(0).getTextContent();
+            for (int o = 0; o < orderNodes.getLength(); o++) {
+                Element orderEl = (Element) orderNodes.item(o);
 
-            // gets all <Item> elements that belong in this order
-            NodeList itemNodes = orderEl.getElementsByTagName("Item");
+                // reads the order id attribute from <Order id="485">
+                String orderID = orderEl.getAttribute("id");
 
-            // creates a new order with the second constructor.
-            // used java systems to display a date since the sample file didnt include one
-            // used "New" for order status like in the JSON parser
-            Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType,itemNodes.getLength(), null);
+                // read the text inside the <OrderType> tag
+                String orderType = orderEl.getElementsByTagName("OrderType").item(0).getTextContent();
 
-            // Loop through each <Item> element inside the order
-            for (int i = 0; i < itemNodes.getLength(); i++) {
+                // gets all <Item> elements that belong in this order
+                NodeList itemNodes = orderEl.getElementsByTagName("Item");
 
-                //gets the current <Item> element from the nodeList
-                Element itemEl = (Element) itemNodes.item(i);
+                Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType, itemNodes.getLength(), warehouse);
 
-                // reads the item name from the type attribute in <Item type="Rubber duck">
-                String name = itemEl.getAttribute("type");
+                // Loop through each <Item> element inside the order
+                for (int i = 0; i < itemNodes.getLength(); i++) {
+                    Element itemEl = (Element) itemNodes.item(i);
+                    String name = itemEl.getAttribute("type");
+                    double price = Double.parseDouble(itemEl.getElementsByTagName("Price").item(0).getTextContent());
+                    int quantity = Integer.parseInt(itemEl.getElementsByTagName("Quantity").item(0).getTextContent());
+                    newOrder.addItem(new Item("I" + o + "_" + i, name, price, quantity, null));
+                }
 
-                // rads the price value from the <Price> tag and converts it from text to a double
-                double price = Double.parseDouble(itemEl.getElementsByTagName("Price").item(0).getTextContent());
-
-                //rads the quantity value from the <Quantity> tag and converts it from text to an int
-                int quantity = Integer.parseInt(itemEl.getElementsByTagName("Quantity").item(0).getTextContent());
-
-                newOrder.addItem(new Item("I" + i, name, price, quantity,null));
+                orders.add(newOrder);
             }
-
-            return newOrder;
         } catch (Exception e) {
-            System.out.println(e);
-            return null;
+            System.out.println("Error parsing XML file: " + e.getMessage());
         }
+        return orders;
     }
 
     public void exportOrders(List<Order> orders, String filePath) {
