@@ -2,6 +2,7 @@
     "item_count": 3,
     "order_date": 1774452200457,
     "orderID": "X485",
+    "warehouseID": "W001",
     "type": "Delivery",
     "items": [
         {
@@ -23,5 +24,6 @@
             "name": "Paper Towel Roll"
         }
     ],
+    "warehouseName": "Main Warehouse",
     "status": "incoming"
 }]}
