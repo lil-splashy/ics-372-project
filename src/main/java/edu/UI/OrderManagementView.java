@@ -158,12 +158,41 @@ public class OrderManagementView {
         WarehouseButton homeBtn = WarehouseButton.icon(homeSvg);
         homeBtn.setOnAction(e -> Homepage.show(stage, handler));
 
+        SVGPath importSvg = new SVGPath();
+        importSvg.setContent("M4 13V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V13"
+                + " M12 3L12 15M12 15L8.5 11.5M12 15L15.5 11.5");
+        importSvg.setStroke(Color.WHITE);
+        importSvg.setStrokeWidth(1.5);
+        importSvg.setFill(Color.TRANSPARENT);
+        importSvg.setScaleX(1.1);
+        importSvg.setScaleY(1.1);
+
+        WarehouseButton importNavBtn = WarehouseButton.icon(importSvg);
+
+        importNavBtn.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Import Orders");
+            chooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("JSON or XML Files", "*.json", "*.xml"));
+            File file = chooser.showOpenDialog(stage);
+            if (file != null) {
+                try {
+                    Parser parser = new Parser();
+                    List<Order> imported = parser.parseFile(file.getAbsolutePath());
+                    handler.loadOrders(imported);
+                    refreshOrders();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         // Allow dragging the window by the header bar
         final double[] dragDelta = new double[2];
         bar.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
         bar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
-        bar.getChildren().addAll(logo, textBlock, spacer, homeBtn);
+        bar.getChildren().addAll(logo, textBlock, spacer, importNavBtn, homeBtn);
         return bar;
     }
 
@@ -421,34 +450,6 @@ public class OrderManagementView {
             refreshOrders();
         });
 
-        HBox row2 = new HBox(10);
-        Button modifyBtn = WarehouseButton.action("Modify Order", 0, 54, false);
-        modifyBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(modifyBtn, Priority.ALWAYS);
-
-        Button importBtn = WarehouseButton.action("Import Orders", 0, 54, false);
-        importBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(importBtn, Priority.ALWAYS);
-        importBtn.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON or XML Files", "*.json", "*.xml"));
-            File file = chooser.showOpenDialog(stage);
-            if (file != null) {
-                try {
-                    Parser parser = new Parser();
-                    parser.setNewPath(file.getAbsolutePath());
-                    List<Order> orders = parser.parseFile(file.getAbsolutePath());
-                    handler.loadOrders(orders);
-                    refreshOrders();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-        row2.getChildren().addAll(modifyBtn, importBtn);
-
         HBox row3 = new HBox(10);
         Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);
         printBtn.setMaxWidth(Double.MAX_VALUE);
@@ -460,7 +461,7 @@ public class OrderManagementView {
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
         row3.getChildren().addAll(printBtn, exportBtn);
 
-        pane.getChildren().addAll(completeBtn, row2, row3);
+        pane.getChildren().addAll(completeBtn, row3);
         return pane;
     }
 

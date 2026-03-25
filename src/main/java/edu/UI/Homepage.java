@@ -28,7 +28,8 @@ public class Homepage extends Application {
     static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
     @Override
     public void start(Stage stage) {
-        stage.initStyle(StageStyle.UNIFIED);
+        String os = System.getProperty("os.name").toLowerCase();
+        stage.initStyle(os.contains("mac") ? StageStyle.UNIFIED : StageStyle.DECORATED);
         OrderHandler handler = new OrderHandler();
         if (new File(SAVE_FILE).exists()) {
             handler.importProgramOrders(SAVE_FILE);
@@ -132,7 +133,8 @@ public class Homepage extends Application {
         root.setBottom(bottomBar);
 
         Scene scene = new Scene(root, 1100, 850);
-        scene.setFill(Color.TRANSPARENT);
+        boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+        scene.setFill(isMac ? Color.TRANSPARENT : Color.web("#1a1a1a"));
 
         scene.getStylesheets().add(
                 Homepage.class.getResource("resources/styles/orders.css").toExternalForm());
