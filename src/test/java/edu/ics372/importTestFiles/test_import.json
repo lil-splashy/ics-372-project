@@ -1,0 +1,15 @@
+{"orders": [{
+    "item_count": 1,
+    "order_date": 1672531200,
+    "orderID": "JK833008278086",
+    "warehouseID": "W001",
+    "type": "Online",
+    "items": [{
+        "itemID": "I1",
+        "quantity": 1,
+        "price": 1200,
+        "name": "Laptop"
+    }],
+    "warehouseName": "Main",
+    "status": "Pending"
+}]}

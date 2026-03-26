@@ -3,6 +3,8 @@ package edu.ics372;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.junit.jupiter.api.Test;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
@@ -27,7 +29,7 @@ public class ParserTest {
 
         System.out.println("\n=== All Tests Completed ===");
     }
-
+    @Test
     public void testConstructor() {
         System.out.println("Test 1: Constructor");
         try {
@@ -37,7 +39,7 @@ public class ParserTest {
             System.out.println("  ✗ Failed: " + e.getMessage() + "\n");
         }
     }
-
+    @Test
     public void createSampleJsonFile() {
         System.out.println("Test 2: Creating sample JSON file");
         try {
@@ -101,7 +103,7 @@ public class ParserTest {
             e.printStackTrace();
         }
     }
-
+    @Test
     public void testParseFile() {
         System.out.println("Test 3: parseFile()");
         try {
@@ -160,7 +162,7 @@ public class ParserTest {
             System.out.println();
         }
     }
-
+    @Test
     public void testExportJSON() {
         System.out.println("Test 4: exportJSON()");
         try {
@@ -194,7 +196,7 @@ public class ParserTest {
             e.printStackTrace();
         }
     }
-
+    @Test
     public void cleanup() {
         System.out.println("Cleanup: Removing test files");
         try {

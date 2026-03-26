@@ -1,0 +1,11 @@
+{
+  "orders": [
+    {
+      "type": "Online",
+      "order_date": 1672531200,
+      "items": [
+        {"name": "Laptop", "price": 1200.0, "quantity": 1}
+      ]
+    }
+  ]
+}
