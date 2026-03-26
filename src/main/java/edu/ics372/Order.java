@@ -18,6 +18,10 @@ public class Order {
     private Warehouse warehouse;
 
     // the order constructor
+    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
+        this(orderDate, orderStatus, orderType, maxItems, warehouse);
+    }
+
     public Order(long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
         this.orderID = "J" + generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
