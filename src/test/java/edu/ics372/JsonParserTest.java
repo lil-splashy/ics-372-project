@@ -13,6 +13,7 @@ package edu.ics372;
  */
 
 import edu.ics372.JsonParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.nio.file.*;
@@ -33,6 +34,7 @@ public class JsonParserTest {
     }
 
     // Test getter and setter for filePath
+    @Test
     public void testGetterSetter() {
         System.out.println("Test 1: Getter and Setter");
         try {
@@ -55,6 +57,7 @@ public class JsonParserTest {
     }
 
     // Test parseFile() method
+    @Test
     public void testParseFile() {
         System.out.println("Test 2: parseFile()");
         try {
@@ -79,6 +82,7 @@ public class JsonParserTest {
     }
 
     // Test exportOrders() method
+    @Test
     public void testExportOrders() {
         System.out.println("Test 3: exportOrders()");
         try {
@@ -112,6 +116,7 @@ public class JsonParserTest {
     }
 
     // Test importProgramOrders() method
+    @Test
     public void testImportProgramOrders() {
         System.out.println("Test 4: importProgramOrders()");
         try {

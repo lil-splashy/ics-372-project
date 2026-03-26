@@ -12,6 +12,8 @@ package edu.ics372;
  * - File paths may need adjustment based on your project structure.
  */
 
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 import java.nio.file.*;
 
@@ -30,6 +32,7 @@ public class XmlParserTest {
     }
 
     // Test getter and setter for filePath
+    @Test
     public void testGetSetFilePath() {
         System.out.println("Test 1: Get & Set FilePath");
         try {
@@ -52,6 +55,7 @@ public class XmlParserTest {
     }
 
     // Test parseFile() method
+    @Test
     public void testParseFile() {
         System.out.println("Test 2: parseFile()");
         try {
@@ -76,6 +80,7 @@ public class XmlParserTest {
     }
 
     // Test exportOrders() method
+    @Test
     public void testExportOrders() {
         System.out.println("Test 3: exportOrders()");
         try {

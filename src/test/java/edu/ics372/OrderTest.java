@@ -1,5 +1,7 @@
 package edu.ics372;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Manual Unit Test for the Order class
  * Includes toString() tests for both constructors.
@@ -23,6 +25,7 @@ public class OrderTest {
     }
 
     // Test the constructor that generates a new orderID
+    @Test
     public void testConstructorAndGetters() {
         System.out.println("Test 1: Constructor and Getters (new orderID)");
         try {
@@ -44,6 +47,7 @@ public class OrderTest {
     }
 
     // Test the constructor that accepts a pre-existing orderID
+    @Test
     public void testConstructorWithExistingID() {
         System.out.println("Test 2: Constructor with existing orderID");
         try {
@@ -64,7 +68,7 @@ public class OrderTest {
             System.out.println(" *** Exception occurred: " + e.getMessage() + " ***\n");
         }
     }
-
+    @Test
     public void testSetters() {
         System.out.println("Test 3: Setters");
         try {
@@ -90,7 +94,7 @@ public class OrderTest {
             System.out.println(" FAILURE: Exception occurred: " + e.getMessage() + "\n");
         }
     }
-
+    @Test
     public void testAddItem() {
         System.out.println("Test 4: addItem()");
         try {
@@ -115,6 +119,7 @@ public class OrderTest {
     }
 
     // Test toString for constructor that generates orderID
+    @Test
     public void testToStringGeneratedID() {
         System.out.println("Test 5: toString() (generated orderID)");
         try {
@@ -141,6 +146,7 @@ public class OrderTest {
     }
 
     // Test toString for constructor with existing orderID
+    @Test
     public void testToStringExistingID() {
         System.out.println("Test 6: toString() (existing orderID)");
         try {

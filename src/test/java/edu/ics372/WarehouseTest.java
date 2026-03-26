@@ -30,6 +30,7 @@ public class WarehouseTest {
     }
 
     // Test constructor and getter methods
+    @Test
     public void testConstructorAndGetters() {
         System.out.println("Test 1: Constructor and Getters");
         try {
@@ -57,6 +58,7 @@ public class WarehouseTest {
     }
 
     // Test toString() method
+    @Test
     public void testToString() {
         System.out.println("Test 2: toString()");
         try {
