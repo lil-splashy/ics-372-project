@@ -17,6 +17,8 @@ import edu.ics372.OrderHandler;
 import edu.ics372.Warehouse;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,8 +26,9 @@ import java.util.Map;
 
 public class Homepage extends Application {
 
-    static final String ORDERS_DIR = "src/main/orders";
-    static final String SAVE_FILE  = ORDERS_DIR + "/warehouse_orders.json";
+    private static final Path ORDERS_PATH = Paths.get("src", "main", "orders");
+    static final String ORDERS_DIR = ORDERS_PATH.toString();
+    static final String SAVE_FILE  = ORDERS_PATH.resolve("warehouse_orders.json").toString();
 
     /**
      * This method will boot up the GUI, construct the OrderHandler and load in orders saved when the last session closed
@@ -148,7 +151,7 @@ public class Homepage extends Application {
      * into the handler, skipping the program's own save file.
      */
     static void importFromOrdersDir(OrderHandler handler) {
-        File dir = new File(ORDERS_DIR);
+        File dir = ORDERS_PATH.toFile();
         if (!dir.exists() || !dir.isDirectory()) return;
         File[] files = dir.listFiles((d, name) ->
                 (name.endsWith(".json") || name.endsWith(".xml"))
