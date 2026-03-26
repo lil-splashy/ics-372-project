@@ -1,3 +1,4 @@
+package edu.ics372;
 /**
  * Manual Unit Test for the JsonParser class
  * This test verifies:
@@ -10,6 +11,8 @@
  * - Requires valid JSON test files to exist.
  * - File paths may need to be adjusted based on your project structure.
  */
+
+import edu.ics372.JsonParser;
 
 import java.util.*;
 import java.nio.file.*;
@@ -35,7 +38,7 @@ public class JsonParserTest {
         try {
             JsonParser parser = new JsonParser();
 
-            String newPath = "test/path/orders.json";
+            String newPath = "src/test/java/edu/ics372/jsonTest.json";
             parser.setNewPath(newPath);
 
             boolean success = parser.getFilePath().equals(newPath);
@@ -58,7 +61,7 @@ public class JsonParserTest {
             JsonParser parser = new JsonParser();
 
             // Path to a valid test JSON file (must exist)
-            String testFile = "test_orders.json";
+            String testFile = "src/test/java/edu/ics372/jsonTest.json";
 
             List<Order> orders = parser.parseFile(testFile);
 
@@ -90,7 +93,7 @@ public class JsonParserTest {
             List<Order> orders = new ArrayList<>();
             orders.add(order);
 
-            String filePath = "test_export.json";
+            String filePath = "src/test/java/edu/ics372/exportedTestFiles/test_export.json";
 
             parser.exportOrders(orders, filePath);
 
@@ -114,8 +117,8 @@ public class JsonParserTest {
         try {
             JsonParser parser = new JsonParser();
 
-            // Use previously exported file or prepared JSON file
-            String filePath = "test_export.json";
+            // Use testimport JSON file
+            String filePath = "src/test/java/edu/ics372/importTestFiles/test_import.json";
 
             List<Order> orders = parser.importProgramOrders(filePath);
 
