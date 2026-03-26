@@ -17,7 +17,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -172,21 +171,8 @@ public class OrderManagementView {
         WarehouseButton importNavBtn = WarehouseButton.icon(importSvg);
 
         importNavBtn.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON or XML Files", "*.json", "*.xml"));
-            File file = chooser.showOpenDialog(stage);
-            if (file != null) {
-                try {
-                    Parser parser = new Parser();
-                    List<Order> imported = parser.parseFile(file.getAbsolutePath());
-                    handler.loadOrders(imported);
-                    refreshOrders();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
+            Homepage.importFromOrdersDir(handler);
+            refreshOrders();
         });
 
         // Allow dragging the window by the header bar

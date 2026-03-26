@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -25,7 +24,8 @@ import java.util.Map;
 
 public class Homepage extends Application {
 
-    static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
+    static final String ORDERS_DIR = "src/main/orders";
+    static final String SAVE_FILE  = ORDERS_DIR + "/warehouse_orders.json";
 
     /**
      * This method will boot up the GUI, construct the OrderHandler and load in orders saved when the last session closed
@@ -122,19 +122,8 @@ public class Homepage extends Application {
         // Import button
         WarehouseButton importBtn = WarehouseButton.primary("Import Orders");
         importBtn.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Order Files", "*.json", "*.xml"),
-                    new FileChooser.ExtensionFilter("JSON Files", "*.json"),
-                    new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-            File file = chooser.showOpenDialog(stage);
-            if (file != null) {
-                Parser p = new Parser();
-                List<Order> orders = p.parseFile(file.getAbsolutePath());
-                handler.loadOrders(orders);  // Pass the list of orders
-                show(stage, handler);
-            }
+            importFromOrdersDir(handler);
+            show(stage, handler);
         });
 
         HBox bottomBar = new HBox(importBtn);
@@ -154,6 +143,22 @@ public class Homepage extends Application {
         stage.setScene(scene);
     }
 
+    /**
+     * Scans the orders directory for all .json and .xml files and loads them
+     * into the handler, skipping the program's own save file.
+     */
+    static void importFromOrdersDir(OrderHandler handler) {
+        File dir = new File(ORDERS_DIR);
+        if (!dir.exists() || !dir.isDirectory()) return;
+        File[] files = dir.listFiles((d, name) ->
+                (name.endsWith(".json") || name.endsWith(".xml"))
+                && !name.equals("warehouse_orders.json"));
+        if (files == null) return;
+        Parser parser = new Parser();
+        for (File file : files) {
+            handler.loadOrders(parser.parseFile(file.getAbsolutePath()));
+        }
+    }
 
     /**
      * Creates a StackPane for a provided Warehouse
