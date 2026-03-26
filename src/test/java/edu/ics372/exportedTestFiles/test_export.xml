@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<orders>
+    <order>
+        <orderID>JJ469202042676</orderID>
+        <order_date>1672531200</order_date>
+        <status>Pending</status>
+        <type>Online</type>
+        <item_count>2</item_count>
+        <items>
+            <item>
+                <itemID>I1</itemID>
+                <name>Laptop</name>
+                <price>1200.0</price>
+                <quantity>1</quantity>
+            </item>
+        </items>
+    </order>
+</orders>
