@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -18,6 +17,8 @@ import edu.ics372.OrderHandler;
 import edu.ics372.Warehouse;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,9 +26,18 @@ import java.util.Map;
 
 public class Homepage extends Application {
 
-    static final String SAVE_FILE = "src/main/orders/warehouse_orders.json";
+    private static final Path ORDERS_PATH = Paths.get("src", "main", "orders");
+    static final String ORDERS_DIR = ORDERS_PATH.toString();
+    static final String SAVE_FILE  = ORDERS_PATH.resolve("warehouse_orders.json").toString();
+
+    /**
+     * This method will boot up the GUI, construct the OrderHandler and load in orders saved when the last session closed
+     *
+     * @param stage The window
+     */
     @Override
     public void start(Stage stage) {
+        // Checks for OS to render properly
         String os = System.getProperty("os.name").toLowerCase();
         stage.initStyle(os.contains("mac") ? StageStyle.UNIFIED : StageStyle.DECORATED);
         OrderHandler handler = new OrderHandler();
@@ -39,6 +49,13 @@ public class Homepage extends Application {
         stage.show();
     }
 
+    /**
+     * The "home" screen of the GUI that will display any warehouses that currently have orders assigned,
+     *  if no orders are present a prompt will show requesting that orders be imported along with a button.
+     *
+     * @param stage The window, should be the same as the one passed by the start method
+     * @param handler The OrderHandler that is currently being used by the program
+     */
     public static void show(Stage stage, OrderHandler handler) {
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: rgba(26,26,26,0.72);"
@@ -53,9 +70,7 @@ public class Homepage extends Application {
         VBox titleBox = new VBox(8, title, subtitle);
         titleBox.setAlignment(Pos.CENTER);
         titleBox.setPadding(new Insets(30, 0, 20, 0));
-        titleBox.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
-                + "-fx-border-color: rgba(255,255,255,0.1);"
-                + "-fx-border-width: 0 0 1 0;");
+        titleBox.getStyleClass().add("header-bar");
 
         // Allow dragging the window by the title bar
         final double[] dragDelta = new double[2];
@@ -101,6 +116,7 @@ public class Homepage extends Application {
             }
         }
 
+        // Scroll pane
         ScrollPane scrollPane = new ScrollPane(cardGrid);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
         scrollPane.setFitToWidth(true);
@@ -109,27 +125,14 @@ public class Homepage extends Application {
         // Import button
         WarehouseButton importBtn = WarehouseButton.primary("Import Orders");
         importBtn.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Order Files", "*.json", "*.xml"),
-                    new FileChooser.ExtensionFilter("JSON Files", "*.json"),
-                    new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-            File file = chooser.showOpenDialog(stage);
-            if (file != null) {
-                Parser p = new Parser();
-                List<Order> orders = p.parseFile(file.getAbsolutePath());
-                handler.loadOrders(orders);  // Pass the list of orders
-                show(stage, handler);
-            }
+            importFromOrdersDir(handler);
+            show(stage, handler);
         });
 
         HBox bottomBar = new HBox(importBtn);
         bottomBar.setAlignment(Pos.CENTER);
         bottomBar.setPadding(new Insets(24));
-        bottomBar.setStyle("-fx-background-color: rgba(34,33,33,0.4);"
-                + "-fx-border-color: rgba(255,255,255,0.1);"
-                + "-fx-border-width: 1 0 0 0;");
+        bottomBar.getStyleClass().add("footer-bar");
         root.setBottom(bottomBar);
 
         Scene scene = new Scene(root, 1100, 850);
@@ -143,12 +146,37 @@ public class Homepage extends Application {
         stage.setScene(scene);
     }
 
+    /**
+     * Scans the orders directory for all .json and .xml files and loads them
+     * into the handler, skipping the program's own save file.
+     */
+    static void importFromOrdersDir(OrderHandler handler) {
+        File dir = ORDERS_PATH.toFile();
+        if (!dir.exists() || !dir.isDirectory()) return;
+        File[] files = dir.listFiles((d, name) ->
+                (name.endsWith(".json") || name.endsWith(".xml"))
+                && !name.equals("warehouse_orders.json"));
+        if (files == null) return;
+        Parser parser = new Parser();
+        for (File file : files) {
+            handler.loadOrders(parser.parseFile(file.getAbsolutePath()));
+        }
+    }
+
+    /**
+     * Creates a StackPane for a provided Warehouse
+     *
+     * @param warehouse The warehouse that will be displayed on the menu
+     * @param orderCount The number of orders based in the Warehouse.
+     * @param stage The window housing the added warehouse
+     * @param handler The Order Handler being used
+     * @return A stackPane that allows the user to view the orders contained in the Warehouse
+     */
     private static StackPane createWarehouseCard(Warehouse warehouse, int orderCount,
                                                   Stage stage, OrderHandler handler) {
         StackPane card = new StackPane();
         card.setPrefSize(200, 140);
-        card.setStyle("-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
-                "-fx-border-width: 2; -fx-cursor: hand;");
+        card.getStyleClass().add("warehouse-card");
 
         Label nameLabel = new Label(warehouse.getWarehouseName());
         nameLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 16px; " +
@@ -167,12 +195,6 @@ public class Homepage extends Application {
         content.setAlignment(Pos.CENTER);
         card.getChildren().add(content);
 
-        card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: rgba(58,58,58,0.75); -fx-border-color: #47CEFF; " +
-                "-fx-border-width: 2; -fx-cursor: hand;"));
-        card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: rgba(42,42,42,0.7); -fx-border-color: rgba(255,255,255,0.6); " +
-                "-fx-border-width: 2; -fx-cursor: hand;"));
         card.setOnMouseClicked(e ->
                 MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
 

@@ -274,6 +274,11 @@ public class OrderHandler {
         return totalPrice;
     }
 
+    /**
+     * Saves all orders that have not already been exported or removed, usually before exiting the session
+     *
+     * @param filePath The directory in which the file containing the orders is located
+     */
     public void saveData(String filePath){
         List<Order> allOrders = new ArrayList<>(ordersById.values());
         jParser.exportOrders(allOrders, SAVE_FILE);

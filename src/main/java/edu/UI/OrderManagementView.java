@@ -9,13 +9,14 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.*;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -24,10 +25,6 @@ import java.util.List;
 
 public class OrderManagementView {
 
-    private static final String GLASS_BG   = "-fx-background-color: rgba(0,0,0,0.72);";
-    private static final String PANEL_BG   = "-fx-background-color: rgba(34,33,33,0.55);"
-                                           + "-fx-border-color: rgba(255,255,255,0.2);"
-                                           + "-fx-border-width: 1;";
 
     private final StackPane root;
     private final HBox titleBar;
@@ -62,11 +59,7 @@ public class OrderManagementView {
         root.setStyle("-fx-background-color: transparent;");
 
         BorderPane layout = new BorderPane();
-        layout.setStyle(GLASS_BG
-                + "-fx-border-color: rgba(255,255,255,0.22);"
-                + "-fx-border-width: 1;"
-                + "-fx-background-radius: 12;"
-                + "-fx-border-radius: 12;");
+        layout.getStyleClass().add("glass-bg");
         layout.setEffect(new DropShadow(24, Color.BLACK));
 
         titleBar = null;
@@ -98,9 +91,30 @@ public class OrderManagementView {
         }
     }
 
+
+    /**
+     *  Refreshes orders after state change
+     */
     private void refreshOrders() {
+
+        // Saving which order is selected to start to maintain selected state.
+        String selectedId = orders.isEmpty() ? null
+                : orders.get(selectedOrderIndex.get()).getOrderID();
+
         orders.setAll(loadWarehouseOrders());
-        selectedOrderIndex.set(0);
+
+        int newIndex = 0;
+        if (selectedId != null) {
+            for (int i = 0; i < orders.size(); i++) {
+                if (orders.get(i).getOrderID().equals(selectedId)) {
+                    newIndex = i;
+                    break;
+                }
+            }
+        }
+
+        selectedOrderIndex.set(newIndex);
+        orderListView.getSelectionModel().select(newIndex);
         selectedItemIndex.set(0);
         updateCurrentItemDisplay();
         rebuildButtonBox();
@@ -121,9 +135,7 @@ public class OrderManagementView {
         HBox bar = new HBox(15);
         bar.setAlignment(Pos.CENTER_LEFT);
         bar.setPadding(new Insets(8, 15, 8, 15));
-        bar.setStyle("-fx-background-color: rgba(34,33,33,0.5);"
-                + "-fx-border-color: rgba(255,255,255,0.12);"
-                + "-fx-border-width: 0 0 1 0;");
+        bar.getStyleClass().add("header-bar");
 
         SVGPath logo = new SVGPath();
         logo.setContent("M31.25 18.03L11.75 6.78M2.58 12.74L21.5 23.68L40.42 12.74M21.5 45.5V23.66");
@@ -145,46 +157,22 @@ public class OrderManagementView {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        SVGPath homeSvg = new SVGPath();
-        homeSvg.setContent("M11.75 35.08V18.42H21.75V35.08M1.75 13.42L16.75 1.75L31.75 13.42V31.75"
-                + "C31.75 32.63 31.4 33.48 30.77 34.11C30.15 34.73 29.3 35.08 28.42 35.08H5.08"
-                + "C4.2 35.08 3.35 34.73 2.73 34.11C2.1 33.48 1.75 32.63 1.75 31.75V13.42Z");
-        homeSvg.setStroke(Color.WHITE);
-        homeSvg.setStrokeWidth(2.5);
-        homeSvg.setFill(Color.TRANSPARENT);
-        homeSvg.setScaleX(0.7);
-        homeSvg.setScaleY(0.7);
+        Group homeSvg = SvgLoader.load("home.svg", Color.WHITE, Color.TRANSPARENT, -285, -560);
+        homeSvg.setScaleX(1.1);
+        homeSvg.setScaleY(1.1);
 
         WarehouseButton homeBtn = WarehouseButton.icon(homeSvg);
         homeBtn.setOnAction(e -> Homepage.show(stage, handler));
 
-        SVGPath importSvg = new SVGPath();
-        importSvg.setContent("M4 13V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V13"
-                + " M12 3L12 15M12 15L8.5 11.5M12 15L15.5 11.5");
-        importSvg.setStroke(Color.WHITE);
-        importSvg.setStrokeWidth(1.5);
-        importSvg.setFill(Color.TRANSPARENT);
+        Group importSvg = SvgLoader.load("import.svg", Color.WHITE, Color.TRANSPARENT);
         importSvg.setScaleX(1.1);
         importSvg.setScaleY(1.1);
 
         WarehouseButton importNavBtn = WarehouseButton.icon(importSvg);
 
         importNavBtn.setOnAction(e -> {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Import Orders");
-            chooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("JSON or XML Files", "*.json", "*.xml"));
-            File file = chooser.showOpenDialog(stage);
-            if (file != null) {
-                try {
-                    Parser parser = new Parser();
-                    List<Order> imported = parser.parseFile(file.getAbsolutePath());
-                    handler.loadOrders(imported);
-                    refreshOrders();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
+            Homepage.importFromOrdersDir(handler);
+            refreshOrders();
         });
 
         // Allow dragging the window by the header bar
@@ -241,22 +229,14 @@ public class OrderManagementView {
             bg.setStrokeWidth(2);
             bg.setEffect(new DropShadow(4, 0, 5, Color.web("#000000", 0.4)));
 
-            SVGPath pkgIcon = new SVGPath();
-            pkgIcon.setContent("M31.25 18.03L11.75 6.78M2.58 12.74L21.5 23.68L40.42 12.74M21.5 45.5V23.66");
-            pkgIcon.setStrokeWidth(3);
-            pkgIcon.setFill(Color.TRANSPARENT);
-            pkgIcon.setScaleX(0.45);
-            pkgIcon.setScaleY(0.45);
-            pkgIcon.setLayoutX(-2);
-            pkgIcon.setLayoutY(-2);
+            boolean completed = "completed".equalsIgnoreCase(order.getOrderStatus());
+            Color iconTint = isSelected() ? Color.web("#F35621") : Color.WHITE;
+            if (isSelected()) bg.setFill(Color.web("#FFFFFF", 0.05));
+            else              cell.setOpacity(0.7);
 
-            if (isSelected()) {
-                pkgIcon.setStroke(Color.web("#F35621"));
-                bg.setFill(Color.web("#FFFFFF", 0.05));
-            } else {
-                pkgIcon.setStroke(Color.WHITE);
-                cell.setOpacity(0.7);
-            }
+            Node orderIcon = completed
+                    ? buildTypeIcon("completed", Color.web("#28C840"))
+                    : buildTypeIcon(null, iconTint);
 
             Label orderLabel = new Label("Order: #" + order.getOrderID());
             orderLabel.setFont(Font.font("IBM Plex Mono", 20));
@@ -272,22 +252,15 @@ public class OrderManagementView {
             countLabel.setLayoutY(20);
 
             Label statusLabel = new Label(order.getOrderStatus());
-            statusLabel.setFont(Font.font("IBM Plex Mono", 12));
-            statusLabel.setTextFill(statusColor(order.getOrderStatus()));
+            statusLabel.getStyleClass().add("order-status");
+            if (order.getOrderStatus() != null)
+                statusLabel.getStyleClass().add(order.getOrderStatus().toLowerCase());
             statusLabel.layoutXProperty().bind(cell.prefWidthProperty().subtract(185));
             statusLabel.setLayoutY(38);
 
-            SVGPath trashSvg = new SVGPath();
-            trashSvg.setContent("M1.5 6.6H4.05H24.45M4.05 6.6V24.45C4.05 25.13 4.32 25.78 4.8 26.26"
-                    + "C5.28 26.73 5.92 27 6.6 27H19.35C20.03 27 20.68 26.73 21.15 26.26"
-                    + "C21.63 25.78 21.9 25.13 21.9 24.45V6.6M7.88 6.6V4.05C7.88 3.37 8.14 2.73"
-                    + " 8.62 2.25C9.1 1.77 9.75 1.5 10.43 1.5H15.53C16.2 1.5 16.85 1.77 17.33 2.25"
-                    + "C17.81 2.73 18.08 3.37 18.08 4.05V6.6M10.43 12.98V20.63M15.53 12.98V20.63");
-            trashSvg.setStroke(Color.WHITE);
-            trashSvg.setStrokeWidth(2);
-            trashSvg.setFill(Color.TRANSPARENT);
-            trashSvg.setScaleX(0.8);
-            trashSvg.setScaleY(0.8);
+            Group trashSvg = SvgLoader.load("trash.svg", Color.WHITE, Color.TRANSPARENT);
+            trashSvg.setScaleX(1.0);
+            trashSvg.setScaleY(1.0);
 
             WarehouseButton deleteBtn = WarehouseButton.transparent(trashSvg);
             deleteBtn.layoutXProperty().bind(cell.prefWidthProperty().subtract(42));
@@ -303,7 +276,7 @@ public class OrderManagementView {
                 rebuildButtonBox();
             });
 
-            cell.getChildren().addAll(bg, pkgIcon, orderLabel, countLabel, statusLabel, deleteBtn);
+            cell.getChildren().addAll(bg, orderIcon, orderLabel, countLabel, statusLabel, deleteBtn);
             cell.setOnMouseEntered(e -> { if (!isSelected()) cell.setOpacity(0.9); });
             cell.setOnMouseExited(e  -> { if (!isSelected()) cell.setOpacity(0.7); });
 
@@ -312,22 +285,34 @@ public class OrderManagementView {
         }
     }
 
-    private Color statusColor(String status) {
-        if (status == null) return Color.GRAY;
-        return switch (status.toLowerCase()) {
-            case "incoming"  -> Color.web("#47CEFF");
-            case "started"   -> Color.web("#EEAE3F");
-            case "completed" -> Color.web("#28C840");
-            case "canceled"  -> Color.web("#FF5F57");
-            default          -> Color.GRAY;
+    /**
+     * Returns an icon node for the given order type (used on completed orders).
+     * Pulls from the SVG files in resources/images/. Falls back to the generic
+     * package icon when type is null or unrecognized.
+     */
+    private static Node buildTypeIcon(String orderType, Color tint) {
+        String type = orderType == null ? "" : orderType.toLowerCase().trim();
+        Group icon = switch (type) {
+            case "completed"       -> SvgLoader.load("order-filled.svg", Color.TRANSPARENT, tint);
+            case "pickup"          -> SvgLoader.load("pickup.svg",       tint, Color.TRANSPARENT);
+            case "shipped"         -> SvgLoader.load("order-filled.svg", Color.TRANSPARENT, tint);
+            case "direct delivery" -> SvgLoader.load("home.svg", tint, Color.TRANSPARENT, -285, -560);
+            default                -> SvgLoader.load("order-filled.svg", Color.TRANSPARENT, tint);
         };
+        icon.setScaleX(0.9);
+        icon.setScaleY(0.9);
+        icon.setLayoutX(4);
+        icon.setLayoutY(16);
+        return icon;
     }
+
+
 
     // ─── Current Item Pane ──────────────────────
     private VBox buildCurrentItemPane() {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
-        pane.setStyle(PANEL_BG);
+        pane.getStyleClass().add("inner-panel");
 
         // Header row
         HBox headerRow = new HBox();
@@ -409,7 +394,7 @@ public class OrderManagementView {
     private VBox buildStartButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
-        pane.setStyle(PANEL_BG);
+        pane.getStyleClass().add("inner-panel");
 
         boolean locked = order != null && OrderLock.isLocked(order.getOrderID());
         Button startBtn = WarehouseButton.success(locked ? "Order In Progress" : "Start Order", 600, 60);
@@ -440,7 +425,7 @@ public class OrderManagementView {
     private VBox buildFullButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
-        pane.setStyle(PANEL_BG);
+        pane.getStyleClass().add("inner-panel");
 
         Button completeBtn = WarehouseButton.success("Complete Order", 600, 60);
         completeBtn.setMaxWidth(Double.MAX_VALUE);
@@ -469,7 +454,7 @@ public class OrderManagementView {
     private VBox buildReadOnlyButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
-        pane.setStyle(PANEL_BG);
+        pane.getStyleClass().add("inner-panel");
 
         HBox row = new HBox(10);
         Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);

@@ -146,3 +146,54 @@
 .separator .line {
     -fx-border-color: rgba(255, 255, 255, 0.12);
 }
+
+/* ─── Layout panels ─── */
+.glass-bg {
+    -fx-background-color: rgba(0, 0, 0, 0.72);
+    -fx-border-color: rgba(255, 255, 255, 0.22);
+    -fx-border-width: 1;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.inner-panel {
+    -fx-background-color: rgba(34, 33, 33, 0.55);
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-width: 1;
+}
+
+.header-bar {
+    -fx-background-color: rgba(34, 33, 33, 0.45);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 0 0 1 0;
+}
+
+.footer-bar {
+    -fx-background-color: rgba(34, 33, 33, 0.4);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ─── Warehouse cards ─── */
+.warehouse-card {
+    -fx-background-color: rgba(42, 42, 42, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.6);
+    -fx-border-width: 2;
+    -fx-cursor: hand;
+}
+
+.warehouse-card:hover {
+    -fx-background-color: rgba(58, 58, 58, 0.75);
+    -fx-border-color: #47CEFF;
+    -fx-border-width: 2;
+}
+
+/* ─── Order status labels ─── */
+.order-status {
+    -fx-font-size: 12px;
+}
+
+.order-status.incoming  { -fx-text-fill: #47CEFF; }
+.order-status.started   { -fx-text-fill: #EEAE3F; }
+.order-status.completed { -fx-text-fill: #28C840; }
+.order-status.canceled  { -fx-text-fill: #FF5F57; }
