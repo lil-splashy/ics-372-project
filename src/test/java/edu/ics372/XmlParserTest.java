@@ -27,7 +27,7 @@ public class XmlParserTest {
     }
 
     @Test
-    public void testExportOrders() throws Exception {
+    public void testExportOrders() {
         XmlParser parser = new XmlParser();
 
         Warehouse wh = new Warehouse("W001", "Main");
