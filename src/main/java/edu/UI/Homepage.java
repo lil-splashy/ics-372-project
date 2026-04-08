@@ -44,7 +44,18 @@ public class Homepage extends Application {
         if (new File(SAVE_FILE).exists()) {
             handler.importProgramOrders(SAVE_FILE);
         }
-        stage.setOnCloseRequest(e -> handler.saveData(SAVE_FILE));
+        stage.setOnCloseRequest(e -> {
+            handler.shutdown();         // Stop the executor from accepting new tasks
+            // Wait up to 5 seconds for running tasks to finish naturally
+            if (!handler.awaitTermination(5)) {
+                // If tasks did not finish within timeout, attempt to forcefully stop them
+                // Note: This may interrupt currently processing tasks
+                handler.shutdownNow(); // force shutdown after timeout
+            }
+            // Save all program orders to disk (including any that were mid-processing)
+            // Orders that did not finish processing remain in 'status
+            handler.saveData(SAVE_FILE);
+        });
         show(stage, handler);
         stage.show();
     }
