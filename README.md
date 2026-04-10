@@ -66,5 +66,6 @@ How to obtain your Order ID:
 
 #### Additions:
 - Add user accounts
-- Admin Dashboard / Analytics
+- Admin Dashboard 
+- Analytics
 - incoming order generation
