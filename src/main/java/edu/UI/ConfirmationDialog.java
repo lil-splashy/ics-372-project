@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 public class ConfirmationDialog extends Application {
     @Override
     public void start(Stage primaryStage) {
-        // Example action that triggers the confirmation dialog
-        primaryStage.setTitle("Confirmation Dialog Example");
+        // action that triggers the confirmation dialog
+        primaryStage.setTitle("Confirmation Dialog");
         primaryStage.setScene(new Scene(new StackPane(), 300, 200));
         primaryStage.show();
         showConfirmationDialog();
@@ -26,7 +26,7 @@ public class ConfirmationDialog extends Application {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                System.out.println("User clicked YES");
+                System.out.println("User clicked OK");
             } else {
                 System.out.println("User clicked Cancel");
             }
