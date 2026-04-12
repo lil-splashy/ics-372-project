@@ -439,15 +439,11 @@ public class OrderManagementView {
             updateStartButtons(); // re-enable Start buttons if needed
         });
 
-        HBox row3 = new HBox(10);
-        Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);
-        printBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(printBtn, Priority.ALWAYS);
-
         Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
         exportBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(exportBtn, Priority.ALWAYS);
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
+        row3.getChildren().addAll(exportBtn);
 
         row3.getChildren().addAll(printBtn, exportBtn);
         pane.getChildren().addAll(completeBtn, row3);
@@ -460,16 +456,11 @@ public class OrderManagementView {
         pane.setPadding(new Insets(14));
         pane.getStyleClass().add("inner-panel");
 
-        HBox row = new HBox(10);
-        Button printBtn = WarehouseButton.action("Print Label", 0, 54, false);
-        printBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(printBtn, Priority.ALWAYS);
-
         Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
         exportBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(exportBtn, Priority.ALWAYS);
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
-        row.getChildren().addAll(printBtn, exportBtn);
+        row.getChildren().addAll(exportBtn);
 
         pane.getChildren().add(row);
         return pane;

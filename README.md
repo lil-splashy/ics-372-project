@@ -42,3 +42,30 @@ How to obtain your Order ID:
 
 	Step 2. With order/s displayed, the OrderID/s should be present along with the their other information. 
 
+
+## Part 3 TODO:
+
+- fix case studies to better reflect program reality
+
+
+#### UI:
+- Add confirmation modals (for cancelling orders)
+- Make Warehouses creation button
+- Add Warehouse modification options
+- Remove Label print button
+- Add product photos
+- Add scrollbar for order list
+- Make fonts larger and possibly more bold
+
+
+
+#### Functional:
+- Make refreshing orders an automatic process
+- Implement more Interfaces
+
+
+#### Additions:
+- Add user accounts
+- Admin Dashboard 
+- Analytics
+- incoming order generation
