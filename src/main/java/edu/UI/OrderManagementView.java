@@ -45,6 +45,8 @@ public class OrderManagementView {
 
     private final ListView<Order> orderListView;
     private final VBox buttonBoxWrapper = new VBox();
+    // Keep track of all Start Order buttons so they can be enabled/disabled
+    private final List<Button> allStartButtons = new ArrayList<>();
 
     public OrderManagementView(OrderHandler handler, String warehouseId,
                                String warehouseName, Stage stage) {
@@ -399,13 +401,14 @@ public class OrderManagementView {
         boolean locked = order != null && OrderLock.isLocked(order.getOrderID());
         Button startBtn = WarehouseButton.success(locked ? "Order In Progress" : "Start Order", 600, 60);
         startBtn.setMaxWidth(Double.MAX_VALUE);
-        startBtn.setDisable(order == null || locked);
+        startBtn.setDisable(order == null || locked || !handler.getStartedOrders().isEmpty());
 
         if (order != null && !locked) {
             startBtn.setOnAction(e -> {
                 if (OrderLock.tryLock(order.getOrderID())) {
                     handler.startOrder(order.getOrderID());
                     refreshOrders();
+                    updateStartButtons(); // disable all Start buttons after starting
                 } else {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Order Locked");
@@ -416,7 +419,7 @@ public class OrderManagementView {
                 }
             });
         }
-
+        allStartButtons.add(startBtn); // <-- ADD here
         pane.getChildren().add(startBtn);
         return pane;
     }
@@ -433,6 +436,7 @@ public class OrderManagementView {
             handler.completeOrder(order.getOrderID());
             OrderLock.unlock(order.getOrderID());
             refreshOrders();
+            updateStartButtons(); // re-enable Start buttons if needed
         });
 
         Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
@@ -441,6 +445,7 @@ public class OrderManagementView {
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
         row3.getChildren().addAll(exportBtn);
 
+        row3.getChildren().addAll(printBtn, exportBtn);
         pane.getChildren().addAll(completeBtn, row3);
         return pane;
     }
@@ -500,6 +505,22 @@ public class OrderManagementView {
         currentItemLocationLabel.setText("Location: "
                 + (item.getWarehouseLocation() != null ? item.getWarehouseLocation() : "N/A"));
         currentItemQtyLabel.setText("Qty: " + item.getItemQuantity());
+    }
+    /**
+     * Updates the state of all "Start Order" buttons in the GUI.
+     * If there is an active order currently being processed,
+     *  all start buttons are disabled to prevent
+     * starting a new order. Once the active order is completed or canceled,
+     * this method re-enables the buttons.
+     */
+    private void updateStartButtons() {
+        // Check if there is any order currently started
+        boolean hasActiveOrder = !handler.getStartedOrders().isEmpty();
+
+        // Iterate through all Start Order buttons in the GUI
+        for (Button startBtn : allStartButtons) {
+            startBtn.setDisable(hasActiveOrder);
+        }
     }
 
     // ─── Getters ────────────────────────────────

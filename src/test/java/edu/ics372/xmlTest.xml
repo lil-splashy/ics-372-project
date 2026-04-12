@@ -1,0 +1,9 @@
+<Orders>
+    <Order id="123">
+        <OrderType>Online</OrderType>
+        <Item type="Laptop">
+            <Price>1200.0</Price>
+            <Quantity>1</Quantity>
+        </Item>
+    </Order>
+</Orders>
