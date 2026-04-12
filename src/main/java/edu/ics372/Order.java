@@ -23,7 +23,8 @@ public class Order {
     }
 
     public Order(long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
-        this.orderID = "J" + generateOrderID(); //creates a unique random id to track
+        long number = ThreadLocalRandom.current().nextLong(100, 1000); // 100 ≤ number < 1000
+        this.orderID = "J" + number +"~"+ generateOrderID(); //creates a unique random id to track
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
@@ -37,11 +38,20 @@ public class Order {
     //constructor for creating orders that already have an order id
     // the order constructor
     public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
-        if(orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
-            this.orderID = "X" + orderID;
-        }else{
-            this.orderID = orderID;
+        // Prefix with 'X' if it doesn't start with 'J' or 'X'
+        if (orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
+            orderID = "X" + orderID + "~" + generateOrderID();
         }
+
+        // Only register the order if it hasn't been seen yet
+        if (!orderIDs.contains(orderID)) {
+            registerExistingOrder(orderID);
+        } else {
+            System.out.println(orderID + " already exists");
+        }
+
+        this.orderID = orderID;
+
         this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderType = orderType;
@@ -49,7 +59,7 @@ public class Order {
         this.itemCount = 0;
         //this.customer = customer;
         this.warehouse = warehouse;
-        registerExistingOrder(orderID);
+
     }
 
 

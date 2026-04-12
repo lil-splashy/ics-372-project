@@ -5,12 +5,19 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.concurrent.ExecutorService; //
+import java.util.concurrent.Executors;      // #
+import java.util.concurrent.TimeUnit;
+
 // "E" should be Orders when created
 public class OrderHandler {
     //Instance variables to keep orders based on status
     private LinkedList<Order> incomingOrders;
     private LinkedList<Order> startedOrders;
     private LinkedList<Order> completedOrders;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(); // #
 
     //variable for file name for saved program orders
     private static final String SAVE_FILE = "saved_orders.json";
@@ -93,22 +100,65 @@ public class OrderHandler {
         }
     }
 
-    // when prompted by user interface move specific incoming orders to started orders.
-    public void startOrder(String id) {
-        if (ordersById.get(id) == null) {
-            System.out.println("No order associated with this id");
+    /**
+     * Processes an order in the background.
+     * Ensures only one instance of the order is processed at a time using OrderLock.
+     * Note: If the program exits before this task finishes, the order remains in its
+     * current status.
+     *
+     * @param order the Order object to process
+     */
+    private void processOrder(Order order) {
+        String orderId = order.getOrderID();
+
+        // Attempt to acquire a file-based lock to prevent duplicate processing across threads or systems
+        if (!OrderLock.tryLock(orderId)) {
+            System.out.println("Order already locked elsewhere: " + orderId);
             return;
         }
-        if (ordersById.get(id).getOrderStatus().equals("incoming")){
-            Order order = ordersById.get(id);
-            order.setOrderStatus("started");
-            startedOrders.add(order);
-            incomingOrders.remove(order);
-        } else {
-            System.out.println("Can't start an order that has already been started or completed");
+        try {
+            System.out.println("Processing order: " + orderId);
+        } finally {
+            OrderLock.unlock(orderId); // Always release the lock
         }
-
     }
+
+    /**
+     * Starts an order by moving it from the incoming list to the started list.
+     * Submits the order for background processing using the executor.
+     * Note: The order status remains "started" until the user manually completes or cancels it.
+     * The background processing task does not automatically change the status.
+     *
+     * @param id the ID of the order to start
+     */
+    public void startOrder(String id) {
+        // Check if there is already an active started order
+        if (!startedOrders.isEmpty()) {
+            System.out.println("Cannot start a new order until the current started order is completed or canceled.");
+            return; // block starting another order
+        }
+        Order order = ordersById.get(id); // Look up the order by ID
+
+        if (order == null) {
+            System.out.println("No order associated with this id");
+            return; // Exit if order not found
+        }
+        // Only allow starting orders that are still incoming
+        if (!order.getOrderStatus().equals("incoming")) {
+            System.out.println("Can't start an order that has already been started or completed");
+            return;
+        }
+        // Move order from incoming to started
+        order.setOrderStatus("started");
+        startedOrders.add(order);
+        incomingOrders.remove(order);
+        // Submit the order to the executor for asynchronous processing
+        // Processing can include tasks like updating inventory, notifications, or logging
+        // This does NOT automatically complete the order
+        executor.execute(() -> processOrder(order));
+    }
+
+
 
     //method used to cancel an order and store in hashmap of canceled orders
     //do we want to be able to cancel any orders? even if completed but not shipped?
@@ -346,6 +396,39 @@ public class OrderHandler {
             default:
                 System.out.println("Unknown order status: " + status);
         }
+    }
+
+    /**
+     * Gracefully shuts down the executor.
+     * Stops accepting new tasks, but allows already submitted tasks to complete.
+     */
+    public void shutdown() { // #
+        executor.shutdown();
+    }
+    /**
+     * Immediately attempts to stop all running tasks in the executor.
+     * Tasks that have not started may never run; running tasks are interrupted.
+     */
+    public void shutdownNow() { // #
+        executor.shutdown();
+    }
+
+    /**
+     * Waits for the executor to terminate after a shutdown request.
+     *
+     * @param timeoutSeconds maximum time to wait for termination in seconds
+     * @return true if executor terminated successfully within the timeout, false otherwise
+     */
+    public boolean awaitTermination(long timeoutSeconds) {
+        boolean terminated = false;
+        try {
+            // Wait for the executor to finish all running tasks or until timeout
+            terminated = executor.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            // If current thread is interrupted while waiting, restore interrupt status
+            Thread.currentThread().interrupt(); // restore interrupt status
+        }
+        return terminated; // return whether executor terminated in time
     }
 
     static void main (String [] args) {

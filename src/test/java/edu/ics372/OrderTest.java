@@ -6,32 +6,71 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OrderTest {
 
     @Test
-    void testAddItemIncreasesPrice() {
-        Order order = new Order(System.currentTimeMillis(), "incoming", "pickup", 5, null, null);
+    public void testConstructorAndGetters() {
+        Warehouse wh = new Warehouse("W1", "Test1 Warehouse");
+        Order order = new Order(1672531200L, "Pending", "Online", 5, wh);
 
-        Item item = new Item("ABCDEFG", "Ford F150", 40000.00, 10, "B12");
-        order.addItem(item);
-
-        assertEquals(40000.00, order.getOrderPrice());
+        assertEquals("Pending", order.getOrderStatus());
+        assertEquals("Online", order.getOrderType());
+        assertEquals(1672531200L, order.getOrderDate());
+        assertEquals(wh, order.getWarehouse());
+        assertEquals(0, order.getOrderPrice());
+        assertTrue(order.getOrderID().startsWith("J"));
     }
 
     @Test
-    void testOrderStatusChange() {
-        Customer customer = new Customer("Takagi", "email.com", "651", "Street");
-        Order order = new Order(System.currentTimeMillis(), "incoming", "pickup", 5, customer, null);
+    public void testConstructorWithExistingID() {
+        Warehouse wh = new Warehouse("W1", "Test1 Warehouse");
+        Order order = new Order("123456789012", 1672531200L, "Pending", "Online", 5, wh);
 
-        order.setOrderStatus("started");
-
-        assertEquals("started", order.getOrderStatus());
-
-        order.setOrderStatus("completed");
+        assertEquals("X123456789012", order.getOrderID());
     }
 
     @Test
-    void testUniqueOrderID() {
-        Order o1 = new Order(System.currentTimeMillis(), "incoming", "pickup", 5, null, null);
-        Order o2 = new Order(System.currentTimeMillis(), "incoming", "pickup", 5, null, null);
+    public void testSetters() {
+        Warehouse wh1 = new Warehouse("W1", "Test1 Warehouse");
+        Warehouse wh2 = new Warehouse("W2", "Test2 Warehouse");
+        Order order = new Order(1672531200L, "Pending", "Online", 5, wh1);
 
-        assertNotEquals(o1.getOrderID(), o2.getOrderID());
+        order.setOrderStatus("Shipped");
+        order.setOrderType("In-Store");
+        order.setOrderDate(1672617600L);
+        order.setWarehouse(wh2);
+        order.setOrderPrice(999.99);
+
+        assertEquals("Shipped", order.getOrderStatus());
+        assertEquals("In-Store", order.getOrderType());
+        assertEquals(1672617600L, order.getOrderDate());
+        assertEquals(wh2, order.getWarehouse());
+        assertEquals(999.99, order.getOrderPrice());
+    }
+
+    @Test
+    public void testAddItem() {
+        Warehouse wh = new Warehouse("W1", "Test1 Warehouse");
+        Order order = new Order(1672531200L, "Pending", "Online", 3, wh);
+
+        Item item1 = new Item("I1", "Laptop", 1200.00, 1, "A1");
+        Item item2 = new Item("I2", "Mouse", 25.50, 1, "B2");
+
+        order.addItem(item1);
+        order.addItem(item2);
+
+        assertEquals(item1, order.getItems()[0]);
+        assertEquals(item2, order.getItems()[1]);
+        assertEquals(1225.50, order.getOrderPrice());
+    }
+
+    @Test
+    public void testToStringGeneratedID() {
+        Warehouse wh = new Warehouse("W1", "Test1 Warehouse");
+        Order order = new Order(1672531200L, "Pending", "Online", 2, wh);
+        order.addItem(new Item("I1", "Laptop", 1200.00, 1, "A1"));
+
+        String str = order.toString();
+
+        assertTrue(str.contains(order.getOrderID()));
+        assertTrue(str.contains("Pending"));
+        assertTrue(str.contains("Online"));
     }
 }
