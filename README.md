@@ -49,12 +49,12 @@ How to obtain your Order ID:
 
 
 #### UI:
-- Add confirmation modals (for cancelling orders)
-- Make Warehouses creation button
+- Add confirmation modals (for cancelling orders) - Done 
+- Add styling for modals
 - Add Warehouse modification options
-- Remove Label print button
+- Remove Label print button - Done
 - Add product photos
-- Add scrollbar for order list
+- Add scrollbar for order list - Done
 - Make fonts larger and possibly more bold
 
 

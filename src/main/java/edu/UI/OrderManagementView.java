@@ -1,7 +1,7 @@
 package edu.UI;
 
 import edu.ics372.Item;
-import edu.ics372.Parser;
+
 import edu.ics372.Order;
 import edu.ics372.OrderHandler;
 import edu.ics372.OrderLock;
@@ -17,8 +17,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.shape.Rectangle;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -193,11 +194,21 @@ public class OrderManagementView {
         HBox center = new HBox(12);
         center.setPadding(new Insets(12, 15, 12, 15));
 
-        orderListView.setStyle("-fx-background-color: transparent;"
-                + "-fx-control-inner-background: transparent;");
+        orderListView.setStyle(
+                        "-fx-background-color: transparent;" +
+                        "-fx-control-inner-background: transparent;" +
+                        "-fx-padding: 0 4 0 0; ");
         orderListView.setCellFactory(lv -> new OrderListCell());
         orderListView.getSelectionModel().selectFirst();
-        HBox.setHgrow(orderListView, Priority.ALWAYS);
+
+        // ── Wrap the list in a ScrollPane ──
+        ScrollPane scrollPane = new ScrollPane(orderListView);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        HBox.setHgrow(scrollPane, Priority.ALWAYS);   // ← replaces the HGrow on orderListView
 
         VBox rightPanel = new VBox(10);
         VBox currentItemPane = buildCurrentItemPane();
@@ -206,7 +217,7 @@ public class OrderManagementView {
         rightPanel.setMinWidth(500);
         rightPanel.setMaxWidth(700);
 
-        center.getChildren().addAll(orderListView, rightPanel);
+        center.getChildren().addAll(scrollPane, rightPanel);  // ← scrollPane instead of orderListView
         return center;
     }
 
@@ -221,6 +232,9 @@ public class OrderManagementView {
                 return;
             }
 
+
+
+
             Pane cell = new Pane();
             cell.prefWidthProperty().bind(orderListView.widthProperty().subtract(20));
             cell.setPrefHeight(64);
@@ -232,6 +246,8 @@ public class OrderManagementView {
             bg.setStroke(Color.WHITE);
             bg.setStrokeWidth(2);
             bg.setEffect(new DropShadow(4, 0, 5, Color.web("#000000", 0.4)));
+
+
 
             boolean completed = "completed".equalsIgnoreCase(order.getOrderStatus());
             Color iconTint = isSelected() ? Color.web("#F35621") : Color.WHITE;
