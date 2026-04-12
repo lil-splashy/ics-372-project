@@ -17,11 +17,13 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 import javafx.scene.text.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class OrderManagementView {
 
@@ -268,14 +270,23 @@ public class OrderManagementView {
             deleteBtn.layoutXProperty().bind(cell.prefWidthProperty().subtract(42));
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
-                handler.cancelOrder(order.getOrderID());
-                OrderLock.unlock(order.getOrderID());
-                orders.remove(order);
-                selectedOrderIndex.set(
-                        Math.max(0, Math.min(selectedOrderIndex.get(), orders.size() - 1)));
-                selectedItemIndex.set(0);
-                updateCurrentItemDisplay();
-                rebuildButtonBox();
+                // Open dialog modal upon clicking trash can icon
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation");
+                alert.setHeaderText("Are you sure you want to delete this order?");
+                alert.setContentText("Please confirm your action.");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    handler.cancelOrder(order.getOrderID());
+                    OrderLock.unlock(order.getOrderID());
+                    orders.remove(order);
+                    selectedOrderIndex.set(
+                            Math.max(0, Math.min(selectedOrderIndex.get(), orders.size() - 1)));
+                    selectedItemIndex.set(0);
+                    updateCurrentItemDisplay();
+                    rebuildButtonBox();
+                }
+
             });
 
             cell.getChildren().addAll(bg, orderIcon, orderLabel, countLabel, statusLabel, deleteBtn);
@@ -443,10 +454,7 @@ public class OrderManagementView {
         exportBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(exportBtn, Priority.ALWAYS);
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
-        row3.getChildren().addAll(exportBtn);
-
-        row3.getChildren().addAll(printBtn, exportBtn);
-        pane.getChildren().addAll(completeBtn, row3);
+        pane.getChildren().addAll(completeBtn);
         return pane;
     }
 
@@ -460,9 +468,6 @@ public class OrderManagementView {
         exportBtn.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(exportBtn, Priority.ALWAYS);
         exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
-        row.getChildren().addAll(exportBtn);
-
-        pane.getChildren().add(row);
         return pane;
     }
 
