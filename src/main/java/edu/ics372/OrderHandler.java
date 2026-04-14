@@ -17,7 +17,11 @@ public class OrderHandler {
     private LinkedList<Order> startedOrders;
     private LinkedList<Order> completedOrders;
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor(); // #
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private int ordersCancelled = 0;
+    private int ordersImported = 0;
+    private int ordersExported = 0;// #
 
     //variable for file name for saved program orders
     private static final String SAVE_FILE = "saved_orders.json";
@@ -48,7 +52,7 @@ public class OrderHandler {
         //used to record canceled orders
         this.canceledOrders = new HashMap<>();
     }
-
+    //getters for warehouses
     public Warehouse getMainWarehouse() {
         return mainWarehouse;
     }
@@ -61,9 +65,17 @@ public class OrderHandler {
         return wallyworldWarehouse;
     }
 
-    public void addOrder(Order order) {
-        incomingOrders.add(order);
-        ordersById.put(order.getOrderID(), order);
+    //getters for order metrics
+    public int getOrdersCancelled(){
+        return ordersCancelled;
+    }
+
+    public int getOrdersImported(){
+        return ordersImported;
+    }
+
+    public int getOrdersExported(){
+        return ordersExported;
     }
 
     //getters for the linked lists
@@ -77,6 +89,10 @@ public class OrderHandler {
         return completedOrders;
     }
 
+    public void addOrder(Order order) {
+        incomingOrders.add(order);
+        ordersById.put(order.getOrderID(), order);
+    }
 
     // Loads orders from a file path using the parser to detect format
     public void loadOrders(String filePath) {
@@ -97,6 +113,7 @@ public class OrderHandler {
             order.setWarehouse(mainWarehouse);
             incomingOrders.add(order);
             ordersById.put(order.getOrderID(), order);
+            ordersImported++;
         }
     }
 
@@ -179,18 +196,21 @@ public class OrderHandler {
                 canceledOrders.put(id,canceledOrder);
                 incomingOrders.remove(canceledOrder);
                 canceledOrder.setOrderStatus("canceled");
+                ordersCancelled++;
                 System.out.println("Order has been removed from incoming orders and added to canceled orders.");
                 break;
             case "started":
                 canceledOrders.put(id,canceledOrder);
                 startedOrders.remove(canceledOrder);
                 canceledOrder.setOrderStatus("canceled");
+                ordersCancelled++;
                 System.out.println("Order has been removed from started orders and added to canceled orders.");
                 break;
             case "completed":
                 canceledOrders.put(id,canceledOrder);
                 completedOrders.remove(canceledOrder);
                 canceledOrder.setOrderStatus("canceled");
+                ordersCancelled++;
                 System.out.println("Order has been removed from completed orders and added to canceled orders.");
                 break;
             case "canceled":
@@ -231,9 +251,19 @@ public class OrderHandler {
 
         String timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
 
+        //add an export folder if one doesnt exist
+        java.io.File exportDir = new java.io.File("exports");
+        if (!exportDir.exists()){
+            exportDir.mkdirs();
+        }
+
         String filePath = "exports/completed_orders_" + timeStamp + extension;
 
+        //grabs the amount of completed orders that will be exported
+        int exportedNow = completedOrders.size();
         parser.exportOrders(completedOrders, filePath);
+        //adds to the counter for metrics
+        ordersExported += exportedNow;
 
         System.out.println("Completed orders ecported to: " + filePath);
 
