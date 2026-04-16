@@ -68,4 +68,5 @@ How to obtain your Order ID:
 - Add user accounts
 - Admin Dashboard 
 - Analytics
+  - Added Jfreechart https://github.com/jfree/jfreechart
 - incoming order generation
