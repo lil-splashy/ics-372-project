@@ -11,6 +11,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.fx.ChartViewer;
+
 
 import java.io.File;
 import java.nio.file.Path;
@@ -227,6 +232,50 @@ public class Homepage extends Application {
                 MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
 
         return card;
+    }
+
+    //Metrics chart for imported, exported, and deleted orders.
+    private static ChartViewer createOrderSummaryChart(OrderHandler orderHandler){
+        double chartViewWidth = 500;
+        double chartViewHeight = 300;
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        dataset.addValue(orderHandler.getOrdersImported(), "Orders", "Imported");
+        dataset.addValue(orderHandler.getOrdersCancelled(), "Orders", "Cancelled");
+        dataset.addValue(orderHandler.getOrdersExported(), "Orders", "Exported");
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Order Metrics",
+                "Type",
+                "Count",
+                dataset
+        );
+
+        ChartViewer chartViewer = new ChartViewer(chart);
+        chartViewer.setPrefWidth(chartViewWidth);
+        chartViewer.setPrefHeight(chartViewHeight);
+
+        return chartViewer;
+    }
+
+    private static void showOrderSummaryChart(OrderHandler handler){
+        int windowWidth = 750;
+        int windowHeight = 450;
+        int paddingSize = 15;
+        Stage chartStage = new Stage();
+
+        ChartViewer chartViewer = createOrderSummaryChart(handler);
+
+        VBox root = new VBox(chartViewer);
+        root.setPadding(new Insets(paddingSize));
+        root.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(root, windowWidth, windowHeight);
+
+        chartStage.setTitle("Order Summary");
+        chartStage.setScene(scene);
+        chartStage.show();
+
     }
 
     public static void main(String[] args) {
