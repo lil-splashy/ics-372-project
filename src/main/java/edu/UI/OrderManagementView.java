@@ -32,6 +32,9 @@ public class OrderManagementView {
     private final StackPane root;
     private final HBox titleBar;
 
+    //for orderSummary
+    private final BorderPane layout;
+
     private final OrderHandler handler;
     private final String warehouseId;
     private final String warehouseName;
@@ -59,11 +62,15 @@ public class OrderManagementView {
         this.stage         = stage;
         this.orders        = loadWarehouseOrders();
         this.orderListView = new ListView<>(orders);
+        //orderSummary
+        this.layout = new BorderPane();
 
         root = new StackPane();
         root.setStyle("-fx-background-color: transparent;");
 
+        /* added as an instance variable so
         BorderPane layout = new BorderPane();
+         */
         layout.getStyleClass().add("glass-bg");
         layout.setEffect(new DropShadow(24, Color.BLACK));
 
@@ -134,6 +141,10 @@ public class OrderManagementView {
         }
         return result;
     }
+    //Order data for cancelled orders, imported orders, and exported orders
+    private void showMetricsChart(){
+        layout.setCenter(MetricsChartView.createMetricsChartPane(handler));
+    }
 
     // ─── Header ─────────────────────────────
     private HBox buildHeaderBar() {
@@ -179,13 +190,28 @@ public class OrderManagementView {
             Homepage.importFromOrdersDir(handler);
             refreshOrders();
         });
+        //metrics button
+        Button metricsBTN = WarehouseButton.action("Metrics", 140, 54, true);
+        metricsBTN.setOnAction(e->showMetricsChart());
+
+        //Export button
+        Group exportSvg = SvgLoader.load("export.svg", Color.WHITE, Color.TRANSPARENT);
+        exportSvg.setScaleX(1.1);
+        exportSvg.setScaleY(1.1);
+
+        WarehouseButton exportNavBtn = WarehouseButton.icon(exportSvg);
+
+        exportNavBtn.setOnAction(e->{
+            handler.exportCompletedOrders(".json");
+            refreshOrders();
+        });
 
         // Allow dragging the window by the header bar
         final double[] dragDelta = new double[2];
         bar.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
         bar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
-        bar.getChildren().addAll(logo, textBlock, spacer, importNavBtn, homeBtn);
+        bar.getChildren().addAll(logo, textBlock, spacer, metricsBTN,exportNavBtn, importNavBtn, homeBtn);
         return bar;
     }
 
@@ -466,10 +492,6 @@ public class OrderManagementView {
             updateStartButtons(); // re-enable Start buttons if needed
         });
 
-        Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
-        exportBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(exportBtn, Priority.ALWAYS);
-        exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
         pane.getChildren().addAll(completeBtn);
         return pane;
     }
@@ -479,11 +501,6 @@ public class OrderManagementView {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
         pane.getStyleClass().add("inner-panel");
-
-        Button exportBtn = WarehouseButton.action("Export Orders", 0, 54, true);
-        exportBtn.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(exportBtn, Priority.ALWAYS);
-        exportBtn.setOnAction(e -> handler.saveData(Homepage.SAVE_FILE));
         return pane;
     }
 
