@@ -58,7 +58,16 @@ public class XmlParser implements ParserInterface {
                 // gets all <Item> elements that belong in this order
                 NodeList itemNodes = orderEl.getElementsByTagName("Item");
 
-                Order newOrder = new Order(orderID, System.currentTimeMillis(), "NEW", orderType, itemNodes.getLength(), null);
+                // Create new order via the order builder
+                Order.Builder xmlBuilder = new Order.Builder()
+                        .setOrderID(orderID) // XML always provides ID
+                        .setOrderDate(System.currentTimeMillis())
+                        .setOrderStatus("NEW")
+                        .setOrderType(orderType)
+                        .setMaxItems(itemNodes.getLength())
+                        .setWarehouse(null);
+
+                Order newOrder = xmlBuilder.build();
 
                 // Loop through each <Item> element inside the order
                 for (int i = 0; i < itemNodes.getLength(); i++) {

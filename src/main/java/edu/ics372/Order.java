@@ -3,223 +3,240 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 public class Order {
 
-    // attributes of an order
-    private final String orderID;
-    private long orderDate;
-    private String orderStatus;
-    private String orderType;
-    private double orderPrice;
-    // the item array of items for the unique order
-    private Item[] items;
-    private int itemCount;
+    private final String orderID;   // unique identifier for each order (immutable once set)
+    private long orderDate;         // timestamp or date representation of the order
+    private String orderStatus;     // current status (e.g., NEW, SHIPPED, CANCELLED)
+    private String orderType;       // type/category of order (e.g., ONLINE, STORE)
+    private double orderPrice;      // total accumulated price of all items in the order
+
+    private Item[] items;           // fixed-size array holding items in this order
+    private int itemCount;          // tracks how many items are currently in the order
+
+    // shared list storing ALL order IDs to enforce uniqueness across all orders
     private static final ArrayList<String> orderIDs = new ArrayList<>();
 
-    //private final Customer customer; future builds
-    private Warehouse warehouse;
+    private Warehouse warehouse;    // warehouse associated with fulfilling this order
 
-    // the order constructor
-    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Customer customer, Warehouse warehouse) {
-        this(orderDate, orderStatus, orderType, maxItems, warehouse);
+    // PRIVATE constructor ensures objects can ONLY be created through Builder
+    private Order(Builder builder) {
+        this.orderID = builder.orderID;             // assign finalized ID after validation
+        this.orderDate = builder.orderDate;         // copy provided date
+        this.orderStatus = builder.orderStatus;     // copy provided status
+        this.orderType = builder.orderType;         // copy provided type
+        this.items = new Item[builder.maxItems];    // allocate item array with max size
+        this.itemCount = 0;                         // initially no items added
+        this.warehouse = builder.warehouse;         // assign warehouse reference
     }
 
-    public Order(long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
-        long number = ThreadLocalRandom.current().nextLong(100, 1000); // 100 ≤ number < 1000
-        this.orderID = "J" + number +"~"+ generateOrderID(); //creates a unique random id to track
-        this.orderDate = orderDate;
-        this.orderStatus = orderStatus;
-        this.orderType = orderType;
-        this.items = new Item[maxItems];
-        this.itemCount = 0;
-        //this.customer = customer;
-        this.warehouse = warehouse;
+
+    //================================ BUILDER CLASS ================================
+    public static class Builder {
+
+        private String orderID;         // may be null (for generated IDs) or provided (XML input)
+        private long orderDate;
+        private String orderStatus;
+        private String orderType;
+        private int maxItems;           // determines size of item array
+        private Warehouse warehouse;    // associated warehouse
+
+        // Construction phase Setters for optional/provided ID
+        public Builder setOrderID(String orderID) {
+            this.orderID = orderID;     // store raw ID (will be normalized later)
+            return this;                // allows method chaining
+        }
+        public Builder setOrderDate(long orderDate)         {this.orderDate = orderDate; return this;}
+        public Builder setOrderStatus(String orderStatus)   {this.orderStatus = orderStatus; return this;}
+        public Builder setOrderType(String orderType)       {this.orderType = orderType; return this;}
+        public Builder setMaxItems(int maxItems)            {this.maxItems = maxItems; return this;}
+        public Builder setWarehouse(Warehouse warehouse)    {this.warehouse = warehouse; return this;}
+
+        // central creation logic (this replaces all constructors)
+        public Order build() {
+
+            String finalID; // will hold the fully processed and validated ID
+
+            // CASE 1: No ID provided (e.g., JSON input)
+            if (orderID == null || orderID.isEmpty()) {
+                // generate a random 3-digit number for prefix
+                long number = ThreadLocalRandom.current().nextLong(100, 1000);
+
+                // create ID with 'J' prefix (JSON source) + unique suffix
+                finalID = "J" + number + "~" + generateOrderID();
+            }
+            // CASE 2: ID provided (e.g., XML input)
+            else {
+                // normalize ensures correct prefix and appends unique suffix if needed
+                finalID = normalizeID(orderID);
+            }
+
+            // check if another order already has the same "core" ID (your substring rule)
+            if (isDuplicateCore(finalID)) {
+                // stop creation if duplicate detected
+                throw new IllegalArgumentException("Duplicate order core ID: " + finalID);
+            }
+
+            // register the final ID so future orders can be checked against it
+            registerExistingOrder(finalID);
+
+            // store finalized ID in builder before constructing object
+            this.orderID = finalID;
+
+            // create and return the actual Order object
+            return new Order(this);
+        }
     }
 
-    // also use for xml data
-    //constructor for creating orders that already have an order id
-    // the order constructor
-    public Order(String orderID, long orderDate, String orderStatus, String orderType, int maxItems, Warehouse warehouse) {
-        // Prefix with 'X' if it doesn't start with 'J' or 'X'
+    //================================ ID LOGIC ================================
+
+    // ensures ID follows system rules (prefix + suffix if needed)
+    private static String normalizeID(String orderID) {
+
+        // if ID does not start with known source identifiers
         if (orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
-            orderID = "X" + orderID + "~" + generateOrderID();
+            // prepend 'X' (XML source) and append generated unique suffix
+            return "X" + orderID + "~" + generateOrderID();
         }
 
-        // Only register the order if it hasn't been seen yet
-        if (!orderIDs.contains(orderID)) {
-            registerExistingOrder(orderID);
-        } else {
-            System.out.println(orderID + " already exists");
-        }
-
-        this.orderID = orderID;
-
-        this.orderDate = orderDate;
-        this.orderStatus = orderStatus;
-        this.orderType = orderType;
-        this.items = new Item[maxItems];
-        this.itemCount = 0;
-        //this.customer = customer;
-        this.warehouse = warehouse;
-
+        // if already valid, return unchanged
+        return orderID;
     }
 
+    // extracts the "core" portion of the ID (ignores prefix and suffix)
+    private static String extractCoreID(String id) {
+        int start = 1; // skip first character (source prefix)
 
-    /**
-     * adds an Item Object to a item array
-     *
-     * @param item takes Item Object
-     */
-    public void addItem(Item item){
-        if (itemCount < items.length){
-            items[itemCount] = item;
-            itemCount++;
-            orderPrice += item.getItemPrice();
-        } else {
-            System.out.println("Order is full");
+        // find delimiter separating core from generated suffix
+        int end = id.indexOf("~");
+
+        // if no delimiter exists, use full remaining string
+        if (end == -1) {
+            end = id.length();
         }
+
+        // return substring representing comparable core ID
+        return id.substring(start, end);
     }
 
-    /**
-     * generates a unique order ID with a random letter and 12 digit number
-     * checks current order ids and if exists
-     *  then method will generate another until
-     *  an id can be generated
-     *
-     * @return String id: a string of both randletter and 12integers
-     */
+    // checks if another order already has the same core ID
+    private static boolean isDuplicateCore(String newID) {
+        String newCore = extractCoreID(newID); // extract core of new ID
+
+        // compare against all existing IDs
+        for (String existingID : orderIDs) {
+            String existingCore = extractCoreID(existingID);
+
+            // if match found → duplicate
+            if (existingCore.equals(newCore)) {
+                return true;
+            }
+        }
+        return false; // no duplicate found
+    }
+
+    // generates a globally unique suffix for IDs
     private static String generateOrderID() {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
         String id;
         boolean exists;
 
         do {
+            // random uppercase letter
             char letter = (char) ('A' + rnd.nextInt(26));
+
+            // random 12-digit number
             long number = rnd.nextLong(100_000_000_000L, 1_000_000_000_000L);
 
+            // combine into ID string
             id = letter + Long.toString(number);
+
             exists = false;
 
+            // ensure uniqueness by checking existing IDs
             for (String currentIDs : orderIDs) {
                 if (currentIDs.equals(id)) {
                     exists = true;
-                    break; // simply leave the for-loop here if id exists
+                    break;
                 }
             }
-        } while (exists);
-        orderIDs.add(id);
-        return id;
+
+        } while (exists); // repeat until unique
+
+        return id; // return unique generated suffix
     }
 
-    /**
-     * Feature 2
-     * Loading previous orders
-     * add their IDs into this list when the program starts
-     * */
-    public static  void registerExistingOrder(String orderID){
+    // adds an ID to the global list (used for duplicate tracking)
+    public static void registerExistingOrder(String orderID) {
         orderIDs.add(orderID);
     }
 
-    /**
-     * For Future builds
-     * remove ID when order is finished or cancelled
-     */
-    //For future build
-    /**public static void removeOrderID(String orderID) {
-        orderIDs.remove(orderID);
-    }*/
 
-    // returns items
-    public Item[] getItems() {
-        return items;
-    }
+    //================================ BUSINESS LOGIC ================================
 
-    // getters and setters
-    public String getOrderID() {
-        return orderID;
-    }
-//    public void setOrderID(String orderID {
-//        this.orderID = orderID;
-//    } FOR FUTURE BUILD
+    // adds an item to the order
+    public void addItem(Item item) {
 
-    public long getOrderDate() {
-        return orderDate;
-    }
-    public void setOrderDate(long orderDate) {
-        this.orderDate = orderDate;
-    }
+        // ensure we don't exceed allocated array size
+        if (itemCount < items.length) {
+            items[itemCount++] = item; // store item and increment count
 
-    /**
-     * This will return the company that the order was sourced from, by checking the identifier on the orderID
-     * @return A string containing the source of the order
-     */
-    public String getSource()
-    {
-        String orderSource;
-        switch(this.orderID.charAt(0))
-        {
-            case 'J':  //J is assigned to files imported from json files, which are currently used only by Bullseye
-                orderSource = "Bullseye";
-                break;
-
-            case 'X':  //X respectively corresponds to xml, which used only by Wallyworld in our current system
-                orderSource = "Wallyworld";
-                break;
-
-            default:
-                orderSource = "Unknown Source";  //If neither identifier are found specify that the source is not known
-                break;
+            // update total price dynamically
+            orderPrice += item.getItemPrice();
+        } else {
+            System.out.println("Order is full"); // prevent overflow
         }
-        return orderSource;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    // ACCESSORS (Getters) & MUTATORS (Setters)
+    public Item[] getItems() {return items;}
+
+    public String getOrderID() {return orderID;}
+
+    public long getOrderDate() {return orderDate;}
+    public void setOrderDate(long orderDate) {this.orderDate = orderDate;}
+
+    public String getOrderStatus() {return orderStatus;}
+    public void setOrderStatus(String orderStatus) {this.orderStatus = orderStatus;}
+
+    public String getOrderType() {return orderType;}
+    public void setOrderType(String orderType) {this.orderType = orderType;}
+
+    public Warehouse getWarehouse() {return warehouse;}
+    public void setWarehouse(Warehouse warehouse) {this.warehouse = warehouse;}
+
+    public double getOrderPrice() {return orderPrice;}
+    public void setOrderPrice(double orderPrice) {this.orderPrice = orderPrice;}
+
+    // determines source system based on ID prefix
+    public String getSource() {
+        switch (this.orderID.charAt(0)) {
+            case 'J': return "Bullseye";   // JSON source
+            case 'X': return "Wallyworld"; // XML source
+            default: return "Unknown Source"; // fallback
+        }
     }
 
-    public String getOrderType() {
-        return orderType;
-    }
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
-
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-    }
-
-    public double getOrderPrice() {
-        return orderPrice;
-    }
-    public void setOrderPrice(double orderPrice) {
-        this.orderPrice = orderPrice;
-    }
-
-    // simply returns a readable order
+    // formatted string representation of the order
     @Override
     public String toString() {
-        //String customerName = (customer == null) ? "Unassigned" : customer.getName(); future builds
-        //"\n\tcustomer = " + customerName + // simply append toString for future builds
+
         StringBuilder exitLook = new StringBuilder(
                 "\nOrder { " +
                         "\n\torderID = " + orderID +
                         "\n\torderStatus = " + orderStatus +
                         "\n\torderType = " + orderType +
                         "\n\torderDate = " + orderDate +
-
                         "\n\twarehouse = " + (warehouse != null ? warehouse.getWarehouseName() : "Unassigned"));
-        for (int i = 0; i < items.length; i++){
-            if (items[i] != null) {
-                exitLook.append(items[i].toString());
+
+        // append each item if present
+        for (Item item : items) {
+            if (item != null) {
+                exitLook.append(item.toString());
             }
         }
-        exitLook.append("\n\tTotal Order Price = " + orderPrice +
-                "\n}");
+
+        // append total price
+        exitLook.append("\n\tTotal Order Price = " + orderPrice + "\n}");
+
         return exitLook.toString();
     }
-
 }

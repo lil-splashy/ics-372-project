@@ -70,8 +70,20 @@ public class JsonParser implements ParserInterface {
 
             JSONArray items = orderJson.getJSONArray("items");
 
-            // Create new order
-            Order newOrder = new Order(orderDate, "NEW", orderType, items.length(), null);
+            // Create new order via the order builder
+            Order.Builder builder = new Order.Builder()
+                    .setOrderDate(orderDate)
+                    .setOrderStatus("NEW")
+                    .setOrderType(orderType)
+                    .setMaxItems(items.length())
+                    .setWarehouse(null);
+
+            // JSON may include an ID, optionally support it
+            if (orderJson.has("orderID")) {
+                builder.setOrderID(orderJson.getString("orderID"));
+            }
+
+            Order newOrder = builder.build();
 
             for (int j = 0; j < items.length(); j++) {
                 JSONObject item = items.getJSONObject(j);
@@ -182,7 +194,15 @@ public class JsonParser implements ParserInterface {
                 JSONArray itemsArray = orderJson.getJSONArray("items");
 
                 //rebuilds the saved order using the import constructor so the original order ID is kept.
-                Order importedOrder = new Order(orderID, orderDate, status, type, itemsArray.length(), null);
+                // use orderBuilder
+                Order importedOrder = new Order.Builder()
+                        .setOrderID(orderID) // preserve existing ID
+                        .setOrderDate(orderDate)
+                        .setOrderStatus(status)
+                        .setOrderType(type)
+                        .setMaxItems(itemsArray.length())
+                        .setWarehouse(null)
+                        .build();
 
                 //loop through each saved item and rebuild it before adding it back to the order
                 for (int j = 0; j < itemsArray.length(); j++){
