@@ -61,6 +61,7 @@ How to obtain your Order ID:
 
 #### Functional:
 - Make refreshing orders an automatic process
+- Removed Manual import button - Done
 - Implement more Interfaces
 
 
