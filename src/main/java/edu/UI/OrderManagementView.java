@@ -180,16 +180,6 @@ public class OrderManagementView {
         WarehouseButton homeBtn = WarehouseButton.icon(homeSvg);
         homeBtn.setOnAction(e -> Homepage.show(stage, handler));
 
-        Group importSvg = SvgLoader.load("import.svg", Color.WHITE, Color.TRANSPARENT);
-        importSvg.setScaleX(1.1);
-        importSvg.setScaleY(1.1);
-
-        WarehouseButton importNavBtn = WarehouseButton.icon(importSvg);
-
-        importNavBtn.setOnAction(e -> {
-            Homepage.importFromOrdersDir(handler);
-            refreshOrders();
-        });
         //metrics button
         Button metricsBTN = WarehouseButton.action("Metrics", 140, 54, true);
         metricsBTN.setOnAction(e->showMetricsChart());
@@ -211,7 +201,7 @@ public class OrderManagementView {
         bar.setOnMousePressed(e -> { dragDelta[0] = stage.getX() - e.getScreenX(); dragDelta[1] = stage.getY() - e.getScreenY(); });
         bar.setOnMouseDragged(e -> { stage.setX(e.getScreenX() + dragDelta[0]); stage.setY(e.getScreenY() + dragDelta[1]); });
 
-        bar.getChildren().addAll(logo, textBlock, spacer, metricsBTN,exportNavBtn, importNavBtn, homeBtn);
+        bar.getChildren().addAll(logo, textBlock, spacer, metricsBTN,exportNavBtn, homeBtn);
         return bar;
     }
 
