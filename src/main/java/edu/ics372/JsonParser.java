@@ -72,6 +72,7 @@ public class JsonParser implements ParserInterface {
 
             // Create new order via the order builder
             Order.Builder builder = new Order.Builder()
+                    .setSourcePrefix("J")
                     .setOrderDate(orderDate)
                     .setOrderStatus("NEW")
                     .setOrderType(orderType)
@@ -196,12 +197,14 @@ public class JsonParser implements ParserInterface {
                 //rebuilds the saved order using the import constructor so the original order ID is kept.
                 // use orderBuilder
                 Order importedOrder = new Order.Builder()
+                        .setSourcePrefix(String.valueOf(orderID.charAt(0))) // keep J/X from stored ID
                         .setOrderID(orderID) // preserve existing ID
                         .setOrderDate(orderDate)
                         .setOrderStatus(status)
                         .setOrderType(type)
                         .setMaxItems(itemsArray.length())
                         .setWarehouse(null)
+                        .setImportMode(true)
                         .build();
 
                 //loop through each saved item and rebuild it before adding it back to the order

@@ -60,6 +60,7 @@ public class XmlParser implements ParserInterface {
 
                 // Create new order via the order builder
                 Order.Builder xmlBuilder = new Order.Builder()
+                        .setSourcePrefix("X")
                         .setOrderID(orderID) // XML always provides ID
                         .setOrderDate(System.currentTimeMillis())
                         .setOrderStatus("NEW")
