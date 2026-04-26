@@ -96,24 +96,19 @@ public class Order {
             // prepend 'X' (XML source) and append generated unique suffix
             return "X" + orderID + "~" + generateOrderID();
         }
-
         // if already valid, return unchanged
         return orderID;
     }
 
     // extracts the "core" portion of the ID (ignores prefix and suffix)
     private static String extractCoreID(String id) {
-        int start = 1; // skip first character (source prefix)
+        if (id == null) return "";
 
-        // find delimiter separating core from generated suffix
+        int start = 1; // skip J/X
+
         int end = id.indexOf("~");
+        if (end == -1) end = id.length();
 
-        // if no delimiter exists, use full remaining string
-        if (end == -1) {
-            end = id.length();
-        }
-
-        // return substring representing comparable core ID
         return id.substring(start, end);
     }
 
@@ -143,8 +138,8 @@ public class Order {
             // random uppercase letter
             char letter = (char) ('A' + rnd.nextInt(26));
 
-            // random 12-digit number
-            long number = rnd.nextLong(100_000_000_000L, 1_000_000_000_000L);
+            // random 6-digit number
+            long number = rnd.nextLong(100_000L, 1_000_000L);
 
             // combine into ID string
             id = letter + Long.toString(number);
