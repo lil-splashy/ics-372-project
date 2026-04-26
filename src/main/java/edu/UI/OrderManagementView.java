@@ -24,6 +24,7 @@ import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class OrderManagementView {
@@ -307,6 +308,7 @@ public class OrderManagementView {
                 alert.setTitle("Confirmation");
                 alert.setHeaderText("Are you sure you want to delete this order?");
                 alert.setContentText("Please confirm your action.");
+                styleAlert(alert);
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     handler.cancelOrder(order.getOrderID());
@@ -457,6 +459,7 @@ public class OrderManagementView {
                     alert.setTitle("Order Locked");
                     alert.setHeaderText(null);
                     alert.setContentText("This order is already being handled in another session.");
+                    styleAlert(alert);
                     alert.showAndWait();
                     rebuildButtonBox();
                 }
@@ -549,6 +552,13 @@ public class OrderManagementView {
         for (Button startBtn : allStartButtons) {
             startBtn.setDisable(hasActiveOrder);
         }
+    }
+
+    // ─── Helpers ────────────────────────────────
+    private void styleAlert(Alert alert) {
+        String css = Objects.requireNonNull(
+                getClass().getResource("resources/styles/alert.css")).toExternalForm();
+        alert.getDialogPane().getStylesheets().add(css);
     }
 
     // ─── Getters ────────────────────────────────

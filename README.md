@@ -56,8 +56,10 @@ How to obtain your Order ID:
 - Add product photos
 - Add scrollbar for order list - Done
 - Make fonts larger and possibly more bold
+- Add List button
 
 
+- Don't allow scroll for graph (hella skews –> infinity) 
 
 #### Functional:
 - Make refreshing orders an automatic process
