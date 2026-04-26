@@ -58,7 +58,7 @@ public class WarehouseButton extends Button {
                 : "-fx-background-color: rgba(80,80,80,0.95); -fx-background-radius: 8; -fx-cursor: hand;";
         WarehouseButton btn = new WarehouseButton(text, base, hover);
         btn.setPrefSize(width, height);
-        btn.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 24));
+        btn.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 26));
         btn.setTextFill(Color.WHITE);
         btn.setEffect(new DropShadow(4.8, 4, 5, Color.web("#000000", 0.25)));
         return btn;
@@ -70,7 +70,7 @@ public class WarehouseButton extends Button {
         String hover = "-fx-background-color: rgba(80,80,80,0.95); -fx-background-radius: 8; -fx-cursor: hand;";
         WarehouseButton btn = new WarehouseButton(arrow, base, hover);
         btn.setPrefSize(58, 60);
-        btn.setFont(Font.font("IBM Plex Mono", 20));
+        btn.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 22));
         btn.setTextFill(Color.WHITE);
         btn.setEffect(new DropShadow(4.8, 4, 5, Color.web("#000000", 0.25)));
         return btn;
@@ -91,7 +91,7 @@ public class WarehouseButton extends Button {
         String hover = "-fx-background-color: linear-gradient(to right, #165C2D, #279150); -fx-background-radius: 8; -fx-cursor: hand;";
         WarehouseButton btn = new WarehouseButton(text, base, hover);
         btn.setPrefSize(width, height);
-        btn.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 24));
+        btn.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 26));
         btn.setTextFill(Color.WHITE);
         btn.setEffect(new DropShadow(4.8, 4, 5, Color.web("#000000", 0.25)));
         return btn;
@@ -99,8 +99,8 @@ public class WarehouseButton extends Button {
 
     /** Solid orange primary button (import, confirm, etc.). */
     public static WarehouseButton primary(String text) {
-        String base  = "-fx-background-color: #C94600; -fx-text-fill: white; -fx-font-family: 'Monospaced'; -fx-font-size: 14px; -fx-padding: 10 24; -fx-cursor: hand;";
-        String hover = "-fx-background-color: #B33D00; -fx-text-fill: white; -fx-font-family: 'Monospaced'; -fx-font-size: 14px; -fx-padding: 10 24; -fx-cursor: hand;";
+        String base  = "-fx-background-color: #C94600; -fx-text-fill: white; -fx-font-family: 'Monospaced'; -fx-font-size: 16px; -fx-padding: 10 24; -fx-cursor: hand;";
+        String hover = "-fx-background-color: #B33D00; -fx-text-fill: white; -fx-font-family: 'Monospaced'; -fx-font-size: 16px; -fx-padding: 10 24; -fx-cursor: hand;";
         return new WarehouseButton(text, base, hover);
     }
 
