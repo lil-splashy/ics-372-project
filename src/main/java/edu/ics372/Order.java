@@ -1,4 +1,5 @@
 package edu.ics372;
+import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 public class Order {
@@ -8,20 +9,20 @@ public class Order {
     private String orderStatus;     // current status (e.g., NEW, SHIPPED, CANCELLED)
     private String orderType;       // type/category of order (e.g., ONLINE, STORE)
     private double orderPrice;      // total accumulated price of all items in the order
-    private String sourcePrefix;    // J or X
+
 
     private Item[] items;           // fixed-size array holding items in this order
     private int itemCount;          // tracks how many items are currently in the order
 
     // shared list storing ALL order IDs to enforce uniqueness across all orders
     private static final ArrayList<String> orderIDs = new ArrayList<>();
-    private static final ArrayList<String> coreIDs = new ArrayList<>();
+    private static final ArrayList<String> coreIDs = new ArrayList<>(); // business Entered IDs
+    private static final HashSet<String> incomingIDs = new HashSet<>();
 
     private Warehouse warehouse;    // warehouse associated with fulfilling this order
 
     // PRIVATE constructor ensures objects can ONLY be created through Builder
     private Order(Builder builder) {
-        this.sourcePrefix = builder.sourcePrefix;
         this.orderID = builder.orderID;             // assign finalized ID after validation
         this.orderDate = builder.orderDate;         // copy provided date
         this.orderStatus = builder.orderStatus;     // copy provided status
@@ -57,7 +58,7 @@ public class Order {
         public Builder setWarehouse(Warehouse warehouse)    {this.warehouse = warehouse; return this;}
 
         public Builder setSourcePrefix(String sourcePrefix) {
-            this.sourcePrefix = sourcePrefix; // set by appropiate parser
+            this.sourcePrefix = sourcePrefix; // set by appropriate parser
             return this;
         }
 
@@ -68,28 +69,36 @@ public class Order {
 
         // central creation logic (this replaces all constructors)
         public Order build() {
-
-
             String finalID;
 
             if (isImport) {
+                if (orderID == null || !orderID.contains("~")) {
+                    throw new IllegalArgumentException("Invalid imported order ID: " + orderID);
+                }
                 finalID = orderID;
 
                 String coreID = extractCoreID(finalID);
+                String prefix = String.valueOf(finalID.charAt(0));
 
                 registerExistingOrder(finalID);
-                registerExistingCore(coreID);
+                registerExistingCore(buildKey(prefix, coreID));
 
                 this.orderID = finalID;
                 return new Order(this);
             }
 
+            // ================= VALIDATE PREFIX =================
+            if (sourcePrefix == null || (!sourcePrefix.equals("J") && !sourcePrefix.equals("X"))) {
+                throw new IllegalStateException("Source prefix must be set");
+            }
+            String prefix = sourcePrefix;
+
             String baseID;
-            // CASE 1: no ID provided
+            // ================= CASE 1: NO ID (JSON) =================
             if (orderID == null || orderID.isEmpty()) {
                 baseID = String.valueOf(ThreadLocalRandom.current().nextInt(100, 1000));
             }
-            // CASE 2: ID provided
+            // ================= CASE 2: ID PROVIDED (XML, etc.) =================
             else {
                 baseID = orderID;
 
@@ -103,26 +112,29 @@ public class Order {
                 if (tildeIndex != -1) {
                     baseID = baseID.substring(0, tildeIndex);
                 }
+
+                String incomingKey = buildKey(prefix, baseID);
+
+                if (incomingIDs.contains(incomingKey)) {
+                    throw new IllegalArgumentException("Duplicate incoming order: " + incomingKey);
+                }
+
+                incomingIDs.add(incomingKey);
             }
 
-            // ALWAYS use parser-provided prefix
-            String prefix = sourcePrefix;
 
-            // generate suffix
-            char letter = (char) ('A' + ThreadLocalRandom.current().nextInt(26));
-            long number = ThreadLocalRandom.current().nextLong(100000, 1000000);
-
-            finalID = prefix + baseID + "~" + letter + number;
+            // ================= BUILD FINAL ID =================
+            finalID = prefix + baseID + "~" + generateOrderID();
 
             String coreID = extractCoreID(finalID);
 
             // correct duplicate check
             if (isDuplicateCore(coreID)) {
-                throw new IllegalArgumentException("Duplicate core ID: " + coreID);
+                throw new IllegalArgumentException("Duplicate core ID: " + buildKey(prefix, coreID));
             }
 
             registerExistingOrder(finalID);
-            registerExistingCore(coreID);
+            registerExistingCore(buildKey(prefix, coreID));
 
             this.orderID = finalID;
 
@@ -131,25 +143,6 @@ public class Order {
     }
 
     //================================ ID LOGIC ================================
-
-    // ensures ID follows system rules (prefix + suffix if needed)
-    private static String normalizeID(String orderID, String sourcePrefix) {
-        String baseID; // hold ID
-        if (orderID == null || orderID.isEmpty()) {
-            // generate a random 3-digit number for prefix
-            baseID = String.valueOf(ThreadLocalRandom.current().nextLong(100, 1000));
-
-            // create ID with 'J' prefix (JSON source) + unique suffix
-            return sourcePrefix + baseID + "~" + generateOrderID();
-
-        } // if ID does not start with known source identifiers
-        if (orderID.charAt(0) != 'J' && orderID.charAt(0) != 'X') {
-            // prepend 'X' (XML source) and append generated unique suffix
-            return sourcePrefix + orderID + "~" + generateOrderID();
-        }
-        // if already valid, return unchanged
-        return orderID;
-    }
 
     // extracts the "core" portion of the ID (ignores prefix and suffix)
     private static String extractCoreID(String id) {
@@ -168,35 +161,20 @@ public class Order {
         return coreIDs.contains(coreID);
     }
 
+
     // generates a globally unique suffix for IDs
     private static String generateOrderID() {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
-        String id;
-        boolean exists;
 
-        do {
-            // random uppercase letter
-            char letter = (char) ('A' + rnd.nextInt(26));
+        char letter = (char) ('A' + rnd.nextInt(26));
+        long number = rnd.nextLong(100_000L, 1_000_000L);
 
-            // random 6-digit number
-            long number = rnd.nextLong(100_000L, 1_000_000L);
+        return letter + Long.toString(number);
+    }
 
-            // combine into ID string
-            id = letter + Long.toString(number);
-
-            exists = false;
-
-            // ensure uniqueness by checking existing IDs
-            for (String currentIDs : orderIDs) {
-                if (currentIDs.endsWith(id)) {
-                    exists = true;
-                    break;
-                }
-            }
-
-        } while (exists); // repeat until unique
-
-        return id; // return unique generated suffix
+    //helper prefix and coreID
+    private static String buildKey(String prefix, String coreID) {
+        return prefix + coreID;
     }
 
     // adds an ID to the global list (used for duplicate tracking)
@@ -204,8 +182,21 @@ public class Order {
         orderIDs.add(orderID);
     }
 
-    public static void registerExistingCore(String coreID) {
-        coreIDs.add(coreID);
+    public static void removeExistingOrder(String orderID) {
+        if (orderID == null || orderID.isEmpty()) return;
+
+        String prefix = String.valueOf(orderID.charAt(0));
+        String coreID = extractCoreID(orderID);
+
+        String key = buildKey(prefix, coreID);
+
+        orderIDs.remove(orderID);
+        coreIDs.remove(coreID);
+        incomingIDs.remove(key);
+    }
+
+    public static void registerExistingCore(String preCoreID) {
+        coreIDs.add(preCoreID);
     }
 
 

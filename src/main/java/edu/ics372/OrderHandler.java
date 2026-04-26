@@ -178,22 +178,26 @@ public class OrderHandler {
             case "incoming":
                 canceledOrders.put(id,canceledOrder);
                 incomingOrders.remove(canceledOrder);
+                Order.removeExistingOrder(canceledOrder.getOrderID());// remove from order tracking lists
                 canceledOrder.setOrderStatus("canceled");
                 System.out.println("Order has been removed from incoming orders and added to canceled orders.");
                 break;
             case "started":
                 canceledOrders.put(id,canceledOrder);
                 startedOrders.remove(canceledOrder);
+                Order.removeExistingOrder(canceledOrder.getOrderID());// remove from order tracking lists
                 canceledOrder.setOrderStatus("canceled");
                 System.out.println("Order has been removed from started orders and added to canceled orders.");
                 break;
             case "completed":
                 canceledOrders.put(id,canceledOrder);
                 completedOrders.remove(canceledOrder);
+                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
                 canceledOrder.setOrderStatus("canceled");
                 System.out.println("Order has been removed from completed orders and added to canceled orders.");
                 break;
             case "canceled":
+                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
                 System.out.println("Order has already been canceled");
                 break;
             default:
@@ -213,6 +217,7 @@ public class OrderHandler {
             order.setOrderStatus("completed");
             completedOrders.add(order);
             startedOrders.remove(order);
+            Order.removeExistingOrder(order.getOrderID());
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
@@ -429,9 +434,5 @@ public class OrderHandler {
             Thread.currentThread().interrupt(); // restore interrupt status
         }
         return terminated; // return whether executor terminated in time
-    }
-
-    static void main (String [] args) {
-
     }
 }
