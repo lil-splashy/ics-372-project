@@ -20,7 +20,7 @@
 .dialog-pane > .header-panel .label {
     -fx-text-fill: white;
     -fx-font-family: "IBM Plex Mono", monospace;
-    -fx-font-size: 16px;
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
 
@@ -29,7 +29,7 @@
     -fx-background-color: transparent;
     -fx-text-fill: rgba(255, 255, 255, 0.85);
     -fx-font-family: "IBM Plex Mono", monospace;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
 }
 
 .dialog-pane > .button-bar > .container {
