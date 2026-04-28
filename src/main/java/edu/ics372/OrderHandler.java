@@ -32,10 +32,17 @@ public class OrderHandler {
     private final Warehouse bullseyeWarehouse = new Warehouse("W002", "Bullseye");
     private final Warehouse wallyworldWarehouse = new Warehouse("W003", "WallyWorld");
 
+    private final RandomOrderGenerator orderGenerator;
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.orderList = new OrderList();
+        this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
+        this.orderGenerator.start();
+    }
+    /** Sets the callback invoked (on the generator thread) after each new order is added. */
+    public void setOnOrderGenerated(Runnable callback) {
+        orderGenerator.setOnOrderGenerated(callback);
     }
     //getters for warehouses
     public Warehouse getMainWarehouse() {
@@ -176,13 +183,17 @@ public class OrderHandler {
             case "started":
             case "completed":
                 orderList.moveToCanceled(id, canceledOrder);
+                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
                 canceledOrder.setOrderStatus("canceled");
                 ordersCancelled++;
                 System.out.println("Order has been removed from " + orderStatus + " orders and added to canceled orders.");
                 break;
+
             case "canceled":
+                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
                 System.out.println("Order has already been canceled");
                 break;
+
             default:
                 System.out.println("order has not been fully processed or loaded.");
         }
@@ -199,6 +210,7 @@ public class OrderHandler {
         if (order.getOrderStatus().equals("started")){
             order.setOrderStatus("completed");
             orderList.moveStartedToCompleted(order);
+            Order.removeExistingOrder(order.getOrderID());
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
@@ -369,6 +381,7 @@ public class OrderHandler {
      * Stops accepting new tasks, but allows already submitted tasks to complete.
      */
     public void shutdown() { // #
+        orderGenerator.stop();
         executor.shutdown();
     }
     /**
@@ -395,9 +408,5 @@ public class OrderHandler {
             Thread.currentThread().interrupt(); // restore interrupt status
         }
         return terminated; // return whether executor terminated in time
-    }
-
-    static void main (String [] args) {
-
     }
 }

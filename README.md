@@ -50,17 +50,24 @@ How to obtain your Order ID:
 
 #### UI:
 - Add confirmation modals (for cancelling orders) - Done 
-- Add styling for modals
+- Add styling for modals - Done
 - Add Warehouse modification options
 - Remove Label print button - Done
-- Add product photos
+- Add product photos - Done
 - Add scrollbar for order list - Done
++ Added Information alert when exporting orders.
 - Make fonts larger and possibly more bold
+- Add List button
 
 
+- Don't allow scroll for graph (hella skews –> infinity) 
 
 #### Functional:
 - Make refreshing orders an automatic process
+- Removed Manual import button - Done
++ Break displayOrder lists into its own class from order handler
++ orderList class
+- Break displayOrder lists into its own class from order handler
 - Implement more Interfaces
 
 

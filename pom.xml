@@ -40,6 +40,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.5.6</version>
@@ -59,6 +64,8 @@
                 <includes>
                     <include>**/*.svg</include>
                     <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.mp3</include>
                 </includes>
             </resource>
             <resource>

@@ -189,7 +189,8 @@
 
 /* ─── Order status labels ─── */
 .order-status {
-    -fx-font-size: 24px;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
 .order-status.incoming  { -fx-text-fill: #47CEFF; }
