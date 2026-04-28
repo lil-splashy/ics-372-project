@@ -32,6 +32,8 @@ class RandomOrderGenerator(
         Thread(r, "order-generator").also { it.isDaemon = true }
     }
 
+    private val itemPool: List<Item> = loadItemPool()
+
     fun start() {
         isRunning = true
         scheduleNext()
@@ -60,12 +62,24 @@ class RandomOrderGenerator(
         val orderType = ORDER_TYPES[rnd.nextInt(ORDER_TYPES.size)]
         val itemCount = rnd.nextInt(1, 6) // 1–5 items
 
-        val order = Order(System.currentTimeMillis(), "incoming", orderType, itemCount, warehouse)
+        val order = Order.Builder()
+            .setSourcePrefix("J")
+            .setOrderDate(System.currentTimeMillis())
+            .setOrderStatus("incoming")
+            .setOrderType(orderType)
+            .setMaxItems(itemCount)
+            .setWarehouse(warehouse)
+            .build()
 
-        ITEM_POOL.shuffled().take(itemCount).forEach { (name, price, location) ->
-            val itemID = "G${rnd.nextInt(1000, 9999)}"
-            val qty    = rnd.nextInt(1, 4)
-            order.addItem(Item(itemID, name, price, qty, location))
+        itemPool.shuffled().take(itemCount).forEach { catalogItem ->
+            val qty = rnd.nextInt(1, 4)
+            order.addItem(Item(
+                "G${rnd.nextInt(1000, 9999)}",
+                catalogItem.itemName,
+                catalogItem.itemPrice,
+                qty,
+                catalogItem.warehouseLocation
+            ))
         }
 
         handler.addOrder(order)
@@ -73,37 +87,17 @@ class RandomOrderGenerator(
         onOrderGenerated?.run()
     }
 
+    private fun loadItemPool(): List<Item> {
+        val catalogPath = "src/main/orders/Item-Catalog.xml"
+        val pool = XmlParser().parseFile(catalogPath)
+            .flatMap { order -> order.items?.filterNotNull() ?: emptyList() }
+        println("[RandomOrderGenerator] Loaded ${pool.size} items from catalog.")
+        return pool
+    }
+
     // ── static data ──────────────────────────────────────────────────────────
 
     companion object {
         private val ORDER_TYPES = arrayOf("Delivery", "Pickup", "Shipped", "Direct Delivery")
-
-        private data class ItemTemplate(val name: String, val price: Double, val location: String)
-
-        private val ITEM_POOL = listOf(
-            ItemTemplate("Perfect Gold Bar",       250.00, "A1"),
-            ItemTemplate("Perfect Necklace",       180.00, "A2"),
-            ItemTemplate("Perfect Ring",           150.00, "A3"),
-            ItemTemplate("2-5ths Full Bucket",       5.00, "B1"),
-            ItemTemplate("31070",                   10.00, "B2"),
-            ItemTemplate("Abyssal Lantern",        320.00, "B3"),
-            ItemTemplate("Adamant Full Helm",       95.00, "C1"),
-            ItemTemplate("Adventurer's Boots",     130.00, "C2"),
-            ItemTemplate("Agility Potion",          12.50, "C3"),
-            ItemTemplate("Agility Tome",            75.00, "D1"),
-            ItemTemplate("Ahab's Beer",              3.50, "D2"),
-            ItemTemplate("Alchemical Chart Icon",   45.00, "D3"),
-            ItemTemplate("Ancestral Hat",          500.00, "E1"),
-            ItemTemplate("Ancestral Robe Bottom",  480.00, "E2"),
-            ItemTemplate("Ancestral Robe Top",     490.00, "E3"),
-            ItemTemplate("Ancestral Robes Set",   1400.00, "E4"),
-            ItemTemplate("Ancient Brew",            22.00, "F1"),
-            ItemTemplate("Anti-poison Supermix",    18.00, "F2"),
-            ItemTemplate("Anti-venom",              30.00, "F3"),
-            ItemTemplate("Anti-venom+",             55.00, "F4"),
-            ItemTemplate("Arcane Grimoire",        275.00, "G1"),
-            ItemTemplate("Armadyl Brew",            28.00, "G2"),
-            ItemTemplate("Lightning Bolt Scroll",   85.00, "G3"),
-        )
     }
 }

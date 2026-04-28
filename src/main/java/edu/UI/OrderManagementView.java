@@ -19,10 +19,8 @@ import javafx.stage.Stage;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.shape.Rectangle;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class OrderManagementView {
@@ -47,12 +45,12 @@ public class OrderManagementView {
     private final Label currentItemNameLabel     = new Label();
     private final Label currentItemLocationLabel = new Label();
     private final Label currentItemQtyLabel      = new Label();
+    private final javafx.scene.image.ImageView currentItemImageView = new javafx.scene.image.ImageView();
 
     private final ListView<Order> orderListView;
     private final VBox buttonBoxWrapper = new VBox();
     // Keep track of all Start Order buttons so they can be enabled/disabled
     private final List<Button> allStartButtons = new ArrayList<>();
-    private final RandomOrderGenerator orderGenerator;
     private final HBox centerPane;
     private final Button backBtn = WarehouseButton.action("◀", 120, 40, false);
 
@@ -91,9 +89,10 @@ public class OrderManagementView {
         updateCurrentItemDisplay();
         rebuildButtonBox();
 
-        orderGenerator = new RandomOrderGenerator(handler, handler.getMainWarehouse(), 10, 60);
-        orderGenerator.setOnOrderGenerated(() -> Platform.runLater(this::refreshOrders));
-        orderGenerator.start();
+        handler.setOnOrderGenerated(() -> Platform.runLater(() -> {
+            Notifications.INSTANCE.playIncomingOrder();
+            refreshOrders();
+        }));
     }
 
     // ─── Data ───────────────────────────────────
@@ -326,13 +325,11 @@ public class OrderManagementView {
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
                 // Open dialog modal upon clicking trash can icon
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation");
-                alert.setHeaderText("Are you sure you want to delete this order?");
-                alert.setContentText("Please confirm your action.");
-                styleAlert(alert);
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
+                Optional<ButtonType> result = Notifications.INSTANCE.confirmation(
+                        "Confirmation",
+                        "Are you sure you want to delete this order?",
+                        "Please confirm your action.");
+                if (result.isPresent() && result.get() == ButtonType.OK) {
                     handler.cancelOrder(order.getOrderID());
                     OrderLock.unlock(order.getOrderID());
                     orders.remove(order);
@@ -400,8 +397,14 @@ public class OrderManagementView {
         bodyRow.setAlignment(Pos.CENTER_LEFT);
         VBox.setVgrow(bodyRow, Priority.ALWAYS);
 
-        Rectangle imgPlaceholder = new Rectangle(220, 190);
-        imgPlaceholder.setFill(Color.web("#333333", 0.7));
+        Rectangle imgBackground = new Rectangle(220, 190);
+        imgBackground.setFill(Color.web("#333333", 0.7));
+        currentItemImageView.setFitWidth(220);
+        currentItemImageView.setFitHeight(190);
+        currentItemImageView.setPreserveRatio(true);
+        currentItemImageView.setSmooth(true);
+        StackPane imgContainer = new StackPane(imgBackground, currentItemImageView);
+        imgContainer.setPrefSize(220, 190);
 
         VBox details = new VBox(18);
         details.setAlignment(Pos.CENTER_LEFT);
@@ -410,7 +413,7 @@ public class OrderManagementView {
         currentItemQtyLabel.setFont(Font.font("IBM Plex Mono", FontWeight.BOLD, 22));
         currentItemQtyLabel.setTextFill(Color.WHITE);
         details.getChildren().addAll(currentItemLocationLabel, currentItemQtyLabel);
-        bodyRow.getChildren().addAll(imgPlaceholder, details);
+        bodyRow.getChildren().addAll(imgContainer, details);
 
         // Footer: name + nav buttons
         HBox footerRow = new HBox(8);
@@ -477,12 +480,9 @@ public class OrderManagementView {
                     refreshOrders();
                     updateStartButtons(); // disable all Start buttons after starting
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Order Locked");
-                    alert.setHeaderText(null);
-                    alert.setContentText("This order is already being handled in another session.");
-                    styleAlert(alert);
-                    alert.showAndWait();
+                    Notifications.INSTANCE.warning(
+                            "Order Locked",
+                            "This order is already being handled in another session.");
                     rebuildButtonBox();
                 }
             });
@@ -538,6 +538,7 @@ public class OrderManagementView {
             currentItemNameLabel.setText("No orders available");
             currentItemLocationLabel.setText("");
             currentItemQtyLabel.setText("");
+            currentItemImageView.setImage(null);
             return;
         }
 
@@ -549,6 +550,7 @@ public class OrderManagementView {
             currentItemNameLabel.setText("No items in this order");
             currentItemLocationLabel.setText("");
             currentItemQtyLabel.setText("");
+            currentItemImageView.setImage(null);
             return;
         }
 
@@ -558,6 +560,11 @@ public class OrderManagementView {
         currentItemLocationLabel.setText("Location: "
                 + (item.getWarehouseLocation() != null ? item.getWarehouseLocation() : "N/A"));
         currentItemQtyLabel.setText("Qty: " + item.getItemQuantity());
+
+        java.net.URL imgUrl = getClass().getResource(
+                "resources/images/Item-Catalog/" + item.getItemName().trim() + ".png");
+        currentItemImageView.setImage(imgUrl != null
+                ? new javafx.scene.image.Image(imgUrl.toExternalForm(), true) : null);
     }
     /**
      * Updates the state of all "Start Order" buttons in the GUI.
@@ -574,13 +581,6 @@ public class OrderManagementView {
         for (Button startBtn : allStartButtons) {
             startBtn.setDisable(hasActiveOrder);
         }
-    }
-
-    // ─── Helpers ────────────────────────────────
-    private void styleAlert(Alert alert) {
-        String css = Objects.requireNonNull(
-                getClass().getResource("resources/styles/alert.css")).toExternalForm();
-        alert.getDialogPane().getStylesheets().add(css);
     }
 
     // ─── Getters ────────────────────────────────
