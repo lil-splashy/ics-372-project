@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 // "E" should be Orders when created
 public class OrderHandler {
 
-    private OrderList orderList;
+    private final OrderList orderList;
     //Instance variables to keep orders based on status
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
