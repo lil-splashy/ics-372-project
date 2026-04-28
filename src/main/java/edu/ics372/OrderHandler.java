@@ -41,6 +41,7 @@ public class OrderHandler {
     private final Warehouse bullseyeWarehouse = new Warehouse("W002", "Bullseye");
     private final Warehouse wallyworldWarehouse = new Warehouse("W003", "WallyWorld");
 
+    private final RandomOrderGenerator orderGenerator;
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
@@ -51,6 +52,14 @@ public class OrderHandler {
         this.ordersById = new HashMap<>();
         //used to record canceled orders
         this.canceledOrders = new HashMap<>();
+
+        this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
+        this.orderGenerator.start();
+    }
+
+    /** Sets the callback invoked (on the generator thread) after each new order is added. */
+    public void setOnOrderGenerated(Runnable callback) {
+        orderGenerator.setOnOrderGenerated(callback);
     }
     //getters for warehouses
     public Warehouse getMainWarehouse() {
@@ -438,6 +447,7 @@ public class OrderHandler {
      * Stops accepting new tasks, but allows already submitted tasks to complete.
      */
     public void shutdown() { // #
+        orderGenerator.stop();
         executor.shutdown();
     }
     /**
