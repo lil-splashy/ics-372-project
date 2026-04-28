@@ -6,10 +6,10 @@ import java.util.Date;
 /**
  * 
  */
-public class Records
+public class Record
 {
     private final Order recordedOrder; //the order in which this record pertains to
-    private final DateFormat df = DateFormat.getDateInstance(); //
+    private final DateFormat df = DateFormat.getDateTimeInstance(); //
     private final Date startTime;
     private final Date endTime;
 
@@ -18,7 +18,7 @@ public class Records
      * This constructor will be called when orders are called in from a new file
      * @param order The order that is being monitored
      */
-    public Records(Order order)
+    public Record(Order order)
     {
         recordedOrder = order;
         //Set the initial start and end time to the epoch for error checking purposes
@@ -31,7 +31,7 @@ public class Records
      * @param order The Order which is being monitored in this record
      * @param start The time in which the order was originally started in milliseconds
      */
-    public Records(Order order, long start)
+    public Record(Order order, long start)
     {
         recordedOrder = order;
         startTime = new Date(start);
@@ -41,6 +41,9 @@ public class Records
     // ----------------- Getters and "setters" ---------------------------------------------------------------------------
     public Order getRecordedOrder()
     { return this.recordedOrder; }
+
+    public long getLongStartTime()
+    { return startTime.getTime(); }
 
     public void setStartTime(long time)
     { this.startTime.setTime(time); }
@@ -52,8 +55,23 @@ public class Records
         { this.endTime.setTime(time);}
     }
 
-    // ---------------- These will be used for analytics for the session as a whole ------------------------------------
+    // ---------------- These will be used for analytics that are used in the session as a whole -----------------------
 
+    /**
+     * This method will return the time the order took to complete in milliseconds. It is run under the expectation that
+     *  the order has been completed.
+     * @return The completion time in milliseconds
+     */
+    public long completionTime()
+    {
+        long completionTime = endTime.getTime() - startTime.getTime();
+
+        //Just in case if the order has not been completed or the startTime is somehow after the endTime
+        if (completionTime < 0 || endTime.getTime() == 0)
+        { completionTime = 0; }
+
+        return completionTime;
+    }
     // ---------------- These will be used when viewing information on individual orders in the UI ---------------------
     /**
      * This method will return the amount of time between the start and end times of an order
@@ -65,7 +83,15 @@ public class Records
         String result = "This order has not been started.";
         if(startTime.getTime() != 0)
         {
-
+            if(endTime.getTime() == 0)  //Checks to make sure endTime has been set different from the default
+            { result = "This order has not been finished; it was started at " + this.getStartDate(); }
+            else
+            {
+                long timeDiff = endTime.getTime() - startTime.getTime();
+                result = "Hours: " + (timeDiff / 360000) +
+                        " Minutes: " + ((timeDiff / 60000) % 60) +
+                        " Seconds: " + ((timeDiff % 60000)/ 1000);
+            }
         }
         return result;
     }
@@ -91,4 +117,13 @@ public class Records
     }
 
     // --------------------------------- toString() --------------------------------------------------------------------
+    public static void main(String[] args)
+    {
+        Date testDate = new Date();
+        System.out.println(DateFormat.getDateTimeInstance().format(testDate));
+        System.out.println(testDate.getTime());
+        System.out.println("Hours: " + (testDate.getTime() / 3600000) +
+            " Minutes: " + ((testDate.getTime() / 60000) % 60) +
+            " Seconds: " + ((testDate.getTime() % 60000)/ 1000));
+    }
 }
