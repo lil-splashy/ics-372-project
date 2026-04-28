@@ -1,9 +1,6 @@
 package edu.ics372;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.concurrent.ExecutorService; //
@@ -12,10 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 // "E" should be Orders when created
 public class OrderHandler {
+
+    private OrderList orderList;
     //Instance variables to keep orders based on status
-    private LinkedList<Order> incomingOrders;
-    private LinkedList<Order> startedOrders;
-    private LinkedList<Order> completedOrders;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -26,11 +22,6 @@ public class OrderHandler {
     //variable for file name for saved program orders
     private static final String SAVE_FILE = "saved_orders.json";
 
-    //Using map to associate orders with an id per instruction 3
-    private Map<String,Order> ordersById;
-
-    //Using map to store canceled orders
-    private Map<String, Order> canceledOrders;
 
     //Calling parserInterface to have methods that can load and save data using the parser class
     private ParserInterface parser = new Parser();
@@ -44,13 +35,7 @@ public class OrderHandler {
 
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
-        this.incomingOrders = new LinkedList<>();
-        this.startedOrders = new LinkedList<>();
-        this.completedOrders = new LinkedList<>();
-        //used for look up.
-        this.ordersById = new HashMap<>();
-        //used to record canceled orders
-        this.canceledOrders = new HashMap<>();
+        this.orderList = new OrderList();
     }
     //getters for warehouses
     public Warehouse getMainWarehouse() {
@@ -79,19 +64,14 @@ public class OrderHandler {
     }
 
     //getters for the linked lists
-    public LinkedList<Order> getIncomingOrders(){
-        return incomingOrders;
-    }
-    public LinkedList<Order> getStartedOrders(){
-        return startedOrders;
-    }
+    public LinkedList<Order> getIncomingOrders(){return orderList.getIncomingOrders();}
+    public LinkedList<Order> getStartedOrders(){return orderList.getStartedOrders();}
     public LinkedList<Order> getCompletedOrders(){
-        return completedOrders;
+        return orderList.getCompletedOrders();
     }
 
     public void addOrder(Order order) {
-        incomingOrders.add(order);
-        ordersById.put(order.getOrderID(), order);
+        orderList.addIncomingOrder(order);
     }
 
     // Loads orders from a file path using the parser to detect format
@@ -111,8 +91,9 @@ public class OrderHandler {
             System.out.print("Order successfully loaded :D \n");
             order.setOrderStatus("incoming");
             order.setWarehouse(mainWarehouse);
-            incomingOrders.add(order);
-            ordersById.put(order.getOrderID(), order);
+
+            orderList.addIncomingOrder(order);
+
             ordersImported++;
         }
     }
@@ -150,11 +131,11 @@ public class OrderHandler {
      */
     public void startOrder(String id) {
         // Check if there is already an active started order
-        if (!startedOrders.isEmpty()) {
+        if (!orderList.getStartedOrders().isEmpty()) {
             System.out.println("Cannot start a new order until the current started order is completed or canceled.");
             return; // block starting another order
         }
-        Order order = ordersById.get(id); // Look up the order by ID
+        Order order = orderList.getOrderById(id); // Look up the order by ID
 
         if (order == null) {
             System.out.println("No order associated with this id");
@@ -167,8 +148,7 @@ public class OrderHandler {
         }
         // Move order from incoming to started
         order.setOrderStatus("started");
-        startedOrders.add(order);
-        incomingOrders.remove(order);
+        orderList.moveIncomingToStarted(order);
         // Submit the order to the executor for asynchronous processing
         // Processing can include tasks like updating inventory, notifications, or logging
         // This does NOT automatically complete the order
@@ -180,11 +160,11 @@ public class OrderHandler {
     //method used to cancel an order and store in hashmap of canceled orders
     //do we want to be able to cancel any orders? even if completed but not shipped?
     public void cancelOrder(String id) {
-        if(ordersById.get(id) == null){
+        Order canceledOrder = orderList.getOrderById(id);
+        if(canceledOrder == null){
             System.out.println("No order associated with the provided id");
             return;
         }
-        Order canceledOrder = ordersById.get(id);
         String orderStatus = canceledOrder.getOrderStatus();
         if (orderStatus == null){
             System.out.println("Order status is missing.");
@@ -193,25 +173,12 @@ public class OrderHandler {
 
         switch(orderStatus){
             case "incoming":
-                canceledOrders.put(id,canceledOrder);
-                incomingOrders.remove(canceledOrder);
-                canceledOrder.setOrderStatus("canceled");
-                ordersCancelled++;
-                System.out.println("Order has been removed from incoming orders and added to canceled orders.");
-                break;
             case "started":
-                canceledOrders.put(id,canceledOrder);
-                startedOrders.remove(canceledOrder);
-                canceledOrder.setOrderStatus("canceled");
-                ordersCancelled++;
-                System.out.println("Order has been removed from started orders and added to canceled orders.");
-                break;
             case "completed":
-                canceledOrders.put(id,canceledOrder);
-                completedOrders.remove(canceledOrder);
+                orderList.moveToCanceled(id, canceledOrder);
                 canceledOrder.setOrderStatus("canceled");
                 ordersCancelled++;
-                System.out.println("Order has been removed from completed orders and added to canceled orders.");
+                System.out.println("Order has been removed from " + orderStatus + " orders and added to canceled orders.");
                 break;
             case "canceled":
                 System.out.println("Order has already been canceled");
@@ -224,15 +191,14 @@ public class OrderHandler {
 
     // When prompted by user interface move started order to completed linked list
     public void completeOrder(String id) {
-        if (ordersById.get(id) == null) {
+        Order order = orderList.getOrderById(id);
+        if (order == null) {
             System.out.println("No order associated with this id");
             return;
         }
-        if (ordersById.get(id).getOrderStatus().equals("started")){
-            Order order = ordersById.get(id);
+        if (order.getOrderStatus().equals("started")){
             order.setOrderStatus("completed");
-            completedOrders.add(order);
-            startedOrders.remove(order);
+            orderList.moveStartedToCompleted(order);
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
@@ -240,6 +206,7 @@ public class OrderHandler {
     }
 
     public void exportCompletedOrders(String extension){
+        LinkedList<Order> completedOrders = orderList.getCompletedOrders();
         if(completedOrders == null || completedOrders.isEmpty()){
             System.out.println("No completed orders to export.");
             return;
@@ -265,23 +232,20 @@ public class OrderHandler {
         //adds to the counter for metrics
         ordersExported += exportedNow;
 
-        System.out.println("Completed orders ecported to: " + filePath);
+        System.out.println("Completed orders exported to: " + filePath);
 
-        for(Order order: completedOrders){
-            ordersById.remove(order.getOrderID());
-        }
-
-        completedOrders.clear();
+        orderList.removeCompletedOrdersAfterExport();
     }
 
 
     //going to be used to grab an order by its order id using hashmap;
     public Order getOrder(String id){
-        if(ordersById.get(id) == null){
+        Order order = orderList.getOrderById(id);
+        if(order == null){
             System.out.println("No order associated with this id");
             return null;
         }
-        return ordersById.get(id);
+        return order;
     }
 
 
@@ -291,6 +255,9 @@ public class OrderHandler {
         // Call order method for price
         // getOrderPrice()
         // price total
+        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
+        LinkedList<Order> startedOrders = orderList.getStartedOrders();
+
         double totalPriceUncompletedOrders = 0;
         System.out.println("Incoming Orders: ");
         for(Order order : incomingOrders){
@@ -309,6 +276,7 @@ public class OrderHandler {
 
     // Displays incoming orders
     public void displayIncomingOrders() {
+        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
         System.out.println("Incoming Orders: ");
         for (Order order : incomingOrders) {
             System.out.println(order);
@@ -317,6 +285,7 @@ public class OrderHandler {
 
     // Displays started orders
     public void displayStartedOrders() {
+        LinkedList<Order> startedOrders = orderList.getStartedOrders();
         System.out.println("Started Orders: ");
         for (Order order : startedOrders) {
             System.out.println(order);
@@ -326,6 +295,7 @@ public class OrderHandler {
     // Displays completed orders
     public void displayCompletedOrders() {
         //display completedOrders linked list
+        LinkedList<Order> completedOrders = orderList.getCompletedOrders();
         System.out.println("Completed Orders: ");
         for (Order order : completedOrders) {
             System.out.println(order);
@@ -334,13 +304,16 @@ public class OrderHandler {
 
     public void displayCanceledOrders(){
         System.out.println("Canceled Orders: ");
-        for (Order order: canceledOrders.values()){
+        for (Order order: orderList.getCanceledOrdersCollection()){
             System.out.println(order);
         }
     }
 
     // Calculates total price of uncompleted orders
     public double totalPriceUncompletedOrders(){
+        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
+        LinkedList<Order> startedOrders = orderList.getStartedOrders();
+
         double totalPrice = 0;
 
         for(Order order : incomingOrders){
@@ -360,7 +333,7 @@ public class OrderHandler {
      * @param filePath The directory in which the file containing the orders is located
      */
     public void saveData(String filePath){
-        List<Order> allOrders = new ArrayList<>(ordersById.values());
+        List<Order> allOrders = orderList.getAllOrders();
         jParser.exportOrders(allOrders, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
     }
@@ -383,49 +356,12 @@ public class OrderHandler {
         //add each imported order back into the ordersbyidlist
         // also add them to the correct list based on their status
         for(Order order: importedOrders){
-            ordersById.put(order.getOrderID(), order);
-            addOrderToCorrectList(order);
+            order.setWarehouse(mainWarehouse);
+            orderList.addOrderToCorrectList(order);
         }
 
         //confirm the amount of saved orders that were restored
         System.out.println(importedOrders.size() + " program orders imported successfully.");
-    }
-
-
-    /**
-     * Places an imported order into the correct tracking structure
-     * based on its saved status.
-     *
-     * @param order imported order to be restored into the proper list/map
-     */
-    private void addOrderToCorrectList(Order order){
-        order.setWarehouse(mainWarehouse);
-        //read the saved status of order so it can be put in the correct list
-        String status = order.getOrderStatus();
-
-        // making sure there is a status for the imported order
-        if (status == null){
-            System.out.println("Imported order is missing a status.");
-            return;
-        }
-
-        //restore the order to the matchig status list
-        switch(status){
-            case "incoming":
-                incomingOrders.add(order);
-                break;
-            case "started":
-                startedOrders.add(order);
-                break;
-            case "completed":
-                completedOrders.add(order);
-                break;
-            case "canceled":
-                canceledOrders.put(order.getOrderID(), order);
-                break;
-            default:
-                System.out.println("Unknown order status: " + status);
-        }
     }
 
     /**
