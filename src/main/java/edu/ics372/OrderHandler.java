@@ -11,13 +11,10 @@ import java.util.concurrent.TimeUnit;
 public class OrderHandler {
 
     private final OrderList orderList;
-    //Instance variables to keep orders based on status
+
+    private final OrderMetrics orderMetrics;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    private int ordersCancelled = 0;
-    private int ordersImported = 0;
-    private int ordersExported = 0;// #
 
     //variable for file name for saved program orders
     private static final String SAVE_FILE = "saved_orders.json";
@@ -37,6 +34,7 @@ public class OrderHandler {
     //Constructor creates linked list depending on status and a map for associating orders with their ID
     public OrderHandler() {
         this.orderList = new OrderList();
+        this.orderMetrics = new OrderMetrics();
         this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
         this.orderGenerator.start();
     }
@@ -59,15 +57,19 @@ public class OrderHandler {
 
     //getters for order metrics
     public int getOrdersCancelled(){
-        return ordersCancelled;
+        return orderMetrics.getOrdersCancelled();
     }
 
     public int getOrdersImported(){
-        return ordersImported;
+        return orderMetrics.getOrdersImported();
     }
 
     public int getOrdersExported(){
-        return ordersExported;
+        return orderMetrics.getOrdersExported();
+    }
+
+    public int getOrdersStarted(){
+        return orderMetrics.getOrdersStarted();
     }
 
     //getters for the linked lists
@@ -101,7 +103,7 @@ public class OrderHandler {
 
             orderList.addIncomingOrder(order);
 
-            ordersImported++;
+            orderMetrics.incrementImported();
         }
     }
 
@@ -156,6 +158,7 @@ public class OrderHandler {
         // Move order from incoming to started
         order.setOrderStatus("started");
         orderList.moveIncomingToStarted(order);
+        orderMetrics.incrementStarted();
         // Submit the order to the executor for asynchronous processing
         // Processing can include tasks like updating inventory, notifications, or logging
         // This does NOT automatically complete the order
@@ -185,7 +188,7 @@ public class OrderHandler {
                 orderList.moveToCanceled(id, canceledOrder);
                 Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
                 canceledOrder.setOrderStatus("canceled");
-                ordersCancelled++;
+                orderMetrics.incrementCancelled();
                 System.out.println("Order has been removed from " + orderStatus + " orders and added to canceled orders.");
                 break;
 
@@ -242,7 +245,7 @@ public class OrderHandler {
         int exportedNow = completedOrders.size();
         parser.exportOrders(completedOrders, filePath);
         //adds to the counter for metrics
-        ordersExported += exportedNow;
+        orderMetrics.addExported(exportedNow);
 
         System.out.println("Completed orders exported to: " + filePath);
 

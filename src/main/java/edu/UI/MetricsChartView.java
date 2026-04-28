@@ -19,6 +19,7 @@ public class MetricsChartView {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         dataset.addValue(orderHandler.getOrdersImported(), "Orders", "Imported");
+        dataset.addValue(orderHandler.getOrdersStarted(), "Orders", "Started");
         dataset.addValue(orderHandler.getOrdersCancelled(), "Orders", "Cancelled");
         dataset.addValue(orderHandler.getOrdersExported(), "Orders", "Exported");
 
