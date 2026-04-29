@@ -63,7 +63,7 @@ public class XmlParser implements ParserInterface {
                         .setSourcePrefix("X")
                         .setOrderID(orderID) // XML always provides ID
                         .setOrderDate(System.currentTimeMillis())
-                        .setOrderStatus("NEW")
+                        .setOrderStatus(OrderStatus.NEW)
                         .setOrderType(orderType)
                         .setMaxItems(itemNodes.getLength())
                         .setWarehouse(null);
@@ -101,7 +101,7 @@ public class XmlParser implements ParserInterface {
 
                 appendText(doc, orderEl, "orderID", order.getOrderID());
                 appendText(doc, orderEl, "order_date", String.valueOf(order.getOrderDate()));
-                appendText(doc, orderEl, "status", order.getOrderStatus());
+                appendText(doc, orderEl, "status", order.getOrderStatus().css());
                 appendText(doc, orderEl, "type", order.getOrderType());
 
                 Element itemsEl = doc.createElement("items");

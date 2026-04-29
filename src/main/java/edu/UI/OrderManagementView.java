@@ -1,10 +1,6 @@
 package edu.UI;
 
-import edu.ics372.Item;
-import edu.ics372.Parser;
-import edu.ics372.Order;
-import edu.ics372.OrderHandler;
-import edu.ics372.OrderLock;
+import edu.ics372.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -231,7 +227,7 @@ public class OrderManagementView {
             bg.setStrokeWidth(2);
             bg.setEffect(new DropShadow(4, 0, 5, Color.web("#000000", 0.4)));
 
-            boolean completed = "completed".equalsIgnoreCase(order.getOrderStatus());
+            boolean completed = order.getOrderStatus() == OrderStatus.COMPLETED;
             Color iconTint = isSelected() ? Color.web("#F35621") : Color.WHITE;
             if (isSelected()) bg.setFill(Color.web("#FFFFFF", 0.05));
             else              cell.setOpacity(0.7);
@@ -253,10 +249,10 @@ public class OrderManagementView {
             countLabel.layoutXProperty().bind(cell.prefWidthProperty().subtract(185));
             countLabel.setLayoutY(20);
 
-            Label statusLabel = new Label(order.getOrderStatus());
+            Label statusLabel = new Label(order.getOrderStatus().css());
             statusLabel.getStyleClass().add("order-status");
             if (order.getOrderStatus() != null)
-                statusLabel.getStyleClass().add(order.getOrderStatus().toLowerCase());
+                statusLabel.getStyleClass().add(order.getOrderStatus().css().toLowerCase());
             statusLabel.layoutXProperty().bind(cell.prefWidthProperty().subtract(185));
             statusLabel.setLayoutY(38);
 
@@ -385,9 +381,9 @@ public class OrderManagementView {
         }
         Order order = orders.get(selectedOrderIndex.get());
         switch (order.getOrderStatus()) {
-            case "started"            -> buttonBoxWrapper.getChildren().add(buildFullButtonPanel(order));
-            case "completed",
-                 "canceled"           -> buttonBoxWrapper.getChildren().add(buildReadOnlyButtonPanel(order));
+            case STARTED            -> buttonBoxWrapper.getChildren().add(buildFullButtonPanel(order));
+            case COMPLETED,
+                 CANCELED           -> buttonBoxWrapper.getChildren().add(buildReadOnlyButtonPanel(order));
             default                   -> buttonBoxWrapper.getChildren().add(buildStartButtonPanel(order));
         }
     }

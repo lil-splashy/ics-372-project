@@ -5,7 +5,7 @@ class Item(
         private var itemName: String,
         private var itemPrice: Double,
         private var itemQuantity: Int,
-        private var warehouseLocation: String
+        private var warehouseLocation: String?
 ) {
 
     fun getItemID(): String = itemID
@@ -28,7 +28,7 @@ class Item(
         this.itemQuantity = itemQuantity
     }
 
-    fun getWarehouseLocation(): String = warehouseLocation
+    fun getWarehouseLocation(): String = warehouseLocation ?: "UNKNOWN"
     fun setWarehouseLocation(warehouseLocation: String) {
         this.warehouseLocation = warehouseLocation
     }
