@@ -117,13 +117,5 @@ public class Record
     }
 
     // --------------------------------- toString() --------------------------------------------------------------------
-    public static void main(String[] args)
-    {
-        Date testDate = new Date();
-        System.out.println(DateFormat.getDateTimeInstance().format(testDate));
-        System.out.println(testDate.getTime());
-        System.out.println("Hours: " + (testDate.getTime() / 3600000) +
-            " Minutes: " + ((testDate.getTime() / 60000) % 60) +
-            " Seconds: " + ((testDate.getTime() % 60000)/ 1000));
-    }
+
 }
