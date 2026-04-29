@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class OrderManagementView {
-
-
+    // REMINDER: ADD LISTENERS
     private final StackPane root;
     private final HBox titleBar;
 
@@ -474,7 +473,7 @@ public class OrderManagementView {
         startBtn.setDisable(order == null || locked || !handler.getStartedOrders().isEmpty());
 
         if (order != null && !locked) {
-            startBtn.setOnAction(e -> {
+            startBtn.setOnAction(e -> {  //ADD LISTENER HERE
                 if (OrderLock.tryLock(order.getOrderID())) {
                     handler.startOrder(order.getOrderID());
                     refreshOrders();
