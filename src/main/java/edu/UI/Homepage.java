@@ -11,10 +11,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.chart.fx.ChartViewer;
 
 
 import java.io.File;
@@ -33,7 +29,6 @@ public class Homepage extends Application {
 
     /**
      * This method will boot up the GUI, construct the OrderHandler and load in orders saved when the last session closed
-     *
      * @param stage The window
      */
     @Override
@@ -217,6 +212,16 @@ public class Homepage extends Application {
         nameLabel.setWrapText(true);
         nameLabel.setAlignment(Pos.CENTER);
 
+        VBox content = getVBox(warehouse, orderCount, nameLabel);
+        card.getChildren().add(content);
+
+        card.setOnMouseClicked(e ->
+                MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
+
+        return card;
+    }
+
+    private static VBox getVBox(Warehouse warehouse, int orderCount, Label nameLabel) {
         String countText = orderCount == 1 ? "1 order" : orderCount + " orders";
         Label countLabel = new Label(countText);
         countLabel.setStyle("-fx-font-family: 'Monospaced'; -fx-font-size: 13px; -fx-text-fill: #aaaaaa;");
@@ -226,12 +231,7 @@ public class Homepage extends Application {
 
         VBox content = new VBox(8, nameLabel, countLabel, idLabel);
         content.setAlignment(Pos.CENTER);
-        card.getChildren().add(content);
-
-        card.setOnMouseClicked(e ->
-                MainWindow.show(stage, handler, warehouse.getWarehouseID(), warehouse.getWarehouseName()));
-
-        return card;
+        return content;
     }
 
     public static void main(String[] args) {

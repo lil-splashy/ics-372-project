@@ -93,6 +93,7 @@ public class OrderHandler {
     public void addOrder(Order order) {
         orderList.addIncomingOrder(order);
         orderMetrics.incrementImported();
+        SessionAnalytics.getInstance().addRecord(new Record(order));
     }
 
     // Loads orders from a file path using the parser to detect format
@@ -114,8 +115,8 @@ public class OrderHandler {
             order.setWarehouse(mainWarehouse);
 
             orderList.addIncomingOrder(order);
-
             orderMetrics.incrementImported();
+            SessionAnalytics.getInstance().addRecord(new Record(order));
         }
     }
 
@@ -171,6 +172,8 @@ public class OrderHandler {
         order.setOrderStatus("started");
         orderList.moveIncomingToStarted(order);
         orderMetrics.incrementStarted();
+        Record startRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
+        if (startRecord != null) startRecord.setStartTime(System.currentTimeMillis());
         // Submit the order to the executor for asynchronous processing
         // Processing can include tasks like updating inventory, notifications, or logging
         // This does NOT automatically complete the order
@@ -235,6 +238,8 @@ public class OrderHandler {
             order.setOrderStatus("completed");
             orderList.moveStartedToCompleted(order);
             Order.removeExistingOrder(order.getOrderID());
+            Record endRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
+            if (endRecord != null) endRecord.setEndTime(System.currentTimeMillis());
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }
