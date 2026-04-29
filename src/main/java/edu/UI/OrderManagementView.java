@@ -89,7 +89,7 @@ public class OrderManagementView {
         rebuildButtonBox();
 
         handler.setOnOrderGenerated(() -> Platform.runLater(() -> {
-            Notifications.playIncomingOrder();
+            Notifications.INSTANCE.playIncomingOrder();
             refreshOrders();
         }));
     }
@@ -202,10 +202,10 @@ public class OrderManagementView {
 
         exportNavBtn.setOnAction(e->{
             handler.exportCompletedOrders(".json");
-//            Alert notification of export.
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Export Completed");
-            alert.setContentText("Exported orders successfully to ");
+            // Alert notification of export.
+            Notifications.INSTANCE.info(
+                    "Orders Exported Successfully",
+                    "Completed Orders Exported Successfully to saved_orders.json");
             refreshOrders();
         });
 
@@ -254,11 +254,11 @@ public class OrderManagementView {
         rightPanel.setMinWidth(500);
         rightPanel.setMaxWidth(700);
 
-        center.getChildren().addAll(scrollPane, rightPanel);  // ← scrollPane instead of orderListView
+        center.getChildren().addAll(scrollPane, rightPanel);
         return center;
     }
 
-    // ─── Order List Cell ────────────────────────
+
     private class OrderListCell extends ListCell<Order> {
         @Override
         protected void updateItem(Order order, boolean empty) {
@@ -324,7 +324,7 @@ public class OrderManagementView {
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
                 // Open dialog modal upon clicking trash can icon
-                Optional<ButtonType> result = Notifications.confirmation(
+                Optional<ButtonType> result = Notifications.INSTANCE.confirmation(
                         "Confirmation",
                         "Are you sure you want to delete this order?",
                         "Please confirm your action.");
@@ -421,7 +421,7 @@ public class OrderManagementView {
         currentItemNameLabel.setTextFill(Color.web("#E6E6E6"));
         Region footerSpacer = new Region();
         HBox.setHgrow(footerSpacer, Priority.ALWAYS);
-
+        // Previous Item button.
         Button prevBtn = WarehouseButton.nav("\u25C0");
         prevBtn.setOnAction(e -> {
             if (orders.isEmpty()) return;
@@ -430,7 +430,7 @@ public class OrderManagementView {
             selectedItemIndex.set(idx > 0 ? idx - 1 : items.size() - 1);
             updateCurrentItemDisplay();
         });
-
+        // Next Item button.
         Button nextBtn = WarehouseButton.nav("\u25B6");
         nextBtn.setOnAction(e -> {
             if (orders.isEmpty()) return;
@@ -445,7 +445,7 @@ public class OrderManagementView {
         return pane;
     }
 
-    // ─── Button Box ─────────────────────────────
+    // Button Box
     private void rebuildButtonBox() {
         buttonBoxWrapper.getChildren().clear();
         if (orders.isEmpty()) {
@@ -461,7 +461,7 @@ public class OrderManagementView {
         }
     }
 
-    /** Only shown when the selected order is incoming. */
+    // Only shown when the selected order is incoming.
     private VBox buildStartButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
@@ -479,7 +479,7 @@ public class OrderManagementView {
                     refreshOrders();
                     updateStartButtons(); // disable all Start buttons after starting
                 } else {
-                    Notifications.warning(
+                    Notifications.INSTANCE.warning(
                             "Order Locked",
                             "This order is already being handled in another session.");
                     rebuildButtonBox();
@@ -491,7 +491,7 @@ public class OrderManagementView {
         return pane;
     }
 
-    /** Shown once the selected order has been started. */
+    // Shown once the selected order has been started.
     private VBox buildFullButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
@@ -510,7 +510,7 @@ public class OrderManagementView {
         return pane;
     }
 
-    /** Shown for completed or canceled orders — no actions available. */
+    // Shown for completed or canceled orders — no actions available.
     private VBox buildReadOnlyButtonPanel(Order order) {
         VBox pane = new VBox(10);
         pane.setPadding(new Insets(14));
@@ -518,7 +518,7 @@ public class OrderManagementView {
         return pane;
     }
 
-    // ─── Listeners & State ──────────────────────
+    //  Listeners
     private void setupListeners() {
         orderListView.getSelectionModel().selectedIndexProperty()
                 .addListener((obs, oldVal, newVal) -> {
