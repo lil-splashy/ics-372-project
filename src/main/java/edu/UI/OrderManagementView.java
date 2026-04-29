@@ -90,7 +90,7 @@ public class OrderManagementView {
         rebuildButtonBox();
 
         handler.setOnOrderGenerated(() -> Platform.runLater(() -> {
-            Notifications.INSTANCE.playIncomingOrder();
+            Notifications.playIncomingOrder();
             refreshOrders();
         }));
     }
@@ -325,7 +325,7 @@ public class OrderManagementView {
             deleteBtn.setLayoutY(16);
             deleteBtn.setOnAction(e -> {
                 // Open dialog modal upon clicking trash can icon
-                Optional<ButtonType> result = Notifications.INSTANCE.confirmation(
+                Optional<ButtonType> result = Notifications.confirmation(
                         "Confirmation",
                         "Are you sure you want to delete this order?",
                         "Please confirm your action.");
@@ -480,7 +480,7 @@ public class OrderManagementView {
                     refreshOrders();
                     updateStartButtons(); // disable all Start buttons after starting
                 } else {
-                    Notifications.INSTANCE.warning(
+                    Notifications.warning(
                             "Order Locked",
                             "This order is already being handled in another session.");
                     rebuildButtonBox();
