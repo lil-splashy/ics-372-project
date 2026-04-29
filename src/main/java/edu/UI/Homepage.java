@@ -64,7 +64,7 @@ public class Homepage extends Application {
         //end test
 
         if (new File(SAVE_FILE).exists()) {
-            handler.importProgramOrders(SAVE_FILE);
+            handler.loadSavedData();
         }
         stage.setOnCloseRequest(e -> {
             handler.shutdown();         // Stop the executor from accepting new tasks
@@ -76,7 +76,7 @@ public class Homepage extends Application {
             }
             // Save all program orders to disk (including any that were mid-processing)
             // Orders that did not finish processing remain in 'status
-            handler.saveData(SAVE_FILE);
+            handler.saveData();
         });
         show(stage, handler);
         stage.show();
