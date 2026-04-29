@@ -88,7 +88,7 @@ public class Record
             else
             {
                 long timeDiff = endTime.getTime() - startTime.getTime();
-                result = "Hours: " + (timeDiff / 360000) +
+                result = "Hours: " + (timeDiff / 3600000) +
                         " Minutes: " + ((timeDiff / 60000) % 60) +
                         " Seconds: " + ((timeDiff % 60000)/ 1000);
             }
