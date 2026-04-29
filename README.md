@@ -63,7 +63,7 @@ How to obtain your Order ID:
 - Don't allow scroll for graph (hella skews –> infinity) 
 
 #### Functional:
-- Make refreshing orders an automatic process
+- Make refreshing orders an automatic process - Done
 - Removed Manual import button - Done
 + Break displayOrder lists into its own class from order handler
 + orderList class
