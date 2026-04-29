@@ -56,7 +56,6 @@ How to obtain your Order ID:
 - Add product photos - Done
 - Add scrollbar for order list - Done
 + Added Information alert when exporting orders.
-- Make fonts larger and possibly more bold
 
 
 

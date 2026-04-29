@@ -8,29 +8,29 @@ import javafx.scene.media.MediaPlayer;
 
 import java.util.Optional;
 
-public class Notifications {
+public class Notifications implements NotificationsInterface {
+
+    public static final Notifications INSTANCE = new Notifications();
 
     private Notifications() {}
 
     // ── Sounds ───────────────────────────────────────────────────────────────
 
-    public static void playIncomingOrder() {
-        playSound("resources/audio/incoming-order.mp3");
-    }
-
-    private static void playSound(String resourcePath) {
+    @Override
+    public void playIncomingOrder() {
         try {
-            var url = Notifications.class.getResource(resourcePath);
+            var url = Notifications.class.getResource("resources/audio/incoming-order.mp3");
             if (url == null) return;
             new MediaPlayer(new Media(url.toExternalForm())).play();
         } catch (Exception e) {
-            System.out.println("Could not play sound '" + resourcePath + "': " + e.getMessage());
+            System.out.println("Could not play sound: " + e.getMessage());
         }
     }
 
     // ── Alerts ───────────────────────────────────────────────────────────────
 
-    public static Optional<ButtonType> confirmation(String title, String header, String content) {
+    @Override
+    public Optional<ButtonType> confirmation(String title, String header, String content) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
@@ -39,7 +39,8 @@ public class Notifications {
         return alert.showAndWait();
     }
 
-    public static void warning(String title, String content) {
+    @Override
+    public void warning(String title, String content) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -48,7 +49,8 @@ public class Notifications {
         alert.showAndWait();
     }
 
-    public static void info(String title, String content) {
+    @Override
+    public void info(String title, String content) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
