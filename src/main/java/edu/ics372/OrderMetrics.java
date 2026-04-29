@@ -6,22 +6,27 @@ public class OrderMetrics {
     private int ordersExported = 0;
     private int ordersStarted = 0;
 
+    //Adds to the cancelled variable after order is cancelled
     public void incrementCancelled() {
         ordersCancelled++;
     }
 
+    //Adds to the imported variable after order is imported
     public void incrementImported() {
         ordersImported++;
     }
 
+    //Adds to the started variable after order is started
     public void incrementStarted(){
         ordersStarted++;
     }
 
+    //Adds to the exported variable after order is exported
     public void addExported(int amountExported) {
         ordersExported += amountExported;
     }
 
+    //getters for metric numbers
     public int getOrdersCancelled() {
         return ordersCancelled;
     }
