@@ -1,66 +1,48 @@
-package edu.ics372;
+package edu.ics372
 
-public class Item {
-    // attributes of the item
-    private String itemID;
-    private String itemName;
-    private double itemPrice;
-    private int itemQuantity;
+class Item(
+        private var itemID: String,
+        private var itemName: String,
+        private var itemPrice: Double,
+        private var itemQuantity: Int,
+        private var warehouseLocation: String
+) {
 
-    private String warehouseLocation;
-
-    // Constructor for the Item class
-    // This method is called when a new Item object is created
-    // It initializes all the attributes of the Item with the provided values
-    public Item(String itemID, String itemName, double itemPrice, int itemQuantity, String warehouseLocation) {
-        this.itemID = itemID;
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
-        this.itemQuantity = itemQuantity;
-        this.warehouseLocation = warehouseLocation;
+    fun getItemID(): String = itemID
+    fun setItemID(itemID: String) {
+        this.itemID = itemID
     }
 
-    //getters and setters
-    public String getItemID() {
-        return itemID;
-    }
-    public void setItemID(String itemID) {
-        this.itemID = itemID;
+    fun getItemName(): String = itemName
+    fun setItemName(itemName: String) {
+        this.itemName = itemName
     }
 
-    public String getItemName() {
-        return itemName;
-    }
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    fun getItemPrice(): Double = itemPrice
+    fun setItemPrice(itemPrice: Double) {
+        this.itemPrice = itemPrice
     }
 
-    public double getItemPrice() {
-        return itemPrice;
-    }
-    public void setItemPrice(double itemPrice) {
-        this.itemPrice = itemPrice;
+    fun getItemQuantity(): Int = itemQuantity
+    fun setItemQuantity(itemQuantity: Int) {
+        this.itemQuantity = itemQuantity
     }
 
-    public int getItemQuantity() {
-        return itemQuantity;
-    }
-    public void setItemQuantity(int itemQuantity) {
-        this.itemQuantity = itemQuantity;
+    fun getWarehouseLocation(): String = warehouseLocation
+    fun setWarehouseLocation(warehouseLocation: String) {
+        this.warehouseLocation = warehouseLocation
     }
 
-    public String getWarehouseLocation() {return warehouseLocation;}
-    public void setWarehouseLocation(String warehouseLocation) {this.warehouseLocation = warehouseLocation;}
-
-    // simply returns an item and its attributes
-    @Override
-    public String toString() {
-        return "\n\n\t Item{ " +
-                "\n\t\titemID = " + itemID +
-                "\n\t\titemName = " + itemName +
-                "\n\t\titemQuantity = " + itemQuantity +
-                "\n\t\titemPrice = " + itemPrice +
-                "\n\t\titemWarehouseLocation = " + warehouseLocation +
-                "\n\t}\n";
+    override fun toString(): String {
+        return """
+            
+            Item{
+                itemID = $itemID
+                itemName = $itemName
+                itemQuantity = $itemQuantity
+                itemPrice = $itemPrice
+                itemWarehouseLocation = $warehouseLocation
+            }
+        """.trimIndent()
     }
 }
