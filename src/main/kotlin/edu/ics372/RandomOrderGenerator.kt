@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 
 /**
- * Generates random orders and adds them to the OrderHandler at random intervals.31
+ * Generates random orders and adds them to the OrderHandler at random intervals.
  */
 class RandomOrderGenerator(
     private val handler: OrderHandler,

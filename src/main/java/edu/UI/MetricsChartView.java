@@ -1,10 +1,14 @@
 package edu.UI;
 
 import edu.ics372.OrderHandler;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public class MetricsChartView {
@@ -30,9 +34,16 @@ public class MetricsChartView {
                 dataset
         );
 
+        CategoryPlot plot = chart.getCategoryPlot();
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setAutoRange(true);
+        rangeAxis.setAutoRangeIncludesZero(true);
+
         ChartViewer chartViewer = new ChartViewer(chart);
         chartViewer.setPrefWidth(chartViewWidth);
         chartViewer.setPrefHeight(chartViewHeight);
+        chartViewer.addEventFilter(ScrollEvent.SCROLL, ScrollEvent::consume);
+        chartViewer.addEventFilter(MouseEvent.MOUSE_DRAGGED, MouseEvent::consume);
 
         StackPane chartPane = new StackPane(chartViewer);
         chartPane.setPrefSize(chartPaneWidth, chartPaneHeight);
