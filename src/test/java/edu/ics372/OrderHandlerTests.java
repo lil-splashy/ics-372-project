@@ -16,8 +16,8 @@ public class OrderHandlerTests {
     void setup() {
         handler = new OrderHandler();
 
-        order1Existing = new Order("1E", 1L, "new", "shipped", 5, null);
-        order2Generated = new Order("2G", 2L, "new", "pickup", 5, null);
+        order1Existing = new Order.Builder().setSourcePrefix("J").setOrderDate(1L).setOrderStatus("new").setOrderType("shipped").setMaxItems(5).setWarehouse(null).build();
+        order2Generated = new Order.Builder().setSourcePrefix("J").setOrderDate(2L).setOrderStatus("new").setOrderType("pickup").setMaxItems(5).setWarehouse(null).build();
 
 
         order1Existing.setOrderStatus("incoming");

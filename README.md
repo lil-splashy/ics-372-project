@@ -57,13 +57,13 @@ How to obtain your Order ID:
 - Add scrollbar for order list - Done
 + Added Information alert when exporting orders.
 - Make fonts larger and possibly more bold
-- Add List button
+
 
 
 - Don't allow scroll for graph (hella skews –> infinity) 
 
 #### Functional:
-- Make refreshing orders an automatic process
+- Make refreshing orders an automatic process - Done
 - Removed Manual import button - Done
 + Break displayOrder lists into its own class from order handler
 + orderList class
@@ -75,6 +75,6 @@ How to obtain your Order ID:
 - Admin Dashboard 
 - Analytics
   - Added Jfreechart https://github.com/jfree/jfreechart
-- incoming order generation
+- incoming order generation - Done
 
 

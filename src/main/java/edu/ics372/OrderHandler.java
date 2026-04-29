@@ -7,31 +7,43 @@ import java.util.concurrent.ExecutorService; //
 import java.util.concurrent.Executors;      // #
 import java.util.concurrent.TimeUnit;
 
-// "E" should be Orders when created
+/**
+ * Handles the main order-management logic for the application.
+ * This class connects the order lists, metrics, parsers, warehouses,
+ * order generation, and save/load behavior used by the UI.
+ */
 public class OrderHandler {
-
+    // Stores incoming, started, completed, and canceled orders.
     private final OrderList orderList;
 
+    // Tracks order counts used by the metrics view.
     private final OrderMetrics orderMetrics;
 
+    // Runs background order-processing tasks one at a time.
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    //variable for file name for saved program orders
+    // Default file used to save and restore program data.
     private static final String SAVE_FILE = "saved_orders.json";
 
 
-    //Calling parserInterface to have methods that can load and save data using the parser class
+    // Parser used for importing and exporting JSON or XML order files.
     private ParserInterface parser = new Parser();
+
+    // JSON parser used specifically for saving and restoring program data.
     private JsonParser jParser = new JsonParser();
 
-    // single warehouse for the program
+    // Warehouses currently available in the program.
     private final Warehouse mainWarehouse = new Warehouse("W001", "Main Warehouse");
     private final Warehouse bullseyeWarehouse = new Warehouse("W002", "Bullseye");
     private final Warehouse wallyworldWarehouse = new Warehouse("W003", "WallyWorld");
 
+    // Generates sample orders in the background.
     private final RandomOrderGenerator orderGenerator;
 
-    //Constructor creates linked list depending on status and a map for associating orders with their ID
+    /**
+     * Creates the order handler, initializes the order lists and metrics,
+     * and starts the background random order generator.
+     */
     public OrderHandler() {
         this.orderList = new OrderList();
         this.orderMetrics = new OrderMetrics();
@@ -75,12 +87,12 @@ public class OrderHandler {
     //getters for the linked lists
     public LinkedList<Order> getIncomingOrders(){return orderList.getIncomingOrders();}
     public LinkedList<Order> getStartedOrders(){return orderList.getStartedOrders();}
-    public LinkedList<Order> getCompletedOrders(){
-        return orderList.getCompletedOrders();
+    public LinkedList<Order> getCompletedOrders(){return orderList.getCompletedOrders();
     }
 
     public void addOrder(Order order) {
         orderList.addIncomingOrder(order);
+        orderMetrics.incrementImported();
     }
 
     // Loads orders from a file path using the parser to detect format
@@ -167,8 +179,12 @@ public class OrderHandler {
 
 
 
-    //method used to cancel an order and store in hashmap of canceled orders
-    //do we want to be able to cancel any orders? even if completed but not shipped?
+    /**
+     * Cancels an order by moving it from its current list to the canceled orders collection.
+     * Incoming, started, and completed orders can be canceled.
+     *
+     * @param id ID of the order being canceled
+     */
     public void cancelOrder(String id) {
         Order canceledOrder = orderList.getOrderById(id);
         if(canceledOrder == null){
@@ -203,7 +219,12 @@ public class OrderHandler {
 
     }
 
-    // When prompted by user interface move started order to completed linked list
+    /**
+     * Completes a started order by moving it from the started list to the completed list.
+     * Only orders with a status of "started" can be completed.
+     *
+     * @param id ID of the order being completed
+     */
     public void completeOrder(String id) {
         Order order = orderList.getOrderById(id);
         if (order == null) {
@@ -220,6 +241,13 @@ public class OrderHandler {
 
     }
 
+    /**
+     * Exports all completed orders to either a JSON or XML file.
+     * The exported file is saved in the exports folder with a timestamped file name.
+     * After a successful export, completed orders are removed from the completed list.
+     *
+     * @param extension file extension for the export format, either ".json" or ".xml"
+     */
     public void exportCompletedOrders(String extension){
         LinkedList<Order> completedOrders = orderList.getCompletedOrders();
         if(completedOrders == null || completedOrders.isEmpty()){
@@ -253,7 +281,12 @@ public class OrderHandler {
     }
 
 
-    //going to be used to grab an order by its order id using hashmap;
+    /**
+     * Finds and returns an order by its order ID.
+     *
+     * @param id ID of the order being searched for
+     * @return the matching Order object, or null if no order is found
+     */
     public Order getOrder(String id){
         Order order = orderList.getOrderById(id);
         if(order == null){
@@ -264,7 +297,10 @@ public class OrderHandler {
     }
 
 
-    // Display uncompleted orders
+    /**
+     * Displays all incoming and started orders in the console.
+     * Also calculates and displays the total price of those uncompleted orders.
+     */
     public void displayUncompletedOrders() {
         // display incoming and started orders linked list
         // Call order method for price
@@ -347,7 +383,7 @@ public class OrderHandler {
      *
      * @param filePath The directory in which the file containing the orders is located
      */
-    public void saveData(String filePath){
+    public void saveData(){
         List<Order> allOrders = orderList.getAllOrders();
         jParser.exportOrders(allOrders, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
@@ -359,7 +395,7 @@ public class OrderHandler {
      *
      * @param filePath path to the saved program-orders file
      */
-    public void importProgramOrders(String filePath){
+    public void loadSavedData(){
         //ask the parser to rebuild order objects from the save file
         List<Order> importedOrders = jParser.importProgramOrders(SAVE_FILE);
         //stop if nothing was loaded from the file

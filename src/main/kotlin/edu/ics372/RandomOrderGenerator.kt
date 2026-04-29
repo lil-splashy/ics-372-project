@@ -7,13 +7,6 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Generates random orders and adds them to the OrderHandler at random intervals.
- *
- * Usage:
- *   val gen = RandomOrderGenerator(handler, warehouse, minDelay = 10, maxDelay = 60)
- *   gen.onOrderGenerated = { Platform.runLater { myView.refreshOrders() } }
- *   gen.start()
- *   ...
- *   gen.stop()
  */
 class RandomOrderGenerator(
     private val handler: OrderHandler,
@@ -81,9 +74,8 @@ class RandomOrderGenerator(
                 catalogItem.warehouseLocation
             ))
         }
-
+        // Uses order handler to add order.
         handler.addOrder(order)
-        println("[RandomOrderGenerator] Added order ${order.orderID}")
         onOrderGenerated?.run()
     }
 
@@ -91,7 +83,6 @@ class RandomOrderGenerator(
         val catalogPath = "src/main/orders/Item-Catalog.xml"
         val pool = XmlParser().parseFile(catalogPath)
             .flatMap { order -> order.items?.filterNotNull() ?: emptyList() }
-        println("[RandomOrderGenerator] Loaded ${pool.size} items from catalog.")
         return pool
     }
 
