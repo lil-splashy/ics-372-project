@@ -16,12 +16,12 @@ public class OrderHandlerTests {
     void setup() {
         handler = new OrderHandler();
 
-        order1Existing = new Order.Builder().setSourcePrefix("J").setOrderDate(1L).setOrderStatus("new").setOrderType("shipped").setMaxItems(5).setWarehouse(null).build();
-        order2Generated = new Order.Builder().setSourcePrefix("J").setOrderDate(2L).setOrderStatus("new").setOrderType("pickup").setMaxItems(5).setWarehouse(null).build();
+        order1Existing = new Order.Builder().setSourcePrefix("J").setOrderDate(1L).setOrderStatus(OrderStatus.NEW).setOrderType("shipped").setMaxItems(5).setWarehouse(null).build();
+        order2Generated = new Order.Builder().setSourcePrefix("J").setOrderDate(2L).setOrderStatus(OrderStatus.NEW).setOrderType("pickup").setMaxItems(5).setWarehouse(null).build();
 
 
-        order1Existing.setOrderStatus("incoming");
-        order2Generated.setOrderStatus("incoming");
+        order1Existing.setOrderStatus(OrderStatus.INCOMING);
+        order2Generated.setOrderStatus(OrderStatus.INCOMING);
 
 
         order1Existing.setOrderPrice(15);
@@ -37,7 +37,7 @@ public class OrderHandlerTests {
     void testStartOrder() {
         handler.startOrder(order1Existing.getOrderID());
 
-        assertEquals("started", order1Existing.getOrderStatus());
+        assertEquals(OrderStatus.STARTED, order1Existing.getOrderStatus());
         assertTrue(handler.getStartedOrders().contains(order1Existing));
         assertFalse(handler.getIncomingOrders().contains(order1Existing));
     }
@@ -47,7 +47,7 @@ public class OrderHandlerTests {
         handler.startOrder(order1Existing.getOrderID());
         handler.completeOrder(order1Existing.getOrderID());
 
-        assertEquals("completed", order1Existing.getOrderStatus());
+        assertEquals(OrderStatus.COMPLETED, order1Existing.getOrderStatus());
         assertTrue(handler.getCompletedOrders().contains(order1Existing));
         assertFalse(handler.getStartedOrders().contains(order1Existing));
     }
@@ -56,7 +56,7 @@ public class OrderHandlerTests {
     void testCancelOrder() {
         handler.cancelOrder(order2Generated.getOrderID());
 
-        assertEquals("canceled", order2Generated.getOrderStatus());
+        assertEquals(OrderStatus.CANCELED, order2Generated.getOrderStatus());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OrderHandlerTests {
     void testCompleteOrderWithoutStart() {
         handler.completeOrder(String.valueOf(order2Generated.getOrderID()));
 
-        assertNotEquals("completed", order2Generated.getOrderStatus());
+        assertNotEquals(OrderStatus.COMPLETED, order2Generated.getOrderStatus());
         assertFalse(handler.getCompletedOrders().contains(order2Generated));
     }
 
@@ -85,7 +85,7 @@ public class OrderHandlerTests {
         handler.startOrder(String.valueOf(order1Existing.getOrderID()));
         handler.cancelOrder(String.valueOf(order1Existing.getOrderID()));
 
-        assertEquals("canceled", order1Existing.getOrderStatus());
+        assertEquals(OrderStatus.CANCELED, order1Existing.getOrderStatus());
         assertFalse(handler.getStartedOrders().contains(order1Existing));
     }
 
@@ -95,7 +95,7 @@ public class OrderHandlerTests {
         handler.completeOrder(String.valueOf(order1Existing.getOrderID()));
         handler.cancelOrder(String.valueOf(order1Existing.getOrderID()));
 
-        assertEquals("canceled", order1Existing.getOrderStatus());
+        assertEquals(OrderStatus.CANCELED, order1Existing.getOrderStatus());
         assertFalse(handler.getCompletedOrders().contains(order1Existing));
     }
 
