@@ -31,8 +31,8 @@ public class JsonParserTest {
     public void testExportOrders() {
         JsonParser parser = new JsonParser();
 
-        Warehouse wh = new Warehouse("W001", "Main");
-        Order order = new Order.Builder().setSourcePrefix("J").setOrderDate(1672531200L).setOrderStatus("Pending").setOrderType("Online").setMaxItems(2).setWarehouse(wh).build();
+        Warehouse wh = new Warehouse("W001", "Main", true, true);
+        Order order = new Order.Builder().setSourcePrefix("J").setOrderDate(1672531200L).setOrderStatus(OrderStatus.INCOMING).setOrderType("Online").setMaxItems(2).setWarehouse(wh).build();
         order.addItem(new Item("I1", "Laptop", 1200.0, 1, "A1"));
 
         List<Order> orders = List.of(order);

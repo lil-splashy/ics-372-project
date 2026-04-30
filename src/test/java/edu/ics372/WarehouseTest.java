@@ -14,7 +14,7 @@ public class WarehouseTest {
 
     @Test
     public void testConstructorAndGetters() {
-        Warehouse warehouse = new Warehouse("W001", "Main Warehouse");
+        Warehouse warehouse = new Warehouse("W001", "Main Warehouse", true, true);
 
         assertEquals("W001", warehouse.getWarehouseID());
         assertEquals("Main Warehouse", warehouse.getWarehouseName());
@@ -22,7 +22,7 @@ public class WarehouseTest {
 
     @Test
     public void testToString() {
-        Warehouse warehouse = new Warehouse("W001", "Main Warehouse");
+        Warehouse warehouse = new Warehouse("W001", "Main Warehouse", true, true);
         String str = warehouse.toString();
 
         assertTrue(str.contains("W001"));
