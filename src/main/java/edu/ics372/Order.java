@@ -6,7 +6,7 @@ public class Order {
 
     private final String orderID;   // unique identifier for each order (immutable once set)
     private long orderDate;         // timestamp or date representation of the order
-    private String orderStatus;     // current status (e.g., NEW, SHIPPED, CANCELLED)
+    private OrderStatus orderStatus;     // current status (e.g., NEW, SHIPPED, CANCELLED)
     private String orderType;       // type/category of order (e.g., ONLINE, STORE)
     private double orderPrice;      // total accumulated price of all items in the order
 
@@ -39,7 +39,7 @@ public class Order {
 
         private String orderID;         // may be null (for generated IDs) or provided (XML input)
         private long orderDate;
-        private String orderStatus;
+        private OrderStatus orderStatus;
         private String orderType;
         private int maxItems;           // determines size of item array
         private Warehouse warehouse;    // associated warehouse
@@ -52,7 +52,7 @@ public class Order {
             return this;                // allows method chaining
         }
         public Builder setOrderDate(long orderDate)         {this.orderDate = orderDate; return this;}
-        public Builder setOrderStatus(String orderStatus)   {this.orderStatus = orderStatus; return this;}
+        public Builder setOrderStatus(OrderStatus orderStatus)   {this.orderStatus = orderStatus; return this;}
         public Builder setOrderType(String orderType)       {this.orderType = orderType; return this;}
         public Builder setMaxItems(int maxItems)            {this.maxItems = maxItems; return this;}
         public Builder setWarehouse(Warehouse warehouse)    {this.warehouse = warehouse; return this;}
@@ -224,8 +224,8 @@ public class Order {
     public long getOrderDate() {return orderDate;}
     public void setOrderDate(long orderDate) {this.orderDate = orderDate;}
 
-    public String getOrderStatus() {return orderStatus;}
-    public void setOrderStatus(String orderStatus) {this.orderStatus = orderStatus;}
+    public OrderStatus getOrderStatus() {return orderStatus;}
+    public void setOrderStatus(OrderStatus orderStatus) {this.orderStatus = orderStatus;}
 
     public String getOrderType() {return orderType;}
     public void setOrderType(String orderType) {this.orderType = orderType;}
