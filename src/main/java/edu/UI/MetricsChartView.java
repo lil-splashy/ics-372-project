@@ -1,6 +1,5 @@
 package edu.UI;
 
-import edu.ics372.OrderHandler;
 import edu.ics372.SessionAnalytics;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,14 +20,20 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 public class MetricsChartView {
 
-    public static VBox createMetricsChartPane(OrderHandler orderHandler) {
-        // ── Bar chart ────────────────────────────────────────────────────────
+    //Metrics chart for imported, exported, and deleted orders.
+    public static VBox createMetricsChartPane(SessionAnalytics session){
+        double chartViewWidth = 500;
+        double chartViewHeight = 300;
+        double chartPaneWidth = 600;
+        double chartPaneHeight = 400;
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(orderHandler.getOrdersImported(),  "Orders", "Imported");
-        dataset.addValue(orderHandler.getOrdersStarted(),   "Orders", "Started");
-        dataset.addValue(orderHandler.getOrdersCancelled(), "Orders", "Cancelled");
-        dataset.addValue(orderHandler.getOrdersExported(),  "Orders", "Exported");
+
+        dataset.addValue(session.getOrdersImported(), "Orders", "Imported");
+        dataset.addValue(session.getOrdersStarted(), "Orders", "Started");
+        dataset.addValue(session.getOrdersCancelled(), "Orders", "Cancelled");
+        dataset.addValue(session.getOrdersExported(), "Orders", "Exported");
+        dataset.addValue(session.getOrdersCompleted(), "Orders", "Completed");
 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Order Summary", "Metric", "Count", dataset);
@@ -58,7 +63,7 @@ public class MetricsChartView {
 
         statsRow.getChildren().addAll(
                 statTile("Tracked This Session", String.valueOf(analytics.getTotalTrackedCount())),
-                statTile("Completed",             String.valueOf(analytics.getCompletedCount())),
+                statTile("Completed",             String.valueOf(analytics.getOrdersCompleted())),
                 statTile("Avg Completion Time",   avgDisplay)
         );
 

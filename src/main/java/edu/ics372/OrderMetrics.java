@@ -5,6 +5,21 @@ public class OrderMetrics {
     private int ordersImported = 0;
     private int ordersExported = 0;
     private int ordersStarted = 0;
+    private int ordersCompleted = 0;
+
+    private static OrderMetrics staticInstance;
+
+    /**
+     *
+     * @return
+     */
+    public static OrderMetrics getInstance()
+    {
+        if(staticInstance == null)
+        { staticInstance = new OrderMetrics(); }
+
+        return staticInstance;
+    }
 
     //Adds to the cancelled variable after order is cancelled
     public void incrementCancelled() {
@@ -20,6 +35,9 @@ public class OrderMetrics {
     public void incrementStarted(){
         ordersStarted++;
     }
+
+    public void incrementCompleted()
+    { ordersCompleted++; }
 
     //Adds to the exported variable after order is exported
     public void addExported(int amountExported) {
@@ -42,4 +60,7 @@ public class OrderMetrics {
     public int getOrdersStarted(){
         return ordersStarted;
     }
+
+    public int getOrdersCompleted()
+    { return ordersCompleted; }
 }

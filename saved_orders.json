@@ -1,49 +1,303 @@
 {"orders": [
     {
         "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JL389010434381",
+        "order_date": 1777504085353,
+        "orderID": "J541~C991252",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Pickup",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "itemID": "G8058",
+                "quantity": 3,
+                "price": 250,
+                "name": "Perfect Gold Bar"
             },
             {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
+                "itemID": "G5270",
+                "quantity": 3,
+                "price": 150,
+                "name": "Perfect Ring"
             },
             {
-                "itemID": "I0_2",
+                "itemID": "G6075",
                 "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
+                "price": 320,
+                "name": "Abyssal Lantern"
             },
             {
-                "itemID": "I0_3",
+                "itemID": "G3108",
+                "quantity": 1,
+                "price": 75,
+                "name": "Agility Tome"
+            },
+            {
+                "itemID": "G1053",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
-            },
-            {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 18,
+                "name": "Anti-poison Supermix"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
+        "item_count": 5,
+        "order_date": 1777504144361,
+        "orderID": "J188~B209613",
+        "warehouseID": "W001",
+        "type": "Pickup",
+        "items": [
+            {
+                "itemID": "G3409",
+                "quantity": 2,
+                "price": 250,
+                "name": "Perfect Gold Bar"
+            },
+            {
+                "itemID": "G7562",
+                "quantity": 1,
+                "price": 5,
+                "name": "2-5ths Full Bucket"
+            },
+            {
+                "itemID": "G7924",
+                "quantity": 3,
+                "price": 490,
+                "name": "Ancestral Robe Top"
+            },
+            {
+                "itemID": "G2832",
+                "quantity": 3,
+                "price": 45,
+                "name": "Alchemical Chart"
+            },
+            {
+                "itemID": "G5549",
+                "quantity": 2,
+                "price": 180,
+                "name": "Perfect Necklace"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 4,
+        "order_date": 1777412582299,
+        "orderID": "J131~G645220",
+        "warehouseID": "W001",
+        "type": "Direct Delivery",
+        "items": [
+            {
+                "itemID": "G9109",
+                "quantity": 1,
+                "price": 10,
+                "name": "31070"
+            },
+            {
+                "itemID": "G3123",
+                "quantity": 3,
+                "price": 55,
+                "name": "Anti-venom+"
+            },
+            {
+                "itemID": "G6475",
+                "quantity": 1,
+                "price": 12.5,
+                "name": "Agility Potion"
+            },
+            {
+                "itemID": "G9318",
+                "quantity": 1,
+                "price": 150,
+                "name": "Perfect Ring"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 0,
+        "order_date": 1777407653761,
+        "orderID": "J113~J185592",
+        "warehouseID": "W001",
+        "type": "Direct Delivery",
+        "items": [],
+        "warehouseName": "Main Warehouse",
+        "status": "canceled"
+    },
+    {
+        "item_count": 4,
+        "order_date": 1777412296213,
+        "orderID": "J761~P164875",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
+            {
+                "itemID": "G2170",
+                "quantity": 2,
+                "price": 45,
+                "name": "Alchemical Chart"
+            },
+            {
+                "itemID": "G8863",
+                "quantity": 2,
+                "price": 250,
+                "name": "Perfect Gold Bar"
+            },
+            {
+                "itemID": "G5869",
+                "quantity": 3,
+                "price": 320,
+                "name": "Abyssal Lantern"
+            },
+            {
+                "itemID": "G7415",
+                "quantity": 2,
+                "price": 5,
+                "name": "2-5ths Full Bucket"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 5,
+        "order_date": 1777504342393,
+        "orderID": "J546~J319591",
+        "warehouseID": "W001",
+        "type": "Pickup",
+        "items": [
+            {
+                "itemID": "G8082",
+                "quantity": 1,
+                "price": 12.5,
+                "name": "Agility Potion"
+            },
+            {
+                "itemID": "G5057",
+                "quantity": 1,
+                "price": 75,
+                "name": "Agility Tome"
+            },
+            {
+                "itemID": "G8350",
+                "quantity": 2,
+                "price": 490,
+                "name": "Ancestral Robe Top"
+            },
+            {
+                "itemID": "G6134",
+                "quantity": 1,
+                "price": 5,
+                "name": "2-5ths Full Bucket"
+            },
+            {
+                "itemID": "G7089",
+                "quantity": 1,
+                "price": 480,
+                "name": "Ancestral Robe Bottom"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 1,
+        "order_date": 1777504156368,
+        "orderID": "J386~K581708",
+        "warehouseID": "W001",
+        "type": "Delivery",
+        "items": [{
+            "itemID": "G6159",
+            "quantity": 3,
+            "price": 10,
+            "name": "Scroll"
+        }],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 0,
+        "order_date": 1777407780782,
+        "orderID": "J346~C306527",
+        "warehouseID": "W001",
+        "type": "Delivery",
+        "items": [],
+        "warehouseName": "Main Warehouse",
+        "status": "canceled"
+    },
+    {
         "item_count": 3,
-        "order_date": 1775088129602,
-        "orderID": "X485",
+        "order_date": 1777504212375,
+        "orderID": "J777~G286352",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
+            {
+                "itemID": "G1778",
+                "quantity": 2,
+                "price": 480,
+                "name": "Ancestral Robe Bottom"
+            },
+            {
+                "itemID": "G4822",
+                "quantity": 3,
+                "price": 55,
+                "name": "Anti-venom+"
+            },
+            {
+                "itemID": "G8332",
+                "quantity": 1,
+                "price": 250,
+                "name": "Perfect Gold Bar"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 2,
+        "order_date": 1777521040782,
+        "orderID": "J236~W490751",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
+            {
+                "itemID": "G8263",
+                "quantity": 3,
+                "price": 275,
+                "name": "Arcane Grimoire"
+            },
+            {
+                "itemID": "G4538",
+                "quantity": 2,
+                "price": 30,
+                "name": "Anti-venom"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 1,
+        "order_date": 1777504355404,
+        "orderID": "J617~A919439",
+        "warehouseID": "W001",
+        "type": "Direct Delivery",
+        "items": [{
+            "itemID": "G1592",
+            "quantity": 3,
+            "price": 180,
+            "name": "Perfect Necklace"
+        }],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 3,
+        "order_date": 1777407613010,
+        "orderID": "X485~Z501398",
         "warehouseID": "W001",
         "type": "Delivery",
         "items": [
@@ -67,44 +321,67 @@
             }
         ],
         "warehouseName": "Main Warehouse",
+        "status": "canceled"
+    },
+    {
+        "item_count": 4,
+        "order_date": 1777412144169,
+        "orderID": "J792~Z422907",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
+            {
+                "itemID": "G4790",
+                "quantity": 2,
+                "price": 3.5,
+                "name": "Ahab's Beer"
+            },
+            {
+                "itemID": "G4899",
+                "quantity": 1,
+                "price": 500,
+                "name": "Ancestral Hat"
+            },
+            {
+                "itemID": "G3583",
+                "quantity": 2,
+                "price": 180,
+                "name": "Perfect Necklace"
+            },
+            {
+                "itemID": "G9089",
+                "quantity": 1,
+                "price": 480,
+                "name": "Ancestral Robe Bottom"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JK321860755266",
+        "item_count": 3,
+        "order_date": 1777412059157,
+        "orderID": "J771~Z949137",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Delivery",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
-            },
-            {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G5383",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 45,
+                "name": "Alchemical Chart"
             },
             {
-                "itemID": "I0_4",
+                "itemID": "G6465",
                 "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 75,
+                "name": "Agility Tome"
+            },
+            {
+                "itemID": "G2301",
+                "quantity": 2,
+                "price": 10,
+                "name": "31070"
             }
         ],
         "warehouseName": "Main Warehouse",
@@ -112,40 +389,193 @@
     },
     {
         "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JC468929719714",
+        "order_date": 1777412319219,
+        "orderID": "J887~J249830",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Shipped",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
-            },
-            {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G6052",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 5,
+                "name": "2-5ths Full Bucket"
             },
             {
-                "itemID": "I0_4",
+                "itemID": "G5946",
+                "quantity": 2,
+                "price": 45,
+                "name": "Alchemical Chart"
+            },
+            {
+                "itemID": "G5079",
                 "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 3.5,
+                "name": "Ahab's Beer"
+            },
+            {
+                "itemID": "G3117",
+                "quantity": 1,
+                "price": 12.5,
+                "name": "Agility Potion"
+            },
+            {
+                "itemID": "G3708",
+                "quantity": 3,
+                "price": 150,
+                "name": "Perfect Ring"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 4,
+        "order_date": 1777411849124,
+        "orderID": "J892~F684929",
+        "warehouseID": "W001",
+        "type": "Delivery",
+        "items": [
+            {
+                "itemID": "G2728",
+                "quantity": 2,
+                "price": 500,
+                "name": "Ancestral Hat"
+            },
+            {
+                "itemID": "G1083",
+                "quantity": 3,
+                "price": 22,
+                "name": "Ancient Brew"
+            },
+            {
+                "itemID": "G7589",
+                "quantity": 2,
+                "price": 28,
+                "name": "Armadyl Brew"
+            },
+            {
+                "itemID": "G2543",
+                "quantity": 1,
+                "price": 150,
+                "name": "Perfect Ring"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 3,
+        "order_date": 1777412113164,
+        "orderID": "J941~K156268",
+        "warehouseID": "W001",
+        "type": "Direct Delivery",
+        "items": [
+            {
+                "itemID": "G1018",
+                "quantity": 1,
+                "price": 480,
+                "name": "Ancestral Robe Bottom"
+            },
+            {
+                "itemID": "G1708",
+                "quantity": 2,
+                "price": 130,
+                "name": "Adventurer's Boots"
+            },
+            {
+                "itemID": "G3408",
+                "quantity": 2,
+                "price": 55,
+                "name": "Anti-venom+"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 2,
+        "order_date": 1777504265384,
+        "orderID": "J777~L944027",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
+            {
+                "itemID": "G4161",
+                "quantity": 1,
+                "price": 45,
+                "name": "Alchemical Chart"
+            },
+            {
+                "itemID": "G2398",
+                "quantity": 2,
+                "price": 150,
+                "name": "Perfect Ring"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 0,
+        "order_date": 1777407739780,
+        "orderID": "J533~E171315",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [],
+        "warehouseName": "Main Warehouse",
+        "status": "canceled"
+    },
+    {
+        "item_count": 1,
+        "order_date": 1777412355228,
+        "orderID": "J415~B864939",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [{
+            "itemID": "G5849",
+            "quantity": 1,
+            "price": 10,
+            "name": "31070"
+        }],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 5,
+        "order_date": 1777504389414,
+        "orderID": "J919~W537658",
+        "warehouseID": "W001",
+        "type": "Delivery",
+        "items": [
+            {
+                "itemID": "G3132",
+                "quantity": 3,
+                "price": 55,
+                "name": "Anti-venom+"
+            },
+            {
+                "itemID": "G1397",
+                "quantity": 2,
+                "price": 95,
+                "name": "Adamant Full Helm"
+            },
+            {
+                "itemID": "G5581",
+                "quantity": 3,
+                "price": 130,
+                "name": "Adventurer's Boots"
+            },
+            {
+                "itemID": "G3104",
+                "quantity": 3,
+                "price": 150,
+                "name": "Perfect Ring"
+            },
+            {
+                "itemID": "G8811",
+                "quantity": 3,
+                "price": 75,
+                "name": "Agility Tome"
             }
         ],
         "warehouseName": "Main Warehouse",
@@ -153,330 +583,306 @@
     },
     {
         "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JW119645388813",
+        "order_date": 1777412421258,
+        "orderID": "J968~D306885",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Delivery",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
-            },
-            {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G9330",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 45,
+                "name": "Alchemical Chart"
             },
             {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "itemID": "G1409",
+                "quantity": 3,
+                "price": 12.5,
+                "name": "Agility Potion"
+            },
+            {
+                "itemID": "G5750",
+                "quantity": 3,
+                "price": 28,
+                "name": "Armadyl Brew"
+            },
+            {
+                "itemID": "G7980",
+                "quantity": 3,
+                "price": 150,
+                "name": "Perfect Ring"
+            },
+            {
+                "itemID": "G8178",
+                "quantity": 3,
+                "price": 500,
+                "name": "Ancestral Hat"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JT977631953300",
+        "item_count": 2,
+        "order_date": 1777412164177,
+        "orderID": "J516~I292911",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Delivery",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "itemID": "G8544",
+                "quantity": 3,
+                "price": 28,
+                "name": "Armadyl Brew"
             },
             {
-                "itemID": "I0_1",
+                "itemID": "G6361",
                 "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
-                "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
-            },
-            {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 95,
+                "name": "Adamant Full Helm"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JZ572676309725",
+        "item_count": 2,
+        "order_date": 1777412536282,
+        "orderID": "J538~O136168",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Direct Delivery",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "itemID": "G4634",
+                "quantity": 3,
+                "price": 5,
+                "name": "2-5ths Full Bucket"
             },
             {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G3750",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
-            },
-            {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 10,
+                "name": "31070"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JZ948521212165",
+        "item_count": 3,
+        "order_date": 1515354694451,
+        "orderID": "J530~P364069",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "ship",
         "items": [
             {
                 "itemID": "I0_0",
                 "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "price": 85.99,
+                "name": "Chair"
             },
             {
                 "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
+                "quantity": 2,
+                "price": 32.99,
+                "name": "Lamp"
             },
             {
                 "itemID": "I0_2",
                 "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
+                "price": 48.95,
+                "name": "Rug"
+            }
+        ],
+        "warehouseName": "Main Warehouse",
+        "status": "canceled"
+    },
+    {
+        "item_count": 4,
+        "order_date": 1777412404247,
+        "orderID": "J440~I914217",
+        "warehouseID": "W001",
+        "type": "Shipped",
+        "items": [
             {
-                "itemID": "I0_3",
+                "itemID": "G7262",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 275,
+                "name": "Arcane Grimoire"
             },
             {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "itemID": "G2220",
+                "quantity": 2,
+                "price": 250,
+                "name": "Perfect Gold Bar"
+            },
+            {
+                "itemID": "G5679",
+                "quantity": 2,
+                "price": 55,
+                "name": "Anti-venom+"
+            },
+            {
+                "itemID": "G6106",
+                "quantity": 2,
+                "price": 3.5,
+                "name": "Ahab's Beer"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JJ263153980319",
+        "item_count": 1,
+        "order_date": 1777423256421,
+        "orderID": "J690~Z810283",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Delivery",
+        "items": [{
+            "itemID": "G2743",
+            "quantity": 2,
+            "price": 500,
+            "name": "Ancestral Hat"
+        }],
+        "warehouseName": "Main Warehouse",
+        "status": "incoming"
+    },
+    {
+        "item_count": 5,
+        "order_date": 1777411927139,
+        "orderID": "J884~X521993",
+        "warehouseID": "W001",
+        "type": "Shipped",
         "items": [
             {
-                "itemID": "I0_0",
+                "itemID": "G8406",
                 "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "price": 320,
+                "name": "Abyssal Lantern"
             },
             {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G6750",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 1400,
+                "name": "Ancestral Robes Set"
             },
             {
-                "itemID": "I0_4",
+                "itemID": "G8810",
                 "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 75,
+                "name": "Agility Tome"
+            },
+            {
+                "itemID": "G5813",
+                "quantity": 3,
+                "price": 180,
+                "name": "Perfect Necklace"
+            },
+            {
+                "itemID": "G1860",
+                "quantity": 3,
+                "price": 10,
+                "name": "31070"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JY205161860361",
+        "item_count": 4,
+        "order_date": 1777412010145,
+        "orderID": "J892~W705279",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Pickup",
         "items": [
             {
-                "itemID": "I0_0",
+                "itemID": "G7934",
                 "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "price": 5,
+                "name": "2-5ths Full Bucket"
             },
             {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
+                "itemID": "G9833",
+                "quantity": 3,
+                "price": 320,
+                "name": "Abyssal Lantern"
             },
             {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
+                "itemID": "G6817",
+                "quantity": 3,
+                "price": 490,
+                "name": "Ancestral Robe Top"
             },
             {
-                "itemID": "I0_3",
+                "itemID": "G3175",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
-            },
-            {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 22,
+                "name": "Ancient Brew"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JH260962431579",
+        "item_count": 2,
+        "order_date": 1777412489271,
+        "orderID": "J601~S870732",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Direct Delivery",
         "items": [
             {
-                "itemID": "I0_0",
+                "itemID": "G1200",
                 "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "price": 250,
+                "name": "Perfect Gold Bar"
             },
             {
-                "itemID": "I0_1",
+                "itemID": "G1487",
                 "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
-                "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
-            },
-            {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "price": 30,
+                "name": "Anti-venom"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
     },
     {
-        "item_count": 5,
-        "order_date": 1707427200000,
-        "orderID": "JE679097635634",
+        "item_count": 3,
+        "order_date": 1777423313437,
+        "orderID": "J995~A518404",
         "warehouseID": "W001",
-        "type": "ONLINE",
+        "type": "Shipped",
         "items": [
             {
-                "itemID": "I0_0",
-                "quantity": 1,
-                "price": 1299.99,
-                "name": "Gaming Laptop RTX 4060"
+                "itemID": "G9383",
+                "quantity": 3,
+                "price": 10,
+                "name": "31070"
             },
             {
-                "itemID": "I0_1",
-                "quantity": 1,
-                "price": 79.99,
-                "name": "Wireless Gaming Mouse"
-            },
-            {
-                "itemID": "I0_2",
-                "quantity": 1,
-                "price": 149.99,
-                "name": "RGB Mechanical Keyboard"
-            },
-            {
-                "itemID": "I0_3",
+                "itemID": "G4706",
                 "quantity": 2,
-                "price": 349.99,
-                "name": "27-inch 144Hz Monitor"
+                "price": 22,
+                "name": "Ancient Brew"
             },
             {
-                "itemID": "I0_4",
-                "quantity": 1,
-                "price": 45.99,
-                "name": "USB-C Hub 7-in-1"
+                "itemID": "G5633",
+                "quantity": 2,
+                "price": 45,
+                "name": "Alchemical Chart"
             }
         ],
         "warehouseName": "Main Warehouse",
         "status": "incoming"
+    },
+    {
+        "item_count": 0,
+        "order_date": 1777407700776,
+        "orderID": "J882~C245842",
+        "warehouseID": "W001",
+        "type": "Pickup",
+        "items": [],
+        "warehouseName": "Main Warehouse",
+        "status": "canceled"
     }
 ]}

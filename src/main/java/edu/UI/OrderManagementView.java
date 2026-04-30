@@ -152,7 +152,7 @@ public class OrderManagementView {
     private void showMetricsChart() {
         backBtn.setVisible(true);
         backBtn.setManaged(true);
-        layout.setCenter(MetricsChartView.createMetricsChartPane(handler));
+        layout.setCenter(MetricsChartView.createMetricsChartPane(SessionAnalytics.getInstance()));
     }
 
     // ─── Header ─────────────────────────────
