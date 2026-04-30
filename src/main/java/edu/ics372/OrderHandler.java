@@ -46,7 +46,7 @@ public class OrderHandler {
      */
     public OrderHandler() {
         this.orderList = new OrderList();
-        this.orderMetrics = new OrderMetrics();
+        this.orderMetrics = OrderMetrics.getInstance();
         this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
         this.orderGenerator.start();
     }
@@ -65,23 +65,6 @@ public class OrderHandler {
 
     public Warehouse getWallyworldWarehouse() {
         return wallyworldWarehouse;
-    }
-
-    //getters for order metrics
-    public int getOrdersCancelled(){
-        return orderMetrics.getOrdersCancelled();
-    }
-
-    public int getOrdersImported(){
-        return orderMetrics.getOrdersImported();
-    }
-
-    public int getOrdersExported(){
-        return orderMetrics.getOrdersExported();
-    }
-
-    public int getOrdersStarted(){
-        return orderMetrics.getOrdersStarted();
     }
 
     //getters for the linked lists
@@ -235,6 +218,7 @@ public class OrderHandler {
             order.setOrderStatus("completed");
             orderList.moveStartedToCompleted(order);
             Order.removeExistingOrder(order.getOrderID());
+            orderMetrics.incrementCompleted();
         } else {
             System.out.println("Can't complete an order that hasn't been started yet.");
         }

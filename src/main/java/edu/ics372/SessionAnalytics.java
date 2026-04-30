@@ -7,10 +7,10 @@ public class SessionAnalytics
 {
     private static SessionAnalytics instance;
     private final Map<String, Record> recordMap = new HashMap<>(); //OrderID, and the record of the order with that ID
-    private OrderMetrics orderMetrics;
+    private final OrderMetrics orderMetrics;
 
     private SessionAnalytics()
-    {}
+    { orderMetrics = OrderMetrics.getInstance(); }
 
     // ------------------------------- Relates to the formation of class resources -------------------------------------
     /**
@@ -32,4 +32,41 @@ public class SessionAnalytics
     }
 
     // -------------------------------------- Analytical methods -------------------------------------------------------
+    public long averageCompletionTime()
+    {
+        long average = 0;
+
+        for(Record record : recordMap.values())
+        {
+            long time = record.completionTime();
+            if (time > 0) //time should only be 0 if the order does not have a valid completion time
+            { average = average + time; }
+        }
+
+        if(getOrdersCompleted() > 0)
+        { average = average / getOrdersCompleted(); }
+
+        return average;
+    }
+
+    public int getOrdersCancelled(){
+        return orderMetrics.getOrdersCancelled();
+    }
+
+    public int getOrdersImported(){
+        return orderMetrics.getOrdersImported();
+    }
+
+    public int getOrdersExported(){
+        return orderMetrics.getOrdersExported();
+    }
+
+    public int getOrdersStarted(){
+        return orderMetrics.getOrdersStarted();
+    }
+
+    public int getOrdersCompleted()
+    { return orderMetrics.getOrdersCompleted(); }
+
+
 }
