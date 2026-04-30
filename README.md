@@ -18,32 +18,7 @@ run ``mvn javafx:run``
 
 
 
-
-
-
-
-
-
-
-#### *Previous Terminal Version*
-
-Run with main in {ics-372-project\src\main\java\edu\ics372}
-
-NOTE: Order ID/s will be generated after loading an order/or orders.
-Keep in mind that the Order Ids may be requested for verification to fulfill other menu options.
-
-How to obtain your Order ID:
-
-	Step 1. Option A:
-		Display order via option 6 on the main menu
-		
-		Option B:
-		Display order via option 2 with choosing the correct status of the requested order on the main menu.
-
-	Step 2. With order/s displayed, the OrderID/s should be present along with the their other information. 
-
-
-## Part 3 TODO:
+## Part 3:
 
 - fix case studies to better reflect program reality
 
@@ -51,29 +26,25 @@ How to obtain your Order ID:
 #### UI:
 - Add confirmation modals (for cancelling orders) - Done 
 - Add styling for modals - Done
-- Add Warehouse modification options
 - Remove Label print button - Done
 - Add product photos - Done
 - Add scrollbar for order list - Done
-+ Added Information alert when exporting orders.
++ Added Information alert when exporting orders - Done
 
 
 
-- Don't allow scroll for graph (hella skews –> infinity) 
+- Don't allow scroll for graph (hella skews –> infinity) - Done
 
 #### Functional:
 - Make refreshing orders an automatic process - Done
 - Removed Manual import button - Done
-+ Break displayOrder lists into its own class from order handler
-+ orderList class
-- Break displayOrder lists into its own class from order handler
-- Implement more Interfaces
++ orderList class - Done
+- Implement more Interfaces - Done
 
 
 #### Additions:
 - Admin Dashboard 
-- Analytics
-  - Added Jfreechart https://github.com/jfree/jfreechart
+- Analytics - Done
 - incoming order generation - Done
 
 
