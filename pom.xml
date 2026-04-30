@@ -50,6 +50,21 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>org.jfree.chart.fx</artifactId>
+            <version>2.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -59,6 +74,8 @@
                 <includes>
                     <include>**/*.svg</include>
                     <include>**/*.css</include>
+                    <include>**/*.png</include>
+                    <include>**/*.mp3</include>
                 </includes>
             </resource>
             <resource>
@@ -110,6 +127,7 @@
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>src/main/java</sourceDir>
+                                <sourceDir>src/main/kotlin</sourceDir>
                                 <sourceDir>target/generated-sources/annotations</sourceDir>
                             </sourceDirs>
                         </configuration>

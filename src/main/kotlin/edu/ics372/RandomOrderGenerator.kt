@@ -58,7 +58,7 @@ class RandomOrderGenerator(
         val order = Order.Builder()
             .setSourcePrefix("J")
             .setOrderDate(System.currentTimeMillis())
-            .setOrderStatus("incoming")
+            .setOrderStatus(OrderStatus.INCOMING)
             .setOrderType(orderType)
             .setMaxItems(itemCount)
             .setWarehouse(warehouse)
@@ -68,10 +68,10 @@ class RandomOrderGenerator(
             val qty = rnd.nextInt(1, 4)
             order.addItem(Item(
                 "G${rnd.nextInt(1000, 9999)}",
-                catalogItem.itemName,
-                catalogItem.itemPrice,
+                catalogItem.getItemName(),
+                catalogItem.getItemPrice(),
                 qty,
-                catalogItem.warehouseLocation
+                catalogItem.getWarehouseLocation()
             ))
         }
         // Uses order handler to add order.

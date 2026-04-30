@@ -60,9 +60,9 @@ public class OrderHandlerTest {
         handler = new OrderHandler();
 
         // Create sample orders
-        order1 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Online").setMaxItems(3).setWarehouse(null).build();
-        order2 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Pickup").setMaxItems(3).setWarehouse(null).build();
-        order3 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Delivery").setMaxItems(3).setWarehouse(null).build();
+        order1 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus(OrderStatus.INCOMING).setOrderType("Online").setMaxItems(3).setWarehouse(null).build();
+        order2 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus(OrderStatus.INCOMING).setOrderType("Pickup").setMaxItems(3).setWarehouse(null).build();
+        order3 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus(OrderStatus.INCOMING).setOrderType("Delivery").setMaxItems(3).setWarehouse(null).build();
 
         //adding items so orderPrice is tested correctly
         order1.addItem(new Item("I1", "Keyboard", 50.00,1,null));
@@ -77,10 +77,10 @@ public class OrderHandlerTest {
 
 
 
-        // Initially set status to "incoming"
-        order1.setOrderStatus("incoming");
-        order2.setOrderStatus("incoming");
-        order3.setOrderStatus("incoming");
+        // Initially set status to INCOMING
+        order1.setOrderStatus(OrderStatus.INCOMING);
+        order2.setOrderStatus(OrderStatus.INCOMING);
+        order3.setOrderStatus(OrderStatus.INCOMING);
     }
 
     public void testAddOrders() {
@@ -109,7 +109,7 @@ public class OrderHandlerTest {
 
         handler.startOrder(order1.getOrderID());
 
-        assertStatus(order1, "started", "Order 1 should be started");
+        assertStatus(order1, OrderStatus.STARTED, "Order 1 should be started");
         assertListContains(handler.getStartedOrders(), order1, "Started orders should contain Order 1");
         assertListNotContains(handler.getIncomingOrders(), order1, "Incoming orders should not contain Order 1");
 
@@ -123,7 +123,7 @@ public class OrderHandlerTest {
         handler.startOrder(order1.getOrderID());
         handler.completeOrder(order1.getOrderID());
 
-        assertStatus(order1, "completed", "Order 1 should be completed");
+        assertStatus(order1, OrderStatus.COMPLETED, "Order 1 should be completed");
         assertListContains(handler.getCompletedOrders(), order1, "Completed orders should contain Order 1");
         assertListNotContains(handler.getStartedOrders(), order1, "Started orders should not contain Order 1");
 
@@ -182,7 +182,7 @@ public class OrderHandlerTest {
 
         handler.cancelOrder(order1.getOrderID());
 
-        assertStatus(order1, "canceled", "Order 1 should be canceled");
+        assertStatus(order1, OrderStatus.CANCELED, "Order 1 should be canceled");
         assertListNotContains(handler.getIncomingOrders(), order1, "Incoming orders should not contain canceled Order 1");
 
         System.out.println("cancelOrder() works for incoming order\n");
@@ -195,7 +195,7 @@ public class OrderHandlerTest {
         handler.startOrder(order1.getOrderID());
         handler.cancelOrder(order1.getOrderID());
 
-        assertStatus(order1, "canceled", "Started order should become canceled");
+        assertStatus(order1, OrderStatus.CANCELED, "Started order should become canceled");
         assertListNotContains(handler.getStartedOrders(), order1, "Started orders should not contain canceled order");
 
         System.out.println("Cancel order works in started orders");
@@ -218,19 +218,19 @@ public class OrderHandlerTest {
     }
 
     // Helper methods for assertions
-    private void assertStatus(Order order, String expectedStatus, String message) {
-        if (!order.getOrderStatus().equals(expectedStatus)) {
+    private void assertStatus(Order order, OrderStatus expectedStatus, String message) {
+        if (order.getOrderStatus() != expectedStatus) {
             System.out.println("  ✗ " + message + " - Expected: " + expectedStatus + ", Got: " + order.getOrderStatus());
         }
     }
 
-    private void assertListContains(LinkedList<Order> list, Order order, String message) {
+    private void assertListContains(List<Order> list, Order order, String message) {
         if (!list.contains(order)) {
             System.out.println("  ✗ " + message);
         }
     }
 
-    private void assertListNotContains(LinkedList<Order> list, Order order, String message) {
+    private void assertListNotContains(List<Order> list, Order order, String message) {
         if (list.contains(order)) {
             System.out.println("  ✗ " + message);
         }
