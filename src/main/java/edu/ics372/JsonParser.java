@@ -74,7 +74,7 @@ public class JsonParser implements ParserInterface {
             Order.Builder builder = new Order.Builder()
                     .setSourcePrefix("J")
                     .setOrderDate(orderDate)
-                    .setOrderStatus("NEW")
+                    .setOrderStatus(OrderStatus.NEW)
                     .setOrderType(orderType)
                     .setMaxItems(items.length())
                     .setWarehouse(null);
@@ -190,7 +190,7 @@ public class JsonParser implements ParserInterface {
                 //read the saved order fields needed to rebuild the order object
                 String orderID = orderJson.getString("orderID");
                 long orderDate = orderJson.getLong("order_date");
-                String status = orderJson.getString("status");
+                OrderStatus status = OrderStatus.valueOf(orderJson.getString("status").toUpperCase());
                 String type = orderJson.getString("type");
                 JSONArray itemsArray = orderJson.getJSONArray("items");
 
