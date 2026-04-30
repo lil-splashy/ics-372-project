@@ -1,6 +1,7 @@
 package edu.UI;
 
 import edu.ics372.OrderHandler;
+import edu.ics372.SessionAnalytics;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
@@ -14,7 +15,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class MetricsChartView {
 
     //Metrics chart for imported, exported, and deleted orders.
-    public static StackPane createMetricsChartPane(OrderHandler orderHandler){
+    public static StackPane createMetricsChartPane(SessionAnalytics session){
         double chartViewWidth = 500;
         double chartViewHeight = 300;
         double chartPaneWidth = 600;
@@ -22,10 +23,11 @@ public class MetricsChartView {
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        dataset.addValue(orderHandler.getOrdersImported(), "Orders", "Imported");
-        dataset.addValue(orderHandler.getOrdersStarted(), "Orders", "Started");
-        dataset.addValue(orderHandler.getOrdersCancelled(), "Orders", "Cancelled");
-        dataset.addValue(orderHandler.getOrdersExported(), "Orders", "Exported");
+        dataset.addValue(session.getOrdersImported(), "Orders", "Imported");
+        dataset.addValue(session.getOrdersStarted(), "Orders", "Started");
+        dataset.addValue(session.getOrdersCancelled(), "Orders", "Cancelled");
+        dataset.addValue(session.getOrdersExported(), "Orders", "Exported");
+        dataset.addValue(session.getOrdersCompleted(), "Orders", "Completed");
 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Order Summary",
