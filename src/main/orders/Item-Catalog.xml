@@ -1,0 +1,115 @@
+<Orders>
+	<Order id="CATALOG">
+		<OrderType>Delivery</OrderType>
+		<Item type="Perfect Gold Bar">
+			<Price>250.00</Price>
+			<Quantity>1</Quantity>
+			<Location>A1</Location>
+		</Item>
+		<Item type="Perfect Necklace">
+			<Price>180.00</Price>
+			<Quantity>1</Quantity>
+			<Location>A2</Location>
+		</Item>
+		<Item type="Perfect Ring">
+			<Price>150.00</Price>
+			<Quantity>1</Quantity>
+			<Location>A3</Location>
+		</Item>
+		<Item type="2-5ths Full Bucket">
+			<Price>5.00</Price>
+			<Quantity>1</Quantity>
+			<Location>B1</Location>
+		</Item>
+		<Item type="Scroll">
+			<Price>10.00</Price>
+			<Quantity>1</Quantity>
+			<Location>B2</Location>
+		</Item>
+		<Item type="Abyssal Lantern">
+			<Price>320.00</Price>
+			<Quantity>1</Quantity>
+			<Location>B3</Location>
+		</Item>
+		<Item type="Adamant Full Helm">
+			<Price>95.00</Price>
+			<Quantity>1</Quantity>
+			<Location>C1</Location>
+		</Item>
+		<Item type="Adventurer's Boots">
+			<Price>130.00</Price>
+			<Quantity>1</Quantity>
+			<Location>C2</Location>
+		</Item>
+		<Item type="Agility Potion">
+			<Price>12.50</Price>
+			<Quantity>1</Quantity>
+			<Location>C3</Location>
+		</Item>
+		<Item type="Agility Tome">
+			<Price>75.00</Price>
+			<Quantity>1</Quantity>
+			<Location>D1</Location>
+		</Item>
+		<Item type="Ahab's Beer">
+			<Price>3.50</Price>
+			<Quantity>1</Quantity>
+			<Location>D2</Location>
+		</Item>
+		<Item type="Alchemical Chart">
+			<Price>45.00</Price>
+			<Quantity>1</Quantity>
+			<Location>D3</Location>
+		</Item>
+		<Item type="Ancestral Hat">
+			<Price>500.00</Price>
+			<Quantity>1</Quantity>
+			<Location>E1</Location>
+		</Item>
+		<Item type="Ancestral Robe Bottom">
+			<Price>480.00</Price>
+			<Quantity>1</Quantity>
+			<Location>E2</Location>
+		</Item>
+		<Item type="Ancestral Robe Top">
+			<Price>490.00</Price>
+			<Quantity>1</Quantity>
+			<Location>E3</Location>
+		</Item>
+		<Item type="Ancestral Robes Set">
+			<Price>1400.00</Price>
+			<Quantity>1</Quantity>
+			<Location>E4</Location>
+		</Item>
+		<Item type="Ancient Brew">
+			<Price>22.00</Price>
+			<Quantity>1</Quantity>
+			<Location>F1</Location>
+		</Item>
+		<Item type="Anti-poison Supermix">
+			<Price>18.00</Price>
+			<Quantity>1</Quantity>
+			<Location>F2</Location>
+		</Item>
+		<Item type="Anti-venom">
+			<Price>30.00</Price>
+			<Quantity>1</Quantity>
+			<Location>F3</Location>
+		</Item>
+		<Item type="Anti-venom+">
+			<Price>55.00</Price>
+			<Quantity>1</Quantity>
+			<Location>F4</Location>
+		</Item>
+		<Item type="Arcane Grimoire">
+			<Price>275.00</Price>
+			<Quantity>1</Quantity>
+			<Location>G1</Location>
+		</Item>
+		<Item type="Armadyl Brew">
+			<Price>28.00</Price>
+			<Quantity>1</Quantity>
+			<Location>G2</Location>
+		</Item>
+	</Order>
+</Orders>

@@ -59,10 +59,10 @@ public class OrderHandlerTest {
     private void resetHandlerAndOrders(){
         handler = new OrderHandler();
 
-        // Create sample orders (orderDate, orderStatus, orderType, maxItems, warehouse)
-        order1 = new Order(System.currentTimeMillis(), "incoming", "Online", 3, null);
-        order2 = new Order(System.currentTimeMillis(), "incoming", "Pickup", 3, null);
-        order3 = new Order(System.currentTimeMillis(), "incoming", "Delivery", 3, null);
+        // Create sample orders
+        order1 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Online").setMaxItems(3).setWarehouse(null).build();
+        order2 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Pickup").setMaxItems(3).setWarehouse(null).build();
+        order3 = new Order.Builder().setSourcePrefix("J").setOrderDate(System.currentTimeMillis()).setOrderStatus("incoming").setOrderType("Delivery").setMaxItems(3).setWarehouse(null).build();
 
         //adding items so orderPrice is tested correctly
         order1.addItem(new Item("I1", "Keyboard", 50.00,1,null));

@@ -66,34 +66,28 @@
 }
 
 /* ─── Scroll Bars ─── */
-.scroll-bar {
+.list-view .scroll-bar:vertical {
+    -fx-pref-width: 6px;
     -fx-background-color: transparent;
 }
 
-.scroll-bar .thumb {
-    -fx-background-color: rgba(219, 219, 219, 0.2);
-    -fx-background-radius: 4;
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-background-radius: 3px;
 }
 
-.scroll-bar .thumb:hover {
-    -fx-background-color: rgba(219, 219, 219, 0.38);
+.list-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
 }
 
-.scroll-bar .increment-button,
-.scroll-bar .decrement-button {
+.list-view .scroll-bar:vertical .track,
+.list-view .scroll-bar:vertical .track-background,
+.list-view .scroll-bar:vertical .increment-button,
+.list-view .scroll-bar:vertical .decrement-button,
+.list-view .scroll-bar:vertical .increment-arrow,
+.list-view .scroll-bar:vertical .decrement-arrow {
     -fx-background-color: transparent;
     -fx-padding: 0;
-}
-
-.scroll-bar .increment-arrow,
-.scroll-bar .decrement-arrow {
-    -fx-shape: "";
-    -fx-padding: 0;
-}
-
-.scroll-bar .track {
-    -fx-background-color: rgba(255, 255, 255, 0.04);
-    -fx-background-radius: 4;
 }
 
 /* ─── Buttons ─── */
@@ -115,7 +109,7 @@
     -fx-background-color: rgba(34, 33, 33, 0.85);
     -fx-text-fill: rgba(255, 255, 255, 0.9);
     -fx-font-family: "IBM Plex Mono", monospace;
-    -fx-font-size: 12;
+    -fx-font-size: 24;
     -fx-background-radius: 4;
     -fx-border-color: rgba(255, 255, 255, 0.15);
     -fx-border-width: 1;
@@ -162,6 +156,11 @@
     -fx-border-width: 1;
 }
 
+
+.confirmationdialog {
+    - fx-background-color: rgba(255, 255, 255, 0.25);
+}
+
 .header-bar {
     -fx-background-color: rgba(34, 33, 33, 0.45);
     -fx-border-color: rgba(255, 255, 255, 0.1);
@@ -190,7 +189,8 @@
 
 /* ─── Order status labels ─── */
 .order-status {
-    -fx-font-size: 12px;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
 .order-status.incoming  { -fx-text-fill: #47CEFF; }

@@ -42,3 +42,38 @@ How to obtain your Order ID:
 
 	Step 2. With order/s displayed, the OrderID/s should be present along with the their other information. 
 
+
+## Part 3 TODO:
+
+- fix case studies to better reflect program reality
+
+
+#### UI:
+- Add confirmation modals (for cancelling orders) - Done 
+- Add styling for modals - Done
+- Add Warehouse modification options
+- Remove Label print button - Done
+- Add product photos - Done
+- Add scrollbar for order list - Done
++ Added Information alert when exporting orders.
+
+
+
+- Don't allow scroll for graph (hella skews –> infinity) 
+
+#### Functional:
+- Make refreshing orders an automatic process - Done
+- Removed Manual import button - Done
++ Break displayOrder lists into its own class from order handler
++ orderList class
+- Break displayOrder lists into its own class from order handler
+- Implement more Interfaces
+
+
+#### Additions:
+- Admin Dashboard 
+- Analytics
+  - Added Jfreechart https://github.com/jfree/jfreechart
+- incoming order generation - Done
+
+

@@ -1,5 +1,6 @@
 package edu.UI;
 
+import edu.ics372.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,11 +11,11 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.fx.ChartViewer;
 
-import edu.ics372.Parser;
-import edu.ics372.Order;
-import edu.ics372.OrderHandler;
-import edu.ics372.Warehouse;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -41,8 +42,29 @@ public class Homepage extends Application {
         String os = System.getProperty("os.name").toLowerCase();
         stage.initStyle(os.contains("mac") ? StageStyle.UNIFIED : StageStyle.DECORATED);
         OrderHandler handler = new OrderHandler();
+
+// Ensure incoming folder exists
+        Path incomingPath = Paths.get("src", "main", "orders", "incoming");
+
+        // check to see if the folder exists if not then create it
+        try {
+            if (!java.nio.file.Files.exists(incomingPath)) {
+                java.nio.file.Files.createDirectories(incomingPath);
+                System.out.println("Created folder: " + incomingPath.toAbsolutePath());
+            }
+            // well if we get here gg D:
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//  Start watcher
+        OrderDirectoryWatcher watcher = new OrderDirectoryWatcher(incomingPath.toString(), handler, () -> show(stage, handler));
+
+        watcher.startWatching();
+        //end test
+
         if (new File(SAVE_FILE).exists()) {
-            handler.importProgramOrders(SAVE_FILE);
+            handler.loadSavedData();
         }
         stage.setOnCloseRequest(e -> {
             handler.shutdown();         // Stop the executor from accepting new tasks
@@ -54,7 +76,7 @@ public class Homepage extends Application {
             }
             // Save all program orders to disk (including any that were mid-processing)
             // Orders that did not finish processing remain in 'status
-            handler.saveData(SAVE_FILE);
+            handler.saveData();
         });
         show(stage, handler);
         stage.show();
