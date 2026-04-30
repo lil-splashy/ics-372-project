@@ -46,7 +46,7 @@ public class OrderHandler {
      */
     public OrderHandler() {
         this.orderList = new OrderList();
-        this.orderMetrics = new OrderMetrics();
+        this.orderMetrics = OrderMetrics.getInstance();
         this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
         this.orderGenerator.start();
     }
@@ -65,23 +65,6 @@ public class OrderHandler {
 
     public Warehouse getWallyworldWarehouse() {
         return wallyworldWarehouse;
-    }
-
-    //getters for order metrics
-    public int getOrdersCancelled(){
-        return orderMetrics.getOrdersCancelled();
-    }
-
-    public int getOrdersImported(){
-        return orderMetrics.getOrdersImported();
-    }
-
-    public int getOrdersExported(){
-        return orderMetrics.getOrdersExported();
-    }
-
-    public int getOrdersStarted(){
-        return orderMetrics.getOrdersStarted();
     }
 
     //getters for the linked lists
@@ -174,9 +157,6 @@ public class OrderHandler {
         orderMetrics.incrementStarted();
         Record startRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
         if (startRecord != null) startRecord.setStartTime(System.currentTimeMillis());
-        // Submit the order to the executor for asynchronous processing
-        // Processing can include tasks like updating inventory, notifications, or logging
-        // This does NOT automatically complete the order
         executor.execute(() -> processOrder(order));
     }
 
@@ -238,6 +218,7 @@ public class OrderHandler {
             order.setOrderStatus("completed");
             orderList.moveStartedToCompleted(order);
             Order.removeExistingOrder(order.getOrderID());
+            orderMetrics.incrementCompleted();
             Record endRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
             if (endRecord != null) endRecord.setEndTime(System.currentTimeMillis());
         } else {
