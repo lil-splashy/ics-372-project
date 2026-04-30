@@ -1,437 +1,201 @@
 package edu.ics372;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-
-import java.util.concurrent.ExecutorService; //
-import java.util.concurrent.Executors;      // #
-import java.util.concurrent.TimeUnit;
 
 /**
  * Handles the main order-management logic for the application.
- * This class connects the order lists, metrics, parsers, warehouses,
- * order generation, and save/load behavior used by the UI.
  */
 public class OrderHandler {
-    // Stores incoming, started, completed, and canceled orders.
-    private final OrderList orderList;
 
-    // Tracks order counts used by the metrics view.
+    private final OrderRepository repository;
     private final OrderMetrics orderMetrics;
+    private final OrderProcessor processor;
 
-    // Runs background order-processing tasks one at a time.
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    // Default file used to save and restore program data.
     private static final String SAVE_FILE = "saved_orders.json";
 
+    private final ParserInterface parser = new Parser();
+    private final JsonParser jParser = new JsonParser();
 
-    // Parser used for importing and exporting JSON or XML order files.
-    private ParserInterface parser = new Parser();
+    private final Warehouse mainWarehouse      = new Warehouse("W001", "Main Warehouse", true, true);
+    private final Warehouse bullseyeWarehouse  = new Warehouse("W002", "Bullseye",       true, false);
+    private final Warehouse wallyworldWarehouse= new Warehouse("W003", "WallyWorld",     false, true);
 
-    // JSON parser used specifically for saving and restoring program data.
-    private JsonParser jParser = new JsonParser();
-
-    // Warehouses currently available in the program.
-    private final Warehouse mainWarehouse = new Warehouse("W001", "Main Warehouse");
-    private final Warehouse bullseyeWarehouse = new Warehouse("W002", "Bullseye");
-    private final Warehouse wallyworldWarehouse = new Warehouse("W003", "WallyWorld");
-
-    // Generates sample orders in the background.
     private final RandomOrderGenerator orderGenerator;
 
-    /**
-     * Creates the order handler, initializes the order lists and metrics,
-     * and starts the background random order generator.
-     */
     public OrderHandler() {
-        this.orderList = new OrderList();
+        this.repository   = new OrderRepository();
         this.orderMetrics = OrderMetrics.getInstance();
+        this.processor    = new OrderProcessor();
         this.orderGenerator = new RandomOrderGenerator(this, mainWarehouse, 10, 60);
         this.orderGenerator.start();
     }
-    /** Sets the callback invoked (on the generator thread) after each new order is added. */
+
     public void setOnOrderGenerated(Runnable callback) {
         orderGenerator.setOnOrderGenerated(callback);
     }
-    //getters for warehouses
-    public Warehouse getMainWarehouse() {
-        return mainWarehouse;
-    }
 
-    public Warehouse getBullseyeWarehouse(){
-        return bullseyeWarehouse;
-    }
+    // ── Warehouse getters ─────────────────────────────────────────────────────
+    public Warehouse getMainWarehouse()       { return mainWarehouse; }
+    public Warehouse getBullseyeWarehouse()   { return bullseyeWarehouse; }
+    public Warehouse getWallyworldWarehouse() { return wallyworldWarehouse; }
 
-    public Warehouse getWallyworldWarehouse() {
-        return wallyworldWarehouse;
-    }
+    // ── Order list getters ────────────────────────────────────────────────────
+    public List<Order> getIncomingOrders() { return repository.incoming().getAll(); }
+    public List<Order> getStartedOrders()  { return repository.started().getAll(); }
+    public List<Order> getCompletedOrders(){ return repository.completed().getAll(); }
 
-    //getters for the linked lists
-    public LinkedList<Order> getIncomingOrders(){return orderList.getIncomingOrders();}
-    public LinkedList<Order> getStartedOrders(){return orderList.getStartedOrders();}
-    public LinkedList<Order> getCompletedOrders(){return orderList.getCompletedOrders();
-    }
-
+    // ── Add / Load ────────────────────────────────────────────────────────────
     public void addOrder(Order order) {
-        orderList.addIncomingOrder(order);
+        repository.addOrder(order);
         orderMetrics.incrementImported();
         SessionAnalytics.getInstance().addRecord(new Record(order));
     }
 
-    // Loads orders from a file path using the parser to detect format
     public void loadOrders(String filePath) {
-        List<Order> orders = parser.parseFile(filePath);
-        loadOrders(orders);
+        loadOrders(parser.parseFile(filePath));
     }
 
-    // Loads a list of already-parsed orders
     public void loadOrders(List<Order> orders) {
         if (orders == null || orders.isEmpty()) {
             System.out.println("No orders loaded from file");
             return;
         }
-
         for (Order order : orders) {
-            System.out.print("Order successfully loaded :D \n");
-            order.setOrderStatus("incoming");
+            order.setOrderStatus(OrderStatus.INCOMING);
             order.setWarehouse(mainWarehouse);
-
-            orderList.addIncomingOrder(order);
+            repository.addOrder(order);
             orderMetrics.incrementImported();
             SessionAnalytics.getInstance().addRecord(new Record(order));
         }
     }
 
-    /**
-     * Processes an order in the background.
-     * Ensures only one instance of the order is processed at a time using OrderLock.
-     * Note: If the program exits before this task finishes, the order remains in its
-     * current status.
-     *
-     * @param order the Order object to process
-     */
-    private void processOrder(Order order) {
-        String orderId = order.getOrderID();
-
-        // Attempt to acquire a file-based lock to prevent duplicate processing across threads or systems
-        if (!OrderLock.tryLock(orderId)) {
-            System.out.println("Order already locked elsewhere: " + orderId);
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    public void startOrder(String id) {
+        if (!repository.started().isEmpty()) {
+            System.out.println("Cannot start a new order until the current started order is completed or canceled.");
             return;
         }
-        try {
-            System.out.println("Processing order: " + orderId);
-        } finally {
-            OrderLock.unlock(orderId); // Always release the lock
-        }
-    }
-
-    /**
-     * Starts an order by moving it from the incoming list to the started list.
-     * Submits the order for background processing using the executor.
-     * Note: The order status remains "started" until the user manually completes or cancels it.
-     * The background processing task does not automatically change the status.
-     *
-     * @param id the ID of the order to start
-     */
-    public void startOrder(String id) {
-        // Check if there is already an active started order
-        if (!orderList.getStartedOrders().isEmpty()) {
-            System.out.println("Cannot start a new order until the current started order is completed or canceled.");
-            return; // block starting another order
-        }
-        Order order = orderList.getOrderById(id); // Look up the order by ID
-
-        if (order == null) {
-            System.out.println("No order associated with this id");
-            return; // Exit if order not found
-        }
-        // Only allow starting orders that are still incoming
-        if (!order.getOrderStatus().equals("incoming")) {
+        Order order = repository.getOrder(id);
+        if (order == null) { System.out.println("No order associated with this id"); return; }
+        if (order.getOrderStatus() != OrderStatus.INCOMING) {
             System.out.println("Can't start an order that has already been started or completed");
             return;
         }
-        // Move order from incoming to started
-        order.setOrderStatus("started");
-        orderList.moveIncomingToStarted(order);
+        order.setOrderStatus(OrderStatus.STARTED);
+        repository.incoming().remove(order);
+        repository.started().add(order);
         orderMetrics.incrementStarted();
         Record startRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
         if (startRecord != null) startRecord.setStartTime(System.currentTimeMillis());
-        executor.execute(() -> processOrder(order));
+        processor.process(order);
     }
 
-
-
-    /**
-     * Cancels an order by moving it from its current list to the canceled orders collection.
-     * Incoming, started, and completed orders can be canceled.
-     *
-     * @param id ID of the order being canceled
-     */
     public void cancelOrder(String id) {
-        Order canceledOrder = orderList.getOrderById(id);
-        if(canceledOrder == null){
-            System.out.println("No order associated with the provided id");
-            return;
+        Order order = repository.getOrder(id);
+        if (order == null) { System.out.println("No order associated with the provided id"); return; }
+        OrderStatus status = order.getOrderStatus();
+        switch (status) {
+            case INCOMING  -> repository.incoming().remove(order);
+            case STARTED   -> repository.started().remove(order);
+            case COMPLETED -> repository.completed().remove(order);
+            case CANCELED  -> { System.out.println("Order has already been canceled"); return; }
+            default        -> { System.out.println("Order has not been fully processed or loaded."); return; }
         }
-        String orderStatus = canceledOrder.getOrderStatus();
-        if (orderStatus == null){
-            System.out.println("Order status is missing.");
-            return;
-        }
-
-        switch(orderStatus){
-            case "incoming":
-            case "started":
-            case "completed":
-                orderList.moveToCanceled(id, canceledOrder);
-                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
-                canceledOrder.setOrderStatus("canceled");
-                orderMetrics.incrementCancelled();
-                System.out.println("Order has been removed from " + orderStatus + " orders and added to canceled orders.");
-                break;
-
-            case "canceled":
-                Order.removeExistingOrder(canceledOrder.getOrderID()); // remove from order tracking lists
-                System.out.println("Order has already been canceled");
-                break;
-
-            default:
-                System.out.println("order has not been fully processed or loaded.");
-        }
-
+        repository.addCanceled(order);
+        Order.removeExistingOrder(order.getOrderID());
+        order.setOrderStatus(OrderStatus.CANCELED);
+        orderMetrics.incrementCancelled();
+        System.out.println("Order cancelled: " + id);
     }
 
-    /**
-     * Completes a started order by moving it from the started list to the completed list.
-     * Only orders with a status of "started" can be completed.
-     *
-     * @param id ID of the order being completed
-     */
     public void completeOrder(String id) {
-        Order order = orderList.getOrderById(id);
-        if (order == null) {
-            System.out.println("No order associated with this id");
-            return;
-        }
-        if (order.getOrderStatus().equals("started")){
-            order.setOrderStatus("completed");
-            orderList.moveStartedToCompleted(order);
-            Order.removeExistingOrder(order.getOrderID());
-            orderMetrics.incrementCompleted();
-            Record endRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
-            if (endRecord != null) endRecord.setEndTime(System.currentTimeMillis());
-        } else {
+        Order order = repository.getOrder(id);
+        if (order == null) { System.out.println("No order associated with this id"); return; }
+        if (order.getOrderStatus() != OrderStatus.STARTED) {
             System.out.println("Can't complete an order that hasn't been started yet.");
+            return;
         }
-
+        order.setOrderStatus(OrderStatus.COMPLETED);
+        repository.started().remove(order);
+        repository.completed().add(order);
+        Order.removeExistingOrder(order.getOrderID());
+        orderMetrics.incrementCompleted();
+        Record endRecord = SessionAnalytics.getInstance().getRecord(order.getOrderID());
+        if (endRecord != null) endRecord.setEndTime(System.currentTimeMillis());
     }
 
-    /**
-     * Exports all completed orders to either a JSON or XML file.
-     * The exported file is saved in the exports folder with a timestamped file name.
-     * After a successful export, completed orders are removed from the completed list.
-     *
-     * @param extension file extension for the export format, either ".json" or ".xml"
-     */
-    public void exportCompletedOrders(String extension){
-        LinkedList<Order> completedOrders = orderList.getCompletedOrders();
-        if(completedOrders == null || completedOrders.isEmpty()){
-            System.out.println("No completed orders to export.");
+    // ── Export / Save / Load ──────────────────────────────────────────────────
+    public void exportCompletedOrders(String extension) {
+        List<Order> completed = repository.completed().getAll();
+        if (completed.isEmpty()) { System.out.println("No completed orders to export."); return; }
+        if (!extension.equals(".json") && !extension.equals(".xml")) {
+            System.out.println("Use .json or .xml as the extension.");
             return;
         }
-        if(!extension.equals(".json") && !extension.equals(".xml")){
-            System.out.print("Use .json or .xml as the entension.");
-            return;
-        }
-
-        String timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-
-        //add an export folder if one doesnt exist
+        String timeStamp = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         java.io.File exportDir = new java.io.File("exports");
-        if (!exportDir.exists()){
-            exportDir.mkdirs();
-        }
-
+        if (!exportDir.exists()) exportDir.mkdirs();
         String filePath = "exports/completed_orders_" + timeStamp + extension;
-
-        //grabs the amount of completed orders that will be exported
-        int exportedNow = completedOrders.size();
-        parser.exportOrders(completedOrders, filePath);
-        //adds to the counter for metrics
-        orderMetrics.addExported(exportedNow);
-
+        parser.exportOrders(completed, filePath);
+        orderMetrics.addExported(completed.size());
         System.out.println("Completed orders exported to: " + filePath);
-
-        orderList.removeCompletedOrdersAfterExport();
+        repository.completed().clear();
     }
 
-
-    /**
-     * Finds and returns an order by its order ID.
-     *
-     * @param id ID of the order being searched for
-     * @return the matching Order object, or null if no order is found
-     */
-    public Order getOrder(String id){
-        Order order = orderList.getOrderById(id);
-        if(order == null){
-            System.out.println("No order associated with this id");
-            return null;
-        }
-        return order;
-    }
-
-
-    /**
-     * Displays all incoming and started orders in the console.
-     * Also calculates and displays the total price of those uncompleted orders.
-     */
-    public void displayUncompletedOrders() {
-        // display incoming and started orders linked list
-        // Call order method for price
-        // getOrderPrice()
-        // price total
-        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
-        LinkedList<Order> startedOrders = orderList.getStartedOrders();
-
-        double totalPriceUncompletedOrders = 0;
-        System.out.println("Incoming Orders: ");
-        for(Order order : incomingOrders){
-            System.out.println(order);
-            totalPriceUncompletedOrders += order.getOrderPrice();
-        }
-
-        System.out.println("Started Orders: ");
-        for(Order order : startedOrders){
-            System.out.println(order);
-            totalPriceUncompletedOrders += order.getOrderPrice();
-        }
-
-        System.out.println("Total price: " + totalPriceUncompletedOrders);
-    }
-
-    // Displays incoming orders
-    public void displayIncomingOrders() {
-        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
-        System.out.println("Incoming Orders: ");
-        for (Order order : incomingOrders) {
-            System.out.println(order);
-        }
-    }
-
-    // Displays started orders
-    public void displayStartedOrders() {
-        LinkedList<Order> startedOrders = orderList.getStartedOrders();
-        System.out.println("Started Orders: ");
-        for (Order order : startedOrders) {
-            System.out.println(order);
-        }
-    }
-
-    // Displays completed orders
-    public void displayCompletedOrders() {
-        //display completedOrders linked list
-        LinkedList<Order> completedOrders = orderList.getCompletedOrders();
-        System.out.println("Completed Orders: ");
-        for (Order order : completedOrders) {
-            System.out.println(order);
-        }
-    }
-
-    public void displayCanceledOrders(){
-        System.out.println("Canceled Orders: ");
-        for (Order order: orderList.getCanceledOrdersCollection()){
-            System.out.println(order);
-        }
-    }
-
-    // Calculates total price of uncompleted orders
-    public double totalPriceUncompletedOrders(){
-        LinkedList<Order> incomingOrders = orderList.getIncomingOrders();
-        LinkedList<Order> startedOrders = orderList.getStartedOrders();
-
-        double totalPrice = 0;
-
-        for(Order order : incomingOrders){
-            totalPrice += order.getOrderPrice();
-        }
-
-        for(Order order : startedOrders){
-            totalPrice += order.getOrderPrice();
-        }
-
-        return totalPrice;
-    }
-
-    /**
-     * Saves all orders that have not already been exported or removed, usually before exiting the session
-     *
-     * @param filePath The directory in which the file containing the orders is located
-     */
-    public void saveData(){
-        List<Order> allOrders = orderList.getAllOrders();
-        jParser.exportOrders(allOrders, SAVE_FILE);
+    public void saveData() {
+        List<Order> all = new ArrayList<>();
+        all.addAll(repository.incoming().getAll());
+        all.addAll(repository.started().getAll());
+        all.addAll(repository.completed().getAll());
+        jParser.exportOrders(all, SAVE_FILE);
         System.out.println("Program data saved to " + SAVE_FILE);
     }
 
-    /**
-     * Restores previously saved program orders from a file and rebuilds
-     * the in-memory tracking structures used by OrderHandler.
-     *
-     * @param filePath path to the saved program-orders file
-     */
-    public void loadSavedData(){
-        //ask the parser to rebuild order objects from the save file
-        List<Order> importedOrders = jParser.importProgramOrders(SAVE_FILE);
-        //stop if nothing was loaded from the file
-        if(importedOrders == null || importedOrders.isEmpty()){
+    public void loadSavedData() {
+        List<Order> imported = jParser.importProgramOrders(SAVE_FILE);
+        if (imported == null || imported.isEmpty()) {
             System.out.println("No program orders were imported.");
             return;
         }
-
-        //add each imported order back into the ordersbyidlist
-        // also add them to the correct list based on their status
-        for(Order order: importedOrders){
+        for (Order order : imported) {
             order.setWarehouse(mainWarehouse);
-            orderList.addOrderToCorrectList(order);
+            repository.getOrdersById().put(order.getOrderID(), order);
+            OrderStatus status = order.getOrderStatus();
+            if (status == OrderStatus.STARTED)        repository.started().add(order);
+            else if (status == OrderStatus.COMPLETED) repository.completed().add(order);
+            else                                      repository.incoming().add(order);
         }
-
-        //confirm the amount of saved orders that were restored
-        System.out.println(importedOrders.size() + " program orders imported successfully.");
+        System.out.println(imported.size() + " program orders imported successfully.");
     }
 
-    /**
-     * Gracefully shuts down the executor.
-     * Stops accepting new tasks, but allows already submitted tasks to complete.
-     */
-    public void shutdown() { // #
-        orderGenerator.stop();
-        executor.shutdown();
-    }
-    /**
-     * Immediately attempts to stop all running tasks in the executor.
-     * Tasks that have not started may never run; running tasks are interrupted.
-     */
-    public void shutdownNow() { // #
-        executor.shutdown();
+    public Order getOrder(String id) { return repository.getOrder(id); }
+
+    // ── Shutdown ──────────────────────────────────────────────────────────────
+    public void shutdown()    { orderGenerator.stop(); processor.shutdown(); }
+    public void shutdownNow() { processor.shutdownNow(); }
+    public boolean awaitTermination(long timeoutSeconds) { return processor.awaitTermination(timeoutSeconds); }
+
+    // ── Console display helpers ───────────────────────────────────────────────
+    public void displayUncompletedOrders() {
+        double total = 0;
+        System.out.println("Incoming Orders:");
+        for (Order o : repository.incoming().getAll()) { System.out.println(o); total += o.getOrderPrice(); }
+        System.out.println("Started Orders:");
+        for (Order o : repository.started().getAll())  { System.out.println(o); total += o.getOrderPrice(); }
+        System.out.println("Total price: " + total);
     }
 
-    /**
-     * Waits for the executor to terminate after a shutdown request.
-     *
-     * @param timeoutSeconds maximum time to wait for termination in seconds
-     * @return true if executor terminated successfully within the timeout, false otherwise
-     */
-    public boolean awaitTermination(long timeoutSeconds) {
-        boolean terminated = false;
-        try {
-            // Wait for the executor to finish all running tasks or until timeout
-            terminated = executor.awaitTermination(timeoutSeconds, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            // If current thread is interrupted while waiting, restore interrupt status
-            Thread.currentThread().interrupt(); // restore interrupt status
-        }
-        return terminated; // return whether executor terminated in time
+    public void displayIncomingOrders()  { System.out.println("Incoming:"); repository.incoming().getAll().forEach(System.out::println); }
+    public void displayStartedOrders()   { System.out.println("Started:");  repository.started().getAll().forEach(System.out::println); }
+    public void displayCompletedOrders() { System.out.println("Completed:");repository.completed().getAll().forEach(System.out::println); }
+    public void displayCanceledOrders()  { System.out.println("Canceled:"); repository.getCanceledOrders().values().forEach(System.out::println); }
+
+    public double totalPriceUncompletedOrders() {
+        double total = 0;
+        for (Order o : repository.incoming().getAll()) total += o.getOrderPrice();
+        for (Order o : repository.started().getAll())  total += o.getOrderPrice();
+        return total;
     }
 }
